@@ -1,0 +1,34 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context=".MainActivity">
+    <item android:id="@+id/action_settings"
+          android:title="@string/action_settings"
+          android:orderInCategory="100"
+          app:showAsAction="never"/>
+
+    <item android:id="@+id/pl1x3"
+          android:title="1x3"/>
+    <item android:id="@+id/pl2x4"
+          android:title="2x4"/>
+    <item android:id="@+id/pl3x5"
+          android:title="3x5"/>
+    <item android:id="@+id/pl4x6"
+          android:title="4x6"/>
+
+    <item android:id="@+id/cancel"
+        android:title="@string/cancel"
+        android:orderInCategory="200"
+        android:icon="@drawable/cancelcross"
+        app:showAsAction="always"
+        android:visible="false"/>
+
+
+    <item android:id="@+id/delete"
+        android:title="@string/delete"
+        android:orderInCategory="200"
+        android:icon="@drawable/delete"
+        app:showAsAction="always"
+        android:visible="false"/>
+
+</menu>

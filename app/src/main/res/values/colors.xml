@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primaryColor">#222</color>
+    <color name="primaryColorDark">#000</color>
+    <color name="accentColor">#000</color>
+    <color name="deleteModeColor">#1A237E</color>
+</resources>
