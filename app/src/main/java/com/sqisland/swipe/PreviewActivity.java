@@ -112,7 +112,7 @@ public class PreviewActivity extends ActionBarActivity {
                 null);
 
         ArrayList<String> result = new ArrayList<>(cursor.getCount());
-        if (cursor.moveToFirst()) {
+        if (cursor.moveToLast()) {
             final int dataColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             do {
                 final String data = cursor.getString(dataColumn);
@@ -120,7 +120,7 @@ public class PreviewActivity extends ActionBarActivity {
                     result.add(data);
                 }
 
-            } while (cursor.moveToNext());
+            } while (cursor.moveToPrevious());
         }
         cursor.close();
 
