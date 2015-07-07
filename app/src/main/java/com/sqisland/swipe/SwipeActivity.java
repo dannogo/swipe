@@ -28,22 +28,6 @@ public class SwipeActivity extends Activity {
 
         setContentView(R.layout.activity_swipe);
 
-        // Recognition of what orientation is now and getting current screen width and height
-        if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-            Display display = getWindowManager().getDefaultDisplay();
-            Point size = new Point();
-            display.getSize(size);
-            width = size.x;
-            height = size.y;
-        }
-        else{
-            Display display = getWindowManager().getDefaultDisplay();
-            Point size = new Point();
-            display.getSize(size);
-            width = size.x;
-            height = size.y;
-        }
-
         // Getting position of chosen image from Intent
         Bundle extras = getIntent().getExtras();
 
@@ -55,10 +39,22 @@ public class SwipeActivity extends Activity {
 
 
         // Preparing viewPager
-        ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
         ImagePagerAdapter adapter = new ImagePagerAdapter();
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(position);
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            public void onPageScrollStateChanged(int state) {
+            }
+
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            public void onPageSelected(int position) {
+                SubsamplingScaleImageView view = (SubsamplingScaleImageView) viewPager.findViewWithTag("image_" + position);
+                view.resetScaleAndCenter();
+            }
+        });
     }
 
     // Adapter for ViewPager
@@ -72,6 +68,7 @@ public class SwipeActivity extends Activity {
         @Override
         public boolean isViewFromObject(View view, Object object) {
             return view == object;
+
         }
 
         @Override
@@ -79,13 +76,10 @@ public class SwipeActivity extends Activity {
 
             LinearLayout llImage = (LinearLayout) getLayoutInflater().inflate(R.layout.view_pager_item, null);
 
-            SubsamplingScaleImageView draweeView = (SubsamplingScaleImageView) llImage.getChildAt(0);
+            SubsamplingScaleImageView draweeView = (SubsamplingScaleImageView) llImage.findViewById(R.id.imageFullScreen);
             draweeView.setImage(ImageSource.uri(images.get(position)));
-
+            draweeView.setTag("image_" + position);
             container.addView(llImage, 0);
-
-
-
             return llImage;
 
         }

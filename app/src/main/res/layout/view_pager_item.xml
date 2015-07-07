@@ -5,20 +5,10 @@
 
 
     <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+        android:id="@+id/imageFullScreen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#000000"/>
-
-    <!--<sqisland.com.swipeimageviewer.ScaleImageView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:background="#000000"/>-->
-
-    <!--<ImageView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:background="#000000"-->
-        <!--android:scaleType="centerCrop"/>-->
 
 
 </LinearLayout>
