@@ -34,6 +34,7 @@ public class PreviewActivity extends ActionBarActivity {
     private RecyclerView recyclerView;
     private SivAdapter adapter;
     private ArrayList<String> images;
+    protected static boolean deletedItemsInSwipeActivity = false;
     private SharedPreferences sharedPreferences;
     private FragmentManager manager = getFragmentManager(); // needs for confirmation Dialog
     private android.support.v7.widget.Toolbar toolbar;
@@ -137,6 +138,19 @@ public class PreviewActivity extends ActionBarActivity {
         return result;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (deletedItemsInSwipeActivity) {
+            images = getCameraImages(this, new ArrayList<String>());
+            int columnsInPortrait = sharedPreferences.getInt("portrait", 4);
+            int columnsInLandscape = sharedPreferences.getInt("landscape", 6);
+            reloadRecyclerView(columnsInPortrait, columnsInLandscape);
+
+            deletedItemsInSwipeActivity = false;
+
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
