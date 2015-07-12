@@ -12,14 +12,32 @@ import android.widget.Toast;
  */
 public class RemoveConfirmationDialog extends DialogFragment {
 
+    String purpose;
+    int position;
+    String notification;
+
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        final int position = getArguments().getInt("position");
+        String title = new String();
+        String message = new String();
+
+        purpose = getArguments().getString("purpose");
+        if (purpose.equals("SwipeActivity")) {
+            position = getArguments().getInt("position");
+            title = "Delete Photo";
+            message = "Do you realy want to delete this photo?";
+            notification = "Photo has been deleted";
+        }else if(purpose.equals("PreviewActivity")){
+            title = "Delete Photos";
+            message = "Do you realy want to delete checked photos?";
+            notification = "Photos have been deleted";
+        }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Delete Photo");
-        builder.setMessage("Do you realy want to delete this photo?");
+        builder.setTitle(title);
+        builder.setMessage(message);
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -30,8 +48,13 @@ public class RemoveConfirmationDialog extends DialogFragment {
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                ((SwipeActivity)getActivity()).deleteAfterConfirmation(position);
-                Toast.makeText(getActivity(), "Photo has been deleted", Toast.LENGTH_SHORT).show();
+                if (purpose.equals("SwipeActivity")) {
+                    ((SwipeActivity) getActivity()).deleteAfterConfirmation(position);
+                }else if(purpose.equals("PreviewActivity")) {
+                    ((PreviewActivity)getActivity()).deleteChecked();
+                    ((PreviewActivity)getActivity()).dissmisDeleteMode();
+                }
+                    Toast.makeText(getActivity(), notification, Toast.LENGTH_SHORT).show();
             }
         });
         Dialog dialog = builder.create();

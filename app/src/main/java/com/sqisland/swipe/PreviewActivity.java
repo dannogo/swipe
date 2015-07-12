@@ -66,7 +66,7 @@ public class PreviewActivity extends ActionBarActivity {
 
 
 
-    private void deleteChecked(){
+    public void deleteChecked(){
         ArrayList<String>  urisForDeleting = new ArrayList<>();
         ArrayList<File> filesForDeleting = new ArrayList<>();
         Set<String> set = sharedPreferences.getStringSet("checkedItems", new HashSet<String>());
@@ -234,7 +234,7 @@ public class PreviewActivity extends ActionBarActivity {
 
     }
 
-    private void dissmisDeleteMode(){
+    public void dissmisDeleteMode(){
         SharedPreferences.Editor editor = sharedPreferences.edit();
         isDeleteMode = false;
         Set<String> set = new HashSet<String>();
@@ -276,8 +276,15 @@ public class PreviewActivity extends ActionBarActivity {
             dissmisDeleteMode();
         }
         if (id == R.id.delete){
-            deleteChecked();
-            dissmisDeleteMode();
+
+            RemoveConfirmationDialog dialog = new RemoveConfirmationDialog();
+            Bundle data = new Bundle();
+            data.putString("purpose", "PreviewActivity");
+            dialog.setArguments(data);
+            dialog.show(getFragmentManager(), "Confirmation");
+
+//            deleteChecked();
+//            dissmisDeleteMode();
 
         }
 

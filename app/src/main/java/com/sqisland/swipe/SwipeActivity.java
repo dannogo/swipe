@@ -114,10 +114,10 @@ public class SwipeActivity extends Activity{
                 public void onClick(View v) {
                     RemoveConfirmationDialog dialog = new RemoveConfirmationDialog();
                     Bundle data = new Bundle();
+                    data.putString("purpose", "SwipeActivity");
                     data.putInt("position", position);
                     dialog.setArguments(data);
                     dialog.show(getFragmentManager(), "Confirmation");
-
                 }
             });
 
