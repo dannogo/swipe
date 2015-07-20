@@ -46,6 +46,8 @@ public class SwipeActivity extends Activity{
         viewPager = (ViewPager) findViewById(R.id.view_pager);
         adapter = new ImagePagerAdapter();
         viewPager.setAdapter(adapter);
+        viewPager.setPageMargin(30);
+        viewPager.setPageMarginDrawable(R.color.primaryColorDark);
         viewPager.setCurrentItem(position);
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             public void onPageScrollStateChanged(int state) {
