@@ -6,4 +6,17 @@
           android:title="@string/action_settings"
           android:orderInCategory="100"
           app:showAsAction="never"/>
+
+      <item android:id="@+id/share"
+          android:title="@string/share"
+          android:orderInCategory="200"
+          android:icon="@drawable/share"
+          app:showAsAction="always"/>
+
+
+      <item android:id="@+id/remove"
+          android:title="@string/delete"
+          android:orderInCategory="200"
+          android:icon="@drawable/delete"
+          app:showAsAction="always"/>
 </menu>

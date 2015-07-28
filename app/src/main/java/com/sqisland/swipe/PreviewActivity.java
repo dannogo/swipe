@@ -10,16 +10,15 @@ import android.graphics.Point;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.support.v4.content.CursorLoader;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,10 +39,6 @@ public class PreviewActivity extends ActionBarActivity {
     private android.support.v7.widget.Toolbar toolbar;
     private boolean isDeleteMode;
 
-    // computes id of camera image bucket
-    public static String getBucketId(String path) {
-        return String.valueOf(path.toLowerCase().hashCode());
-    }
     // Completely deletes photo from Gallery folder
     public static void deleteFileFromMediaStore(final ContentResolver contentResolver, final File file) {
         String canonicalPath;
@@ -87,33 +82,39 @@ public class PreviewActivity extends ActionBarActivity {
     }
 
     // gets list of photo's uris. Second argument helps to avoid rendering just deleted photo
-    public static ArrayList<String> getCameraImages(Context context, ArrayList<String> deleted) {
-        // Checking where photo directory is located, because there is more than one possible location
-        File dcim = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
-        File commonCameraDir = new File(dcim, "Camera"); // regular gallery location
-        File htcCameraDir = new File(dcim, "100MEDIA"); // gallery location in some htc devices
-        String camera_image_bucket_name; // path of directory where photos are stored
-        if (commonCameraDir.exists()) {
-            camera_image_bucket_name = commonCameraDir.toString();
-        } else if (htcCameraDir.exists()) {
-            camera_image_bucket_name = htcCameraDir.toString();
-        } else {
-            Toast.makeText(context, "Camera directory was not found.", Toast.LENGTH_LONG).show();
-            camera_image_bucket_name = dcim.toString();
-        }
-        String camera_image_bucket_id = getBucketId(camera_image_bucket_name);
+    public ArrayList<String> getCameraImages(Context context, ArrayList<String> deleted) {
+        // Get relevant columns for use later.
+        String[] projection = {
+                MediaStore.Files.FileColumns._ID,
+                MediaStore.Files.FileColumns.DATA,
+                MediaStore.Files.FileColumns.DATE_ADDED,
+                MediaStore.Files.FileColumns.MEDIA_TYPE,
+                MediaStore.Files.FileColumns.MIME_TYPE,
+                MediaStore.Files.FileColumns.TITLE
+        };
 
-        final String[] projection = {MediaStore.Images.Media.DATA};
-        final String selection = MediaStore.Images.Media.BUCKET_ID + " = ?";
-        final String[] selectionArgs = {camera_image_bucket_id};
-        final Cursor cursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+// Return only video and image metadata.
+        String selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "="
+                + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE
+                + " OR "
+                + MediaStore.Files.FileColumns.MEDIA_TYPE + "="
+                + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
+
+        Uri queryUri = MediaStore.Files.getContentUri("external");
+
+        CursorLoader cursorLoader = new CursorLoader(
+                this,
+                queryUri,
                 projection,
                 selection,
-                selectionArgs,
-                null);
+                null, // Selection args (none).
+                MediaStore.Files.FileColumns.DATE_ADDED + " DESC" // Sort order.
+        );
+
+        Cursor cursor = cursorLoader.loadInBackground();
 
         ArrayList<String> result = new ArrayList<>(cursor.getCount());
-        if (cursor.moveToLast()) {
+        if (cursor.moveToFirst()) {
             final int dataColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             do {
                 final String data = cursor.getString(dataColumn);
@@ -121,7 +122,7 @@ public class PreviewActivity extends ActionBarActivity {
                     result.add(data);
                 }
 
-            } while (cursor.moveToPrevious());
+            } while (cursor.moveToNext());
         }
         cursor.close();
 
@@ -282,9 +283,6 @@ public class PreviewActivity extends ActionBarActivity {
             data.putString("purpose", "PreviewActivity");
             dialog.setArguments(data);
             dialog.show(getFragmentManager(), "Confirmation");
-
-//            deleteChecked();
-//            dissmisDeleteMode();
 
         }
 

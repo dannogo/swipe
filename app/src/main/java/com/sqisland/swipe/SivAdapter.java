@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.media.Image;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,8 +67,15 @@ public class SivAdapter extends RecyclerView.Adapter<SivAdapter.MyViewHolder> {
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        Uri uri = Uri.parse("file://" + images.get(position));
+        String imagePath = images.get(position);
+        Uri uri = Uri.parse("file://" + imagePath);
+
         //setting thumbnail and image to ImageView
+        if (imagePath.substring(imagePath.length() - 3, imagePath.length()).equals("mp4")){
+            holder.playicon.setVisibility(View.VISIBLE);
+        }else{
+            holder.playicon.setVisibility(View.INVISIBLE);
+        }
         Glide.with(context).load(uri).thumbnail(0.05f).into(holder.miniature);
         setItemProperState(holder);
     }
@@ -101,12 +110,15 @@ public class SivAdapter extends RecyclerView.Adapter<SivAdapter.MyViewHolder> {
 
         ImageView miniature;
         ImageView checkmark;
+        ImageView playicon;
 
         public MyViewHolder(View itemView) {
             super(itemView);
 
             miniature = (ImageView) itemView.findViewById(R.id.miniature);
             checkmark = (ImageView) itemView.findViewById(R.id.checkmark);
+            playicon = (ImageView) itemView.findViewById(R.id.playicon);
+
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
         }
