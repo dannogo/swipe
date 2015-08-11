@@ -88,11 +88,14 @@ public class SwipeActivity extends ActionBarActivity{
                 getSupportActionBar().setTitle(simplifyImageName(images, position));
 
                 com.software.shell.fab.ActionButton fab = (ActionButton) viewPager.findViewWithTag("fab_"+position);
+                com.software.shell.fab.ActionButton fabCamera = (ActionButton) viewPager.findViewWithTag("fab_camera_"+position);
                 if (fab != null) {
                     if (adapter.isEditMode) {
                         fab.hide();
+                        fabCamera.hide();
                     } else {
                         fab.show();
+                        fabCamera.show();
                     }
                 }
 
@@ -119,6 +122,8 @@ public class SwipeActivity extends ActionBarActivity{
         return super.onCreateOptionsMenu(menu);
     }
 
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -139,6 +144,12 @@ public class SwipeActivity extends ActionBarActivity{
             data.putInt("position", currentPosition);
             dialog.setArguments(data);
             dialog.show(getFragmentManager(), "Confirmation");
+            return true;
+        }
+
+        if (id == R.id.camera) {
+            Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+            startActivityForResult(intent, 1);
             return true;
         }
 
@@ -229,6 +240,16 @@ public class SwipeActivity extends ActionBarActivity{
                 }
             });
 
+            final com.software.shell.fab.ActionButton fabCamera = (ActionButton) rlImage.findViewById(R.id.camera_float);
+            fabCamera.setTag("fab_camera_" + position);
+            fabCamera.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+                    startActivityForResult(intent, 1);
+                }
+            });
+
             PhotoViewAttacher mAttacher = new PhotoViewAttacher(photoView);
             mAttacher.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener() {
                 @Override
@@ -236,10 +257,12 @@ public class SwipeActivity extends ActionBarActivity{
                     if (!isEditMode) {
                         toolbar.setVisibility(View.VISIBLE);
                         fab.hide();
+                        fabCamera.hide();
                         isEditMode = true;
                     } else {
                         toolbar.setVisibility(View.INVISIBLE);
                         fab.show();
+                        fabCamera.show();
                         isEditMode = false;
                     }
                 }

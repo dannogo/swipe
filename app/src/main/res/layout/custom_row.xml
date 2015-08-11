@@ -20,7 +20,6 @@
         android:src="@drawable/play_button"
         android:visibility="invisible"
         />
-        <!--android:scaleType="centerCrop"-->
 
 
     <ImageView

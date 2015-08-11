@@ -3,6 +3,7 @@ package com.sqisland.swipe;
 import android.app.FragmentManager;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -249,6 +250,7 @@ public class PreviewActivity extends ActionBarActivity {
         reloadRecyclerView(columnsInPortrait, columnsInLandscape);
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -273,6 +275,22 @@ public class PreviewActivity extends ActionBarActivity {
         if (id == R.id.action_settings) {
             return true;
         }
+
+        if (id == R.id.camera) {
+            Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+            startActivityForResult(intent, 1);
+            return true;
+        }
+
+        if (id == R.id.share) {
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "https://www.google.com");
+            sendIntent.setType("text/plain");
+            startActivity(sendIntent);
+            return true;
+        }
+
         if (id == R.id.cancel){
             dissmisDeleteMode();
         }
