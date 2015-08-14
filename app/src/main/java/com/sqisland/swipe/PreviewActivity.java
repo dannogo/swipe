@@ -17,6 +17,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,6 +36,8 @@ public class PreviewActivity extends ActionBarActivity {
     private SivAdapter adapter;
     private ArrayList<String> images;
     protected static boolean deletedItemsInSwipeActivity = false;
+//    protected static boolean cameraJustLaunched = false;
+    protected String lastMediaUril;
     private SharedPreferences sharedPreferences;
     private FragmentManager manager = getFragmentManager(); // needs for confirmation Dialog
     private android.support.v7.widget.Toolbar toolbar;
@@ -50,7 +53,7 @@ public class PreviewActivity extends ActionBarActivity {
         }
         final Uri uri = MediaStore.Files.getContentUri("external");
         final int result = contentResolver.delete(uri,
-                MediaStore.Files.FileColumns.DATA + "=?", new String[] {canonicalPath});
+                MediaStore.Files.FileColumns.DATA + "=?", new String[]{canonicalPath});
         if (result == 0) {
             final String absolutePath = file.getAbsolutePath();
             if (!absolutePath.equals(canonicalPath)) {
@@ -72,7 +75,8 @@ public class PreviewActivity extends ActionBarActivity {
             filesForDeleting.add(new File(str));
             urisForDeleting.add(str);
         }
-        images = getCameraImages(this, urisForDeleting);
+        images = getCameraImages(urisForDeleting);
+        lastMediaUril = images.get(0);
         DeleteTask deleteTask = new DeleteTask();
         deleteTask.execute(filesForDeleting);
 
@@ -83,7 +87,7 @@ public class PreviewActivity extends ActionBarActivity {
     }
 
     // gets list of photo's uris. Second argument helps to avoid rendering just deleted photo
-    public ArrayList<String> getCameraImages(Context context, ArrayList<String> deleted) {
+    public ArrayList<String> getCameraImages(ArrayList<String> deleted) {
         // Get relevant columns for use later.
         String[] projection = {
                 MediaStore.Files.FileColumns._ID,
@@ -140,11 +144,15 @@ public class PreviewActivity extends ActionBarActivity {
         return result;
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
-        if (deletedItemsInSwipeActivity) {
-            images = getCameraImages(this, new ArrayList<String>());
+        images = getCameraImages(new ArrayList<String>());
+
+        // Second part of conditional statement is:
+        //                  Check if the last media file in the list has changed
+        if (deletedItemsInSwipeActivity || (!images.get(0).equals(lastMediaUril))) {
             int columnsInPortrait = sharedPreferences.getInt("portrait", 4);
             int columnsInLandscape = sharedPreferences.getInt("landscape", 6);
             reloadRecyclerView(columnsInPortrait, columnsInLandscape);
@@ -165,7 +173,9 @@ public class PreviewActivity extends ActionBarActivity {
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-        images = getCameraImages(this, new ArrayList<String>());
+        images = getCameraImages(new ArrayList<String>());
+        Log.w("LOG", "Инициализация");
+        lastMediaUril = images.get(0);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerViewPreviews);
 
         Set<String> checkedItemsQuantity = sharedPreferences.getStringSet("checkedItems", new HashSet<String>());
@@ -192,8 +202,9 @@ public class PreviewActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.menu_main, menu);
-            MenuItem delete = menu.findItem(R.id.delete);
-            MenuItem cancel = menu.findItem(R.id.cancel);
+        MenuItem delete = menu.findItem(R.id.delete);
+        MenuItem cancel = menu.findItem(R.id.cancel);
+       
         if (isDeleteMode) {
             delete.setVisible(true);
             cancel.setVisible(true);
@@ -239,7 +250,7 @@ public class PreviewActivity extends ActionBarActivity {
     public void dissmisDeleteMode(){
         SharedPreferences.Editor editor = sharedPreferences.edit();
         isDeleteMode = false;
-        Set<String> set = new HashSet<String>();
+        Set<String> set = new HashSet<>();
         editor.putStringSet("checkedItems", set);
         editor.putBoolean("isDeleteMode", false);
         editor.commit();
@@ -250,6 +261,16 @@ public class PreviewActivity extends ActionBarActivity {
         reloadRecyclerView(columnsInPortrait, columnsInLandscape);
     }
 
+
+
+    protected static void launchCamera(Context context){
+        // find out the package of Camera app
+        Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+        String pack = intent.resolveActivity(context.getPackageManager()).getPackageName();
+
+        Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(pack);
+        context.startActivity(launchIntent);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -277,8 +298,9 @@ public class PreviewActivity extends ActionBarActivity {
         }
 
         if (id == R.id.camera) {
-            Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-            startActivityForResult(intent, 1);
+
+            launchCamera(this);
+
             return true;
         }
 

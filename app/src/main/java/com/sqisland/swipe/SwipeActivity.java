@@ -148,8 +148,7 @@ public class SwipeActivity extends ActionBarActivity{
         }
 
         if (id == R.id.camera) {
-            Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-            startActivityForResult(intent, 1);
+            PreviewActivity.launchCamera(this);
             return true;
         }
 
@@ -245,8 +244,7 @@ public class SwipeActivity extends ActionBarActivity{
             fabCamera.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-                    startActivityForResult(intent, 1);
+                    PreviewActivity.launchCamera(SwipeActivity.this);
                 }
             });
 
@@ -267,8 +265,6 @@ public class SwipeActivity extends ActionBarActivity{
                     }
                 }
             });
-
-
 
             container.addView(rlImage, 0);
 
