@@ -15,7 +15,7 @@
         />
 
     <com.software.shell.fab.ActionButton
-        android:id="@+id/action_button"
+        android:id="@+id/trash_float"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -31,6 +31,26 @@
         fab:shadow_xOffset="0.5dp"
         fab:shadow_yOffset="1.0dp"
         fab:rippleEffect_enabled="true"
+        />
+
+        <!--android:layout_alignParentLeft="true"-->
+    <com.software.shell.fab.ActionButton
+        android:id="@+id/magnifier_float"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        fab:button_color="#00BFA5"
+        fab:button_colorPressed="#0D47A1"
+        fab:image="@drawable/search"
+        fab:image_size="32dp"
+        fab:shadow_color="#1A237E"
+        fab:shadow_radius="1.0dp"
+        fab:shadow_xOffset="0.5dp"
+        fab:shadow_yOffset="1.0dp"
+        fab:rippleEffect_enabled="true"
+        fab:type="BIG"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="60dp"
         />
 
     <com.software.shell.fab.ActionButton

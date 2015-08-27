@@ -9,8 +9,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+
+    <View
+        android:id="@+id/statusBarBackground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <include
-        android:id="@+id/swipe_bar"
-        layout="@layout/swipe_bar" />
+        android:id="@+id/double_toolbar"
+        layout="@layout/double_toolbar" />
+
+
 
 </RelativeLayout>

@@ -1,19 +1,30 @@
 package com.sqisland.swipe;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
 
 import com.bumptech.glide.Glide;
 import com.software.shell.fab.ActionButton;
@@ -29,8 +40,15 @@ public class SwipeActivity extends ActionBarActivity{
     ArrayList<String> images;
     ViewPager viewPager = null;
     ImagePagerAdapter adapter;
-    private android.support.v7.widget.Toolbar toolbar;
+    private LinearLayout toolbar;
+    private View statusBar;
+    private TextView toolbarTitle;
     public int currentPosition;
+    private Context context;
+    private PopupMenu popup;
+    private static boolean isEditMode = false;
+    private SharedPreferences sharedPreferences;
+    private boolean isPlus;
 
 
     // Gets height of the status bar
@@ -49,10 +67,25 @@ public class SwipeActivity extends ActionBarActivity{
 
         setContentView(R.layout.activity_swipe);
 
-        toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.swipe_bar);
-        setSupportActionBar(toolbar);
-        toolbar.setVisibility(View.INVISIBLE);
-        toolbar.setPadding(0, getStatusBarHeight(), 0, 0);
+        context = this;
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        isPlus = sharedPreferences.getBoolean("isPlus", true);
+
+        toolbarTitle = (TextView) findViewById(R.id.info);
+
+        toolbar = (LinearLayout) findViewById(R.id.double_toolbar);
+
+        statusBar = findViewById(R.id.statusBarBackground);
+        statusBar.getLayoutParams().height = getStatusBarHeight();
+        statusBar.setBackgroundColor(Color.parseColor("#1A237E"));
+
+
+
+
+
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) toolbar.getLayoutParams();
+        params.topMargin = getStatusBarHeight();
+        toolbar.setLayoutParams(params);
 
         // Getting position of chosen image from Intent
         Bundle extras = getIntent().getExtras();
@@ -71,7 +104,16 @@ public class SwipeActivity extends ActionBarActivity{
         viewPager.setPageMargin(30);
         viewPager.setPageMarginDrawable(R.color.primaryColorDark);
         viewPager.setCurrentItem(currentPosition);
-        getSupportActionBar().setTitle(simplifyImageName(images, currentPosition));
+        toolbarTitle.setText(simplifyImageName(images, currentPosition));
+
+        if (isEditMode) {
+            statusBar.setVisibility(View.VISIBLE);
+            toolbar.setVisibility(View.VISIBLE);
+        } else {
+            statusBar.setVisibility(View.INVISIBLE);
+            toolbar.setVisibility(View.INVISIBLE);
+        }
+
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             public void onPageScrollStateChanged(int state) {
             }
@@ -85,22 +127,131 @@ public class SwipeActivity extends ActionBarActivity{
                     view.setDisplayMatrix(new Matrix());
                 }
                 currentPosition = position;
-                getSupportActionBar().setTitle(simplifyImageName(images, position));
 
-                com.software.shell.fab.ActionButton fab = (ActionButton) viewPager.findViewWithTag("fab_"+position);
-                com.software.shell.fab.ActionButton fabCamera = (ActionButton) viewPager.findViewWithTag("fab_camera_"+position);
-                if (fab != null) {
-                    if (adapter.isEditMode) {
-                        fab.hide();
+                toolbarTitle.setText(simplifyImageName(images, position));
+
+                com.software.shell.fab.ActionButton fabTrash = (ActionButton) viewPager.findViewWithTag("fab_trash_" + position);
+                com.software.shell.fab.ActionButton fabCamera = (ActionButton) viewPager.findViewWithTag("fab_camera_" + position);
+                com.software.shell.fab.ActionButton fabMagnifier = (ActionButton) viewPager.findViewWithTag("fab_magnifier_" + position);
+                if (fabTrash != null) {
+//                    if (adapter.isEditMode) {
+                    if (isEditMode) {
+                        fabTrash.hide();
+                        fabMagnifier.hide();
                         fabCamera.hide();
                     } else {
-                        fab.show();
+                        fabTrash.show();
+                        fabMagnifier.show();
                         fabCamera.show();
                     }
                 }
 
             }
         });
+
+        toolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        ImageButton cameraBtn = (ImageButton) toolbar.findViewById(R.id.cameraBtn);
+        cameraBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PreviewActivity.launchCamera(context);
+            }
+        });
+
+        ImageButton shareBtn = (ImageButton) toolbar.findViewById(R.id.shareBtn);
+        shareBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "https://www.google.com");
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
+            }
+        });
+
+        ImageButton trashBtn = (ImageButton) toolbar.findViewById(R.id.trashBtn);
+        trashBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RemoveConfirmationDialog dialog = new RemoveConfirmationDialog();
+                Bundle data = new Bundle();
+                data.putString("purpose", "SwipeActivity");
+                data.putInt("position", currentPosition);
+                dialog.setArguments(data);
+                dialog.show(getFragmentManager(), "Confirmation");
+            }
+        });
+
+        ImageButton menu = (ImageButton) toolbar.findViewById(R.id.popupMenu);
+        popup = new PopupMenu(this, menu);
+        MenuInflater menuInflater = popup.getMenuInflater();
+        menuInflater.inflate(R.menu.menu_swipe, popup.getMenu());
+        menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popup.show();
+            }
+        });
+
+        ImageButton magnifier = (ImageButton) toolbar.findViewById(R.id.magnifier);
+        magnifier.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, "Magnifier", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        ImageButton squareBtn = (ImageButton) toolbar.findViewById(R.id.squareBtn);
+        if (isPlus){
+            squareBtn.setImageResource(R.drawable.stop_empty);
+        }else{
+            squareBtn.setImageResource(R.drawable.stop_painted);
+        }
+        squareBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isPlus){
+                    ((ImageButton)v).setImageResource(R.drawable.stop_empty);
+                    ((ImageButton)findViewById(R.id.plusMinus)).setImageResource(R.drawable.plus_alone);
+
+                    isPlus = true;
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putBoolean("isPlus", true);
+                    editor.commit();
+                }
+            }
+        });
+        ImageButton plusMinus = (ImageButton) toolbar.findViewById(R.id.plusMinus);
+        if (isPlus){
+            plusMinus.setImageResource(R.drawable.plus_alone);
+        }else{
+            plusMinus.setImageResource(R.drawable.minus_alone);
+        }
+        plusMinus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isPlus){
+                    ((ImageButton)v).setImageResource(R.drawable.minus_alone);
+                    ((ImageButton)findViewById(R.id.squareBtn)).setImageResource(R.drawable.stop_painted);
+
+                    isPlus = false;
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putBoolean("isPlus", false);
+                    editor.commit();
+                }
+            }
+        });
+
+        ImageButton cancelBtn = (ImageButton) findViewById(R.id.cancelBtn);
+        cancelBtn.setVisibility(View.GONE);
+
 
     }
 
@@ -129,28 +280,28 @@ public class SwipeActivity extends ActionBarActivity{
 
         int id = item.getItemId();
 
-        if (id == R.id.share) {
-            Intent sendIntent = new Intent();
-            sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_TEXT, "https://www.google.com");
-            sendIntent.setType("text/plain");
-            startActivity(sendIntent);
-            return true;
-        }
-        if (id == R.id.remove) {
-            RemoveConfirmationDialog dialog = new RemoveConfirmationDialog();
-            Bundle data = new Bundle();
-            data.putString("purpose", "SwipeActivity");
-            data.putInt("position", currentPosition);
-            dialog.setArguments(data);
-            dialog.show(getFragmentManager(), "Confirmation");
-            return true;
-        }
-
-        if (id == R.id.camera) {
-            PreviewActivity.launchCamera(this);
-            return true;
-        }
+//        if (id == R.id.share) {
+//            Intent sendIntent = new Intent();
+//            sendIntent.setAction(Intent.ACTION_SEND);
+//            sendIntent.putExtra(Intent.EXTRA_TEXT, "https://www.google.com");
+//            sendIntent.setType("text/plain");
+//            startActivity(sendIntent);
+//            return true;
+//        }
+//        if (id == R.id.remove) {
+//            RemoveConfirmationDialog dialog = new RemoveConfirmationDialog();
+//            Bundle data = new Bundle();
+//            data.putString("purpose", "SwipeActivity");
+//            data.putInt("position", currentPosition);
+//            dialog.setArguments(data);
+//            dialog.show(getFragmentManager(), "Confirmation");
+//            return true;
+//        }
+//
+//        if (id == R.id.camera) {
+//            PreviewActivity.launchCamera(this);
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -179,7 +330,7 @@ public class SwipeActivity extends ActionBarActivity{
     // Adapter for ViewPager
     private class ImagePagerAdapter extends PagerAdapter{
 
-        boolean isEditMode = false;
+//        boolean isEditMode = false;
 
         @Override
         public int getCount() {
@@ -225,9 +376,10 @@ public class SwipeActivity extends ActionBarActivity{
             Glide.with(container.getContext()).load(uri).thumbnail(0.1f).into(draweeView);
 
             draweeView.setTag("image_" + position);
-            final com.software.shell.fab.ActionButton fab = (ActionButton) rlImage.findViewById(R.id.action_button);
-            fab.setTag("fab_" + position);
-            fab.setOnClickListener(new View.OnClickListener() {
+            final com.software.shell.fab.ActionButton fabTrash = (ActionButton) rlImage.findViewById(R.id.trash_float);
+            fabTrash.setTag("fab_trash_" + position);
+
+            fabTrash.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     RemoveConfirmationDialog dialog = new RemoveConfirmationDialog();
@@ -248,20 +400,42 @@ public class SwipeActivity extends ActionBarActivity{
                 }
             });
 
+            final com.software.shell.fab.ActionButton fabMagnifier = (ActionButton) rlImage.findViewById(R.id.magnifier_float);
+            fabMagnifier.setTag("fab_magnifier_" + position);
+            fabMagnifier.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(context, "Magnifier float", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            if (SwipeActivity.isEditMode){
+                fabCamera.setVisibility(View.INVISIBLE);
+                fabMagnifier.setVisibility(View.INVISIBLE);
+                fabTrash.setVisibility(View.INVISIBLE);
+            }
+
             PhotoViewAttacher mAttacher = new PhotoViewAttacher(photoView);
             mAttacher.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener() {
                 @Override
                 public void onViewTap(View view, float v, float v1) {
-                    if (!isEditMode) {
+//                    if (!isEditMode) {
+                    if (!SwipeActivity.isEditMode) {
                         toolbar.setVisibility(View.VISIBLE);
-                        fab.hide();
+                        statusBar.setVisibility(View.VISIBLE);
+                        fabTrash.hide();
+                        fabMagnifier.hide();
                         fabCamera.hide();
-                        isEditMode = true;
+//                        isEditMode = true;
+                        SwipeActivity.isEditMode = true;
                     } else {
                         toolbar.setVisibility(View.INVISIBLE);
-                        fab.show();
+                        statusBar.setVisibility(View.INVISIBLE);
+                        fabTrash.show();
+                        fabMagnifier.show();
                         fabCamera.show();
-                        isEditMode = false;
+//                        isEditMode = false;
+                        SwipeActivity.isEditMode = false;
                     }
                 }
             });

@@ -8,9 +8,10 @@
           app:showAsAction="never"/>
 
       <item android:id="@+id/camera"
-        android:title="@string/camera"
-        android:icon="@drawable/camera"
-        app:showAsAction="always"/>
+          android:title="@string/camera"
+          android:icon="@drawable/camera"
+          android:orderInCategory="200"
+          app:showAsAction="always"/>
 
       <item android:id="@+id/share"
           android:title="@string/share"
