@@ -79,10 +79,6 @@ public class SwipeActivity extends ActionBarActivity{
         statusBar.getLayoutParams().height = getStatusBarHeight();
         statusBar.setBackgroundColor(Color.parseColor("#1A237E"));
 
-
-
-
-
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) toolbar.getLayoutParams();
         params.topMargin = getStatusBarHeight();
         toolbar.setLayoutParams(params);
@@ -134,7 +130,6 @@ public class SwipeActivity extends ActionBarActivity{
                 com.software.shell.fab.ActionButton fabCamera = (ActionButton) viewPager.findViewWithTag("fab_camera_" + position);
                 com.software.shell.fab.ActionButton fabMagnifier = (ActionButton) viewPager.findViewWithTag("fab_magnifier_" + position);
                 if (fabTrash != null) {
-//                    if (adapter.isEditMode) {
                     if (isEditMode) {
                         fabTrash.hide();
                         fabMagnifier.hide();
@@ -280,29 +275,6 @@ public class SwipeActivity extends ActionBarActivity{
 
         int id = item.getItemId();
 
-//        if (id == R.id.share) {
-//            Intent sendIntent = new Intent();
-//            sendIntent.setAction(Intent.ACTION_SEND);
-//            sendIntent.putExtra(Intent.EXTRA_TEXT, "https://www.google.com");
-//            sendIntent.setType("text/plain");
-//            startActivity(sendIntent);
-//            return true;
-//        }
-//        if (id == R.id.remove) {
-//            RemoveConfirmationDialog dialog = new RemoveConfirmationDialog();
-//            Bundle data = new Bundle();
-//            data.putString("purpose", "SwipeActivity");
-//            data.putInt("position", currentPosition);
-//            dialog.setArguments(data);
-//            dialog.show(getFragmentManager(), "Confirmation");
-//            return true;
-//        }
-//
-//        if (id == R.id.camera) {
-//            PreviewActivity.launchCamera(this);
-//            return true;
-//        }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -329,8 +301,6 @@ public class SwipeActivity extends ActionBarActivity{
 
     // Adapter for ViewPager
     private class ImagePagerAdapter extends PagerAdapter{
-
-//        boolean isEditMode = false;
 
         @Override
         public int getCount() {
@@ -419,14 +389,12 @@ public class SwipeActivity extends ActionBarActivity{
             mAttacher.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener() {
                 @Override
                 public void onViewTap(View view, float v, float v1) {
-//                    if (!isEditMode) {
                     if (!SwipeActivity.isEditMode) {
                         toolbar.setVisibility(View.VISIBLE);
                         statusBar.setVisibility(View.VISIBLE);
                         fabTrash.hide();
                         fabMagnifier.hide();
                         fabCamera.hide();
-//                        isEditMode = true;
                         SwipeActivity.isEditMode = true;
                     } else {
                         toolbar.setVisibility(View.INVISIBLE);
@@ -434,7 +402,6 @@ public class SwipeActivity extends ActionBarActivity{
                         fabTrash.show();
                         fabMagnifier.show();
                         fabCamera.show();
-//                        isEditMode = false;
                         SwipeActivity.isEditMode = false;
                     }
                 }

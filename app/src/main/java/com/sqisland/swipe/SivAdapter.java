@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -109,6 +110,7 @@ public class SivAdapter extends RecyclerView.Adapter<SivAdapter.MyViewHolder> {
         ImageView miniature;
         ImageView checkmark;
         ImageView playicon;
+        ImageView smallMagnifier;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -116,25 +118,31 @@ public class SivAdapter extends RecyclerView.Adapter<SivAdapter.MyViewHolder> {
             miniature = (ImageView) itemView.findViewById(R.id.miniature);
             checkmark = (ImageView) itemView.findViewById(R.id.checkmark);
             playicon = (ImageView) itemView.findViewById(R.id.playicon);
+            smallMagnifier = (ImageView) itemView.findViewById(R.id.small_magnifier);
+
 
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
+            smallMagnifier.setOnClickListener(this);
+            smallMagnifier.setOnLongClickListener(this);
+
+
         }
 
         public void checkItem(int position, boolean check){
             if (check) {
                 checkedItems.add(position);
                 deleteMode = true;
-                ((PreviewActivity)context).handleTollbarChanges(true);
-                ((PreviewActivity) context).setTitle("Checked: " + checkedItems.size());
+                ((PreviewActivity)context).handleToolbarChanges(true);
+                ((PreviewActivity) context).info.setText("Checked: " + checkedItems.size());
             }else{
                 checkedItems.remove(new Integer(getPosition()));
                 if (checkedItems.size() == 0){
                     deleteMode = false;
-                    ((PreviewActivity)context).handleTollbarChanges(false);
-                    ((PreviewActivity)context).setTitle(context.getResources().getString(R.string.gallery));
+                    ((PreviewActivity) context).handleToolbarChanges(false);
+                    ((PreviewActivity)context).info.setText(context.getResources().getString(R.string.gallery));
                 }else{
-                    ((PreviewActivity) context).setTitle("Checked: " + checkedItems.size());
+                    ((PreviewActivity) context).info.setText("Checked: " + checkedItems.size());
                 }
             }
 
@@ -168,34 +176,43 @@ public class SivAdapter extends RecyclerView.Adapter<SivAdapter.MyViewHolder> {
 
         @Override
         public void onClick(View v) {
-            if (!deleteMode) {
-                // launching Swipe Activity and submitting position of clicked item
-                Intent intent = new Intent();
-                intent.setClass(context, SwipeActivity.class);
-                intent.putExtra("position", getPosition());
-                intent.putStringArrayListExtra("images", SivAdapter.this.images);
-                context.startActivity(intent);
+            if (v.getId() == smallMagnifier.getId()){
+                Toast.makeText(context, "MAGNIFIER", Toast.LENGTH_SHORT).show();
+
             }else{
-                if (!checkedItems.contains(getPosition())) {
-                    checkItem(getPosition(), true);
-                    changeCheckedState(v, true);
+                if (!deleteMode) {
+                    // launching Swipe Activity and submitting position of clicked item
+                    Intent intent = new Intent();
+                    intent.setClass(context, SwipeActivity.class);
+                    intent.putExtra("position", getPosition());
+                    intent.putStringArrayListExtra("images", SivAdapter.this.images);
+                    context.startActivity(intent);
                 }else{
-                    checkItem(getPosition(), false);
-                    changeCheckedState(v, false);
+                    if (!checkedItems.contains(getPosition())) {
+                        checkItem(getPosition(), true);
+                        changeCheckedState(v, true);
+                    }else{
+                        checkItem(getPosition(), false);
+                        changeCheckedState(v, false);
+                    }
                 }
             }
         }
 
         @Override
         public boolean onLongClick(View v) {
-            if (!checkedItems.contains(getPosition())) {
-                checkItem(getPosition(),true);
-                changeCheckedState(v, true);
-            }else{
-                checkItem(getPosition(), false);
-                changeCheckedState(v, false);
-            }
+            if (v.getId() == smallMagnifier.getId()){
+                Toast.makeText(context, "MAGNIFIER", Toast.LENGTH_SHORT).show();
 
+            }else {
+                if (!checkedItems.contains(getPosition())) {
+                    checkItem(getPosition(), true);
+                    changeCheckedState(v, true);
+                } else {
+                    checkItem(getPosition(), false);
+                    changeCheckedState(v, false);
+                }
+            }
 
             return true;
         }

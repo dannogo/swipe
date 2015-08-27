@@ -10,6 +10,18 @@
         android:layout_height="match_parent"
         android:padding="1dp"
         android:scaleType="centerCrop"/>
+    
+    <ImageView
+        android:id="@+id/small_magnifier"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/search"
+        android:background="@android:color/transparent"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        />
 
     <ImageView
         android:id="@+id/playicon"
