@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -226,10 +227,13 @@ public class SivAdapter extends RecyclerView.Adapter<SivAdapter.MyViewHolder> {
             }
         }
 
+
         @Override
         public boolean onLongClick(View v) {
             if (v.getId() == smallMagnifier.getId()){
                 Toast.makeText(context, "Magnifier", Toast.LENGTH_SHORT).show();
+
+
 
             }else {
                 if (!checkedItems.contains(getPosition())) {

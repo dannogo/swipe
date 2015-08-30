@@ -101,7 +101,17 @@ public class PreviewActivity extends ActionBarActivity {
         DeleteTask deleteTask = new DeleteTask();
         deleteTask.execute(filesForDeleting);
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        //---
+
+        SivAdapter.checkedItems = new ArrayList<Integer>();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        set = new HashSet<>();
+
+        editor.putStringSet("checkedItems", set);
+        editor.commit();
+        //---
+
         reloadRecyclerView(columnsInPortrait, columnsInLandscape);
     }
 
@@ -460,7 +470,9 @@ public class PreviewActivity extends ActionBarActivity {
         });
 
         images = getCameraImages(new ArrayList<String>());
-        lastMediaUril = images.get(0);
+        if (images.size() > 0) {
+            lastMediaUril = images.get(0);
+        }
         recyclerView = (RecyclerView) findViewById(R.id.recyclerViewPreviews);
 
         Set<String> checkedItemsQuantity = sharedPreferences.getStringSet("checkedItems", new HashSet<String>());
