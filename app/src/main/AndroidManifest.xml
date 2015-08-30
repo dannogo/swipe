@@ -20,7 +20,8 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".PreviewActivity"
-            android:label="@string/gallery" >
+            android:label="@string/gallery"
+            android:theme="@style/AppTheme.with.painted.navbar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

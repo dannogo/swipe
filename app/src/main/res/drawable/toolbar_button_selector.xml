@@ -2,9 +2,9 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true"
-        android:drawable="@color/cyan"/>
+        android:drawable="@color/pressedButtonInFilterTab"/>
     <item android:state_focused="true"
-        android:drawable="@color/cyan"/>
+        android:drawable="@color/pressedButtonInFilterTab"/>
     <item android:drawable="@android:color/transparent"/>
 
 </selector>

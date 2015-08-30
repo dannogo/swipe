@@ -246,6 +246,8 @@ public class SwipeActivity extends ActionBarActivity{
 
         ImageButton cancelBtn = (ImageButton) findViewById(R.id.cancelBtn);
         cancelBtn.setVisibility(View.GONE);
+        ImageButton starBtn = (ImageButton) findViewById(R.id.starBtn);
+        starBtn.setVisibility(View.GONE);
 
 
     }

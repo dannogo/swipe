@@ -61,6 +61,16 @@
                 />
 
             <ImageButton
+                android:id="@+id/starBtn"
+                android:src="@drawable/star"
+                android:layout_width="@dimen/small_icon_size_in_toolbar"
+                android:layout_height="@dimen/small_icon_size_in_toolbar"
+                android:scaleType="centerInside"
+                android:background="@drawable/toolbar_button_selector"
+                android:layout_marginRight="@dimen/margin_between_icons"
+                />
+
+            <ImageButton
                 android:id="@+id/cancelBtn"
                 android:src="@drawable/cancelcross"
                 android:background="@drawable/toolbar_button_selector"

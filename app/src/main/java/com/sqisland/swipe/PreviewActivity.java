@@ -1,13 +1,13 @@
 package com.sqisland.swipe;
 
-import android.app.FragmentManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
-import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -18,13 +18,16 @@ import android.support.v4.content.CursorLoader;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -45,7 +48,6 @@ public class PreviewActivity extends ActionBarActivity {
     protected static boolean deletedItemsInSwipeActivity = false;
     protected String lastMediaUril;
     private SharedPreferences sharedPreferences;
-    private FragmentManager manager = getFragmentManager(); // needs for confirmation Dialog
     private LinearLayout toolbar;
     private View statusBar;
     private boolean isDeleteMode;
@@ -54,9 +56,12 @@ public class PreviewActivity extends ActionBarActivity {
     private ImageButton cancelBtn;
     protected TextView info;
     private boolean isPlus;
-    ImageButton squareBtn;
-    ImageButton plusMinus;
-
+    private ImageButton squareBtn;
+    private ImageButton plusMinus;
+    protected static String filter;
+    private int columnsInPortrait;
+    private int columnsInLandscape;
+    protected static ImageButton starBtn;
 
 
     // Completely deletes photo from Gallery folder
@@ -97,8 +102,6 @@ public class PreviewActivity extends ActionBarActivity {
         deleteTask.execute(filesForDeleting);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        int columnsInPortrait = sharedPreferences.getInt("portrait", 4);
-        int columnsInLandscape = sharedPreferences.getInt("landscape", 6);
         reloadRecyclerView(columnsInPortrait, columnsInLandscape);
     }
 
@@ -114,12 +117,23 @@ public class PreviewActivity extends ActionBarActivity {
                 MediaStore.Files.FileColumns.TITLE
         };
 
-// Return only video and image metadata.
-        String selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "="
-                + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE
-                + " OR "
-                + MediaStore.Files.FileColumns.MEDIA_TYPE + "="
-                + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
+        String selection = "";
+
+        if (filter.equals("Photo")){
+            selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "="
+                    + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
+        }else if (filter.equals("Video")){
+            selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "="
+                    + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
+        }else if (filter.equals("All")){
+            selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "="
+                    + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE
+                    + " OR "
+                    + MediaStore.Files.FileColumns.MEDIA_TYPE + "="
+                    + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
+        }else if (filter.equals("Favorites")){
+            return SivAdapter.favoritesUri;
+        }
 
         Uri queryUri = MediaStore.Files.getContentUri("external");
 
@@ -182,10 +196,8 @@ public class PreviewActivity extends ActionBarActivity {
         // Second part of conditional statement is:
         //                  Check if the last media file in the list has changed
         if (deletedItemsInSwipeActivity || (!images.get(0).equals(lastMediaUril))) {
-            int columnsInPortrait = sharedPreferences.getInt("portrait", 4);
-            int columnsInLandscape = sharedPreferences.getInt("landscape", 6);
-            reloadRecyclerView(columnsInPortrait, columnsInLandscape);
 
+            reloadRecyclerView(columnsInPortrait, columnsInLandscape);
             deletedItemsInSwipeActivity = false;
 
         }
@@ -209,8 +221,62 @@ public class PreviewActivity extends ActionBarActivity {
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         isPlus = sharedPreferences.getBoolean("isPlus", true);
+        isDeleteMode = sharedPreferences.getBoolean("isDeleteMode", false);
+        // taking saved in sharedPreferences parameters and saving them in fields
+        columnsInPortrait = sharedPreferences.getInt("portrait", 4);
+        columnsInLandscape = sharedPreferences.getInt("landscape", 6);
+
+        filter = sharedPreferences.getString("filter", "All");
+        filterButtonProperState(filter, true);
 
         info = (TextView) toolbar.findViewById(R.id.info);
+
+
+        // Filter bar buttons
+        Button photoFilter = (Button) findViewById(R.id.photo_filter);
+        photoFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!filter.equals("Photo")) {
+                    filterButtonProperState(filter, false);
+                    filter = "Photo";
+                    filterButtonServing(filter, v);
+                }
+            }
+        });
+        Button videoFilter = (Button) findViewById(R.id.video_filter);
+        videoFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!filter.equals("Video")) {
+                    filterButtonProperState(filter, false);
+                    filter = "Video";
+                    filterButtonServing(filter, v);
+                }
+            }
+        });
+        Button withoutFilter = (Button) findViewById(R.id.without_filter);
+        withoutFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!filter.equals("All")) {
+                    filterButtonProperState(filter, false);
+                    filter = "All";
+                    filterButtonServing(filter, v);
+                }
+            }
+        });
+        final Button favoritesFilter = (Button) findViewById(R.id.favorites_filter);
+        favoritesFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!filter.equals("Favorites")) {
+                    filterButtonProperState(filter, false);
+                    filter = "Favorites";
+                    filterButtonServing(filter, v);
+                }
+            }
+        });
 
         ImageButton cameraBtn = (ImageButton) toolbar.findViewById(R.id.cameraBtn);
         cameraBtn.setOnClickListener(new View.OnClickListener() {
@@ -233,17 +299,61 @@ public class PreviewActivity extends ActionBarActivity {
             }
         });
 
+        starBtn = (ImageButton) toolbar.findViewById(R.id.starBtn);
+        starBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                SivAdapter.favoritesNum.addAll(SivAdapter.checkedItems);
+
+                for (int i=0;i<SivAdapter.favoritesUri.size(); i++) {
+                    Log.w("LOG", ""+SivAdapter.favoritesUri.get(i));
+                }
+
+                Log.w("LOG", "=============");
+                Log.w("LOG", "=============");
+
+                for(int i=0; i<SivAdapter.checkedItems.size(); i++){
+                    String temp = images.get(SivAdapter.checkedItems.get(i));
+                    if (!SivAdapter.favoritesUri.contains(temp)) {
+                        Log.d("LOG", temp);
+                        SivAdapter.favoritesUri.add(temp);
+                    }
+                }
+
+
+                Log.w("LOG", "=============");
+                Log.w("LOG", "=============");
+
+                for (int i=0;i<SivAdapter.favoritesUri.size(); i++) {
+                    Log.w("LOG", ""+SivAdapter.favoritesUri.get(i));
+                }
+
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                Set<String> favUriSet = new HashSet<>();
+                for (int i=0; i<SivAdapter.favoritesUri.size(); i++){
+                    favUriSet.add(SivAdapter.favoritesUri.get(i).toString());
+                }
+                editor.putStringSet("favoritesUri", favUriSet);
+                editor.commit();
+
+                for (int i=0; i<recyclerView.getChildCount(); i++){
+                    if (recyclerView.getChildAt(i).findViewById(R.id.checkmark).getVisibility() == View.VISIBLE){
+                        recyclerView.getChildAt(i).findViewById(R.id.favoritesMark).setVisibility(View.VISIBLE);
+                    }
+                }
+                easyDissmisDeleteMode();
+            }
+        });
         cancelBtn = (ImageButton) toolbar.findViewById(R.id.cancelBtn);
-        cancelBtn.setVisibility(View.GONE);
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dissmisDeleteMode();
+                easyDissmisDeleteMode();
             }
         });
 
         trashBtn = (ImageButton) toolbar.findViewById(R.id.trashBtn);
-        trashBtn.setVisibility(View.GONE);
         trashBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -357,25 +467,63 @@ public class PreviewActivity extends ActionBarActivity {
         if (checkedItemsQuantity != null && checkedItemsQuantity.size() != 0){
             info.setText("Checked: "+checkedItemsQuantity.size());
         }
-        isDeleteMode = sharedPreferences.getBoolean("isDeleteMode", false);
-        // taking saved in sharedPreferences parameters and saving them in fields
-        int columnsInPortrait = sharedPreferences.getInt("portrait", 4);
-        int columnsInLandscape = sharedPreferences.getInt("landscape", 6);
 
         switchColorAndVisibility();
 
         reloadRecyclerView(columnsInPortrait, columnsInLandscape);
+
+    }
+
+    private void filterButtonServing(String filter, View view){
+        images = getCameraImages(new ArrayList<String>());
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("filter", filter);
+        editor.commit();
+        view.setBackgroundColor(getResources().getColor(R.color.pressedButtonInFilterTab));
+        view.invalidate();
+        easyDissmisDeleteMode();
+        reloadRecyclerView(columnsInPortrait, columnsInLandscape);
+    }
+
+// check or uncheck filter tab buttons
+    private void filterButtonProperState(String filter, boolean check){
+        Button btn;
+        switch (filter){
+            case "Photo":
+                btn = (Button) this.findViewById(R.id.photo_filter);
+                break;
+            case "Video":
+                btn = (Button) this.findViewById(R.id.video_filter);
+                break;
+            case "All":
+                btn = (Button) this.findViewById(R.id.without_filter);
+                break;
+            case "Favorites":
+                btn = (Button) this.findViewById(R.id.favorites_filter);
+                break;
+            default:
+                btn = (Button) this.findViewById(R.id.without_filter);
+                break;
+        }
+        if (check){
+            btn.setBackgroundColor(getResources().getColor(R.color.pressedButtonInFilterTab));
+        }else{
+            btn.setBackgroundColor(getResources().getColor(R.color.primaryColor));
+        }
+
     }
 
     private void switchColorAndVisibility(){
         if (isDeleteMode) {
             trashBtn.setVisibility(View.VISIBLE);
             cancelBtn.setVisibility(View.VISIBLE);
+            starBtn.setVisibility(View.VISIBLE);
             toolbar.setBackgroundColor(getResources().getColor(R.color.deleteModeColor));
             statusBar.setBackgroundColor(getResources().getColor(R.color.deleteModeColor));
         }else{
             trashBtn.setVisibility(View.GONE);
             cancelBtn.setVisibility(View.GONE);
+            starBtn.setVisibility(View.GONE);
             toolbar.setBackgroundColor(getResources().getColor(R.color.primaryColor));
             statusBar.setBackgroundColor(getResources().getColor(R.color.primaryColor));
         }
@@ -398,6 +546,8 @@ public class PreviewActivity extends ActionBarActivity {
     // reloads recyclerView with new options
     public void reloadRecyclerView(int columnsInPortrait, int columnsInLandscape) {
 
+        this.columnsInPortrait = columnsInPortrait;
+        this.columnsInLandscape = columnsInLandscape;
         // saving new recycler view parameters to sharedPreferences
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -419,10 +569,34 @@ public class PreviewActivity extends ActionBarActivity {
             recyclerView.setLayoutManager(new GridLayoutManager(this, columnsInLandscape));
         }
 
-        // Instantiation of new recyclerView adapter
-        adapter = new SivAdapter(this, images, imagePreviewSize, manager);
+        // Instantiation of new recyclerView adapter  //, manager
+        adapter = new SivAdapter(this, images, imagePreviewSize);
         recyclerView.setAdapter(adapter);
 
+    }
+// function for cancel btn without reloading recyclerview
+    public void easyDissmisDeleteMode(){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        isDeleteMode = false;
+        Set<String> set = new HashSet<>();
+        editor.putStringSet("checkedItems", set);
+        editor.putBoolean("isDeleteMode", false);
+        editor.commit();
+        switchColorAndVisibility();
+        info.setText(getResources().getString(R.string.gallery));
+
+        SivAdapter.checkedItems = new ArrayList<Integer>();
+        ColorMatrix matrix = new ColorMatrix();
+        matrix.setSaturation(1.0f);
+        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+
+        for (int i=0; i<recyclerView.getChildCount(); i++){
+            View v = recyclerView.getChildAt(i);
+            ImageView miniature = (ImageView) v.findViewById(R.id.miniature);
+            ImageView checkmark = (ImageView) v.findViewById(R.id.checkmark);
+            checkmark.setVisibility(View.INVISIBLE);
+            miniature.setColorFilter(filter);
+        }
     }
 
     public void dissmisDeleteMode(){
@@ -434,8 +608,6 @@ public class PreviewActivity extends ActionBarActivity {
         editor.commit();
         switchColorAndVisibility();
         info.setText(getResources().getString(R.string.gallery));
-        int columnsInPortrait = sharedPreferences.getInt("portrait", 4);
-        int columnsInLandscape = sharedPreferences.getInt("landscape", 6);
         reloadRecyclerView(columnsInPortrait, columnsInLandscape);
     }
 

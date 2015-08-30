@@ -5,4 +5,5 @@
     <color name="accentColor">#000</color>
     <color name="deleteModeColor">#1A237E</color>
     <color name="cyan">#3949AB</color>
+    <color name="pressedButtonInFilterTab">#555</color>
 </resources>

@@ -10,5 +10,8 @@
     </style>
 
 
+    <style name="AppTheme.with.painted.navbar." parent="AppTheme">
+        <item name="android:windowTranslucentNavigation">false</item>
+    </style>
 </resources>
 

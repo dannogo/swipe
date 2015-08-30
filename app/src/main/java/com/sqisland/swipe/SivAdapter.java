@@ -1,6 +1,5 @@
 package com.sqisland.swipe;
 
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,11 +30,13 @@ public class SivAdapter extends RecyclerView.Adapter<SivAdapter.MyViewHolder> {
     private LayoutInflater inflater;
     private Context context;
     private ArrayList<String> images;
-    private ArrayList<Integer> checkedItems = new ArrayList<Integer>();
+    protected static ArrayList<Integer> checkedItems = new ArrayList<Integer>();
+    protected static ArrayList<String> favoritesUri = new ArrayList<String>();
     private SharedPreferences sharedPreferences;
     boolean deleteMode = false;
-
-    public SivAdapter(Context context, ArrayList<String> images, int imagePreviewSize, FragmentManager manager) {
+    RecyclerView recyclerView;
+                                                                    //, FragmentManager manager
+    public SivAdapter(final Context context, final ArrayList<String> images, int imagePreviewSize) {
         this.inflater = LayoutInflater.from(context);
         this.images = images;
         this.context = context;
@@ -48,18 +49,30 @@ public class SivAdapter extends RecyclerView.Adapter<SivAdapter.MyViewHolder> {
         }
         Iterator iter = set.iterator();
         while(iter.hasNext()){
-            checkedItems.add(Integer.parseInt((String) iter.next()));
+            String str = (String) iter.next();
+            checkedItems.add(Integer.parseInt(str));
         }
+
+        Set<String> favUriSet = sharedPreferences.getStringSet("favoritesUri", new HashSet<String>());
+
+        for (String s : favUriSet) {
+            if (!favoritesUri.contains(s)) {
+                favoritesUri.add(s);
+            }
+        }
+
     }
 
 
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.custom_row, parent, false);
         // setting size of miniature
         view.getLayoutParams().height = imagePreviewSize;
         view.getLayoutParams().width = imagePreviewSize;
         view.requestLayout();
+
+        recyclerView = (RecyclerView) parent.findViewById(R.id.recyclerViewPreviews);
 
         return new MyViewHolder(view);
     }
@@ -71,12 +84,20 @@ public class SivAdapter extends RecyclerView.Adapter<SivAdapter.MyViewHolder> {
 
         //setting thumbnail and image to ImageView
         if (imagePath.substring(imagePath.length() - 3, imagePath.length()).equals("mp4")){
-            holder.playicon.setVisibility(View.VISIBLE);
+                holder.playicon.setVisibility(View.VISIBLE);
         }else{
             holder.playicon.setVisibility(View.INVISIBLE);
         }
-        Glide.with(context).load(uri).thumbnail(0.05f).into(holder.miniature);
-        setItemProperState(holder);
+
+
+        if (favoritesUri.contains(images.get(position))){
+            holder.star.setVisibility(View.VISIBLE);
+        }else{
+            holder.star.setVisibility(View.INVISIBLE);
+        }
+
+            Glide.with(context).load(uri).thumbnail(0.05f).into(holder.miniature);
+            setItemProperState(holder);
     }
 
     public void setItemProperState(MyViewHolder holder){
@@ -111,14 +132,16 @@ public class SivAdapter extends RecyclerView.Adapter<SivAdapter.MyViewHolder> {
         ImageView checkmark;
         ImageView playicon;
         ImageView smallMagnifier;
+        ImageView star;
 
-        public MyViewHolder(View itemView) {
+        public MyViewHolder(final View itemView) {
             super(itemView);
 
             miniature = (ImageView) itemView.findViewById(R.id.miniature);
             checkmark = (ImageView) itemView.findViewById(R.id.checkmark);
             playicon = (ImageView) itemView.findViewById(R.id.playicon);
             smallMagnifier = (ImageView) itemView.findViewById(R.id.small_magnifier);
+            star = (ImageView) itemView.findViewById(R.id.favoritesMark);
 
 
             itemView.setOnClickListener(this);
@@ -126,10 +149,13 @@ public class SivAdapter extends RecyclerView.Adapter<SivAdapter.MyViewHolder> {
             smallMagnifier.setOnClickListener(this);
             smallMagnifier.setOnLongClickListener(this);
 
-
         }
 
+
+
+
         public void checkItem(int position, boolean check){
+
             if (check) {
                 checkedItems.add(position);
                 deleteMode = true;
@@ -174,10 +200,11 @@ public class SivAdapter extends RecyclerView.Adapter<SivAdapter.MyViewHolder> {
         }
 
 
+
         @Override
         public void onClick(View v) {
             if (v.getId() == smallMagnifier.getId()){
-                Toast.makeText(context, "MAGNIFIER", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Magnifier", Toast.LENGTH_SHORT).show();
 
             }else{
                 if (!deleteMode) {
@@ -202,7 +229,7 @@ public class SivAdapter extends RecyclerView.Adapter<SivAdapter.MyViewHolder> {
         @Override
         public boolean onLongClick(View v) {
             if (v.getId() == smallMagnifier.getId()){
-                Toast.makeText(context, "MAGNIFIER", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Magnifier", Toast.LENGTH_SHORT).show();
 
             }else {
                 if (!checkedItems.contains(getPosition())) {
