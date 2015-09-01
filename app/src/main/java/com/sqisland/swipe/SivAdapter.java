@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -208,6 +207,7 @@ public class SivAdapter extends RecyclerView.Adapter<SivAdapter.MyViewHolder> {
                 Toast.makeText(context, "Magnifier", Toast.LENGTH_SHORT).show();
 
             }else{
+                deleteMode = sharedPreferences.getBoolean("isDeleteMode", false);
                 if (!deleteMode) {
                     // launching Swipe Activity and submitting position of clicked item
                     Intent intent = new Intent();
@@ -233,9 +233,8 @@ public class SivAdapter extends RecyclerView.Adapter<SivAdapter.MyViewHolder> {
             if (v.getId() == smallMagnifier.getId()){
                 Toast.makeText(context, "Magnifier", Toast.LENGTH_SHORT).show();
 
-
-
             }else {
+                deleteMode = sharedPreferences.getBoolean("isDeleteMode", false);
                 if (!checkedItems.contains(getPosition())) {
                     checkItem(getPosition(), true);
                     changeCheckedState(v, true);

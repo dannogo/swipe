@@ -51,7 +51,7 @@ public class RemoveConfirmationDialog extends DialogFragment {
                 if (purpose.equals("SwipeActivity")) {
                     ((SwipeActivity) getActivity()).deleteAfterConfirmation(position);
                 }else if(purpose.equals("PreviewActivity")) {
-                    ((PreviewActivity)getActivity()).deleteChecked();
+                    ((PreviewActivity)getActivity()).deleteChecked(purpose);
                     ((PreviewActivity)getActivity()).dissmisDeleteMode();
                 }
                     Toast.makeText(getActivity(), notification, Toast.LENGTH_SHORT).show();

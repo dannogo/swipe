@@ -31,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
@@ -86,31 +87,49 @@ public class PreviewActivity extends ActionBarActivity {
 
 
 
-    public void deleteChecked(){
+    public void deleteChecked(String purpose){
         ArrayList<String>  urisForDeleting = new ArrayList<>();
         ArrayList<File> filesForDeleting = new ArrayList<>();
         Set<String> set = sharedPreferences.getStringSet("checkedItems", new HashSet<String>());
         Iterator iter = set.iterator();
         while(iter.hasNext()){
             String str = images.get(Integer.parseInt((String) iter.next()));
-            filesForDeleting.add(new File(str));
-            urisForDeleting.add(str);
+            if (SivAdapter.favoritesUri.contains(str)){
+                if (filter.equals("Favorites") && purpose.equals("PreviewActivity")){
+                    SivAdapter.favoritesUri.remove(str);
+
+                    filesForDeleting.add(new File(str));
+                    urisForDeleting.add(str);
+                }else{
+                    Toast.makeText(this, "Can`t delete favorite media not from favorites.", Toast.LENGTH_SHORT).show();
+                }
+            }else {
+                filesForDeleting.add(new File(str));
+                urisForDeleting.add(str);
+            }
+
         }
+
         images = getCameraImages(urisForDeleting);
-        lastMediaUril = images.get(0);
+        if (images.size()>0) {
+            lastMediaUril = images.get(0);
+        }
+
         DeleteTask deleteTask = new DeleteTask();
         deleteTask.execute(filesForDeleting);
-
-        //---
 
         SivAdapter.checkedItems = new ArrayList<Integer>();
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         set = new HashSet<>();
+        Set<String> favUriSet = new HashSet<>();
+        for (int i=0; i<SivAdapter.favoritesUri.size(); i++){
+            favUriSet.add(SivAdapter.favoritesUri.get(i).toString());
+        }
 
         editor.putStringSet("checkedItems", set);
+        editor.putStringSet("favoritesUri", favUriSet);
         editor.commit();
-        //---
 
         reloadRecyclerView(columnsInPortrait, columnsInLandscape);
     }
@@ -233,11 +252,12 @@ public class PreviewActivity extends ActionBarActivity {
         isPlus = sharedPreferences.getBoolean("isPlus", true);
         isDeleteMode = sharedPreferences.getBoolean("isDeleteMode", false);
         // taking saved in sharedPreferences parameters and saving them in fields
-        columnsInPortrait = sharedPreferences.getInt("portrait", 4);
-        columnsInLandscape = sharedPreferences.getInt("landscape", 6);
+        columnsInPortrait = sharedPreferences.getInt("portrait", 3);
+        columnsInLandscape = sharedPreferences.getInt("landscape", 5);
 
         filter = sharedPreferences.getString("filter", "All");
         filterButtonProperState(filter, true);
+
 
         info = (TextView) toolbar.findViewById(R.id.info);
 
@@ -251,6 +271,7 @@ public class PreviewActivity extends ActionBarActivity {
                     filterButtonProperState(filter, false);
                     filter = "Photo";
                     filterButtonServing(filter, v);
+                    starBtn.setImageResource(R.drawable.star);
                 }
             }
         });
@@ -262,6 +283,7 @@ public class PreviewActivity extends ActionBarActivity {
                     filterButtonProperState(filter, false);
                     filter = "Video";
                     filterButtonServing(filter, v);
+                    starBtn.setImageResource(R.drawable.star);
                 }
             }
         });
@@ -273,6 +295,7 @@ public class PreviewActivity extends ActionBarActivity {
                     filterButtonProperState(filter, false);
                     filter = "All";
                     filterButtonServing(filter, v);
+                    starBtn.setImageResource(R.drawable.star);
                 }
             }
         });
@@ -284,6 +307,7 @@ public class PreviewActivity extends ActionBarActivity {
                     filterButtonProperState(filter, false);
                     filter = "Favorites";
                     filterButtonServing(filter, v);
+                    starBtn.setImageResource(R.drawable.empty_star);
                 }
             }
         });
@@ -310,32 +334,30 @@ public class PreviewActivity extends ActionBarActivity {
         });
 
         starBtn = (ImageButton) toolbar.findViewById(R.id.starBtn);
+        if (filter.equals("Favorites")){
+            starBtn.setImageResource(R.drawable.empty_star);
+        }
         starBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                SivAdapter.favoritesNum.addAll(SivAdapter.checkedItems);
-
-                for (int i=0;i<SivAdapter.favoritesUri.size(); i++) {
-                    Log.w("LOG", ""+SivAdapter.favoritesUri.get(i));
+                int visibilityTo = View.VISIBLE;
+                boolean switchStarOn = true;
+                if (filter.equals("Favorites")){
+                    visibilityTo = View.INVISIBLE;
+                    switchStarOn = false;
                 }
-
-                Log.w("LOG", "=============");
-                Log.w("LOG", "=============");
 
                 for(int i=0; i<SivAdapter.checkedItems.size(); i++){
                     String temp = images.get(SivAdapter.checkedItems.get(i));
                     if (!SivAdapter.favoritesUri.contains(temp)) {
-                        Log.d("LOG", temp);
+                        Log.d("LOG", "Occured; "+SivAdapter.favoritesUri.size());
                         SivAdapter.favoritesUri.add(temp);
+                    }else{
+                        if (!switchStarOn){
+                            SivAdapter.favoritesUri.remove(temp);
+
+                        }
                     }
-                }
-
-
-                Log.w("LOG", "=============");
-                Log.w("LOG", "=============");
-
-                for (int i=0;i<SivAdapter.favoritesUri.size(); i++) {
-                    Log.w("LOG", ""+SivAdapter.favoritesUri.get(i));
                 }
 
                 SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -349,10 +371,14 @@ public class PreviewActivity extends ActionBarActivity {
 
                 for (int i=0; i<recyclerView.getChildCount(); i++){
                     if (recyclerView.getChildAt(i).findViewById(R.id.checkmark).getVisibility() == View.VISIBLE){
-                        recyclerView.getChildAt(i).findViewById(R.id.favoritesMark).setVisibility(View.VISIBLE);
+                        recyclerView.getChildAt(i).findViewById(R.id.favoritesMark).setVisibility(visibilityTo);
                     }
                 }
-                easyDissmisDeleteMode();
+                    easyDissmisDeleteMode();
+                if(!switchStarOn) {
+                    images = getCameraImages(new ArrayList<String>());
+                    reloadRecyclerView(columnsInPortrait, columnsInLandscape);
+                }
             }
         });
         cancelBtn = (ImageButton) toolbar.findViewById(R.id.cancelBtn);
@@ -542,7 +568,6 @@ public class PreviewActivity extends ActionBarActivity {
 
     }
 
-
     public void handleToolbarChanges(boolean delete){
         isDeleteMode = delete;
         switchColorAndVisibility();
@@ -612,6 +637,7 @@ public class PreviewActivity extends ActionBarActivity {
     }
 
     public void dissmisDeleteMode(){
+        Log.e("DISMISSDELETEMODE", "DISMISSDELETEMODE");
         SharedPreferences.Editor editor = sharedPreferences.edit();
         isDeleteMode = false;
         Set<String> set = new HashSet<>();

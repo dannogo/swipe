@@ -125,6 +125,8 @@ public class SwipeActivity extends ActionBarActivity{
                 currentPosition = position;
 
                 toolbarTitle.setText(simplifyImageName(images, position));
+//                ImageView star = (ImageView) viewPager.findViewById(R.id.starInSingle);
+//                if (SivAdapter.favoritesUri.contains())
 
                 com.software.shell.fab.ActionButton fabTrash = (ActionButton) viewPager.findViewWithTag("fab_trash_" + position);
                 com.software.shell.fab.ActionButton fabCamera = (ActionButton) viewPager.findViewWithTag("fab_camera_" + position);
@@ -322,8 +324,12 @@ public class SwipeActivity extends ActionBarActivity{
 
             PhotoView draweeView = (PhotoView) rlImage.findViewById(R.id.imageFullScreen);
             draweeView.setMaximumScale(10.0f);
+            ImageView star = (ImageView) rlImage.findViewById(R.id.starInSingle);
 
             final String imagePath = images.get(position);
+            if (SivAdapter.favoritesUri.contains(imagePath)){
+                star.setVisibility(View.VISIBLE);
+            }
             final Uri uri = Uri.parse("file://" + imagePath);
             ImageView playicon = (ImageView) rlImage.findViewById(R.id.playicon);
             PhotoView photoView = (PhotoView) rlImage.findViewById(R.id.imageFullScreen);
