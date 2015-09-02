@@ -6,11 +6,6 @@
         <item name="windowActionBar">false</item>
         <item name="android:showDividers">beginning</item>
 
-        <item name="droppyPopupStyle">@style/My.Custom.DroppyPopup</item>
-        <item name="droppyMenuStyle">@style/My.Custom.DroppyMenu</item>
-        <item name="droppyMenuItemStyle">@style/My.Custom.DroppyMenuItem</item>
-        <item name="droppyMenuItemTitleStyle">@style/My.Custom.DroppyMenuItemTitle</item>
-        <item name="droppyMenuItemIconStyle">@style/My.Custom.DroppyMenuItemIcon</item>
     </style>
 
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
@@ -25,27 +20,5 @@
         <item name="android:windowTranslucentNavigation">false</item>
     </style>
 
-
-
-    <style name="My.Custom.DroppyPopup" parent="Droppy.DroppyPopup">
-        <!-- Your Custom style attributes go here -->
-    </style>
-    <style name="My.Custom.DroppyMenu" parent="Droppy.DroppyMenu">
-        <!-- Your Custom style attributes go here -->
-    </style>
-    <style name="My.Custom.DroppyMenuItem" parent="Droppy.DroppyMenuItem">
-        <!-- Your Custom style attributes go here -->
-        <item name="android:height">18dp</item>
-        <item name="android:background">@drawable/menu_item_selector</item>
-    </style>
-    <style name="My.Custom.DroppyMenuItemTitle" parent="Droppy.DroppyMenuItemTitle">
-        <item name="android:textSize">18dp</item>
-        <!-- Your Custom style attributes go here -->
-    </style>
-    <style name="My.Custom.DroppyMenuItemIcon" parent="Droppy.DroppyMenuItemIcon">
-        <!-- Your Custom style attributes go here -->
-        <item name="android:height">12dp</item>
-        <item name="android:width">12dp</item>
-    </style>
 
 </resources>

@@ -3,51 +3,7 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:context=".MainActivity">
 
-    <!--<group android:enabled="true">-->
-        <!--<item-->
-            <!--android:id="@+id/dropp1"-->
-            <!--android:title="Xml Item 1"-->
-            <!--/>-->
 
-        <!--<item-->
-            <!--android:id="@+id/droppy2"-->
-            <!--android:title="Xml Item 2"-->
-            <!--/>-->
-    <!--</group>-->
-    <!--<group android:enabled="true">-->
-        <!--<item-->
-            <!--android:id="@+id/dropp3"-->
-            <!--android:icon="@drawable/ic_launcher"-->
-            <!--android:title="Xml Item 3"-->
-            <!--/>-->
-
-        <!--<item-->
-            <!--android:id="@+id/droppy4"-->
-            <!--android:icon="@drawable/ic_launcher"-->
-            <!--android:title="Xml Item 4"-->
-            <!--/>-->
-    <!--</group>-->
-
-    <!--<item android:id="@+id/action_settings"-->
-          <!--android:title="@string/action_settings"-->
-        <!--android:icon="@drawable/star"-->
-          <!--android:orderInCategory="100"-->
-          <!--app:showAsAction="never"/>-->
-
-
-    <!--<group android:checkableBehavior="none" android:enabled="false">-->
-        <!--<item android:id="@+id/menu_gap"-->
-            <!--android:title="@string/hr"-->
-            <!--android:enabled="false" />-->
-    <!--</group>-->
-
-
-        <!--<item-->
-            <!--android:title="Layout"-->
-            <!--android:checkable="false"-->
-
-            <!--/>-->
-    <!--<group android:enabled="false">-->
         <item android:id="@+id/pl1x3"
             android:icon="@drawable/kangoo"
               android:title="1x3"/>
@@ -60,13 +16,6 @@
         <item android:id="@+id/pl4x6"
             android:icon="@drawable/kangoo"
               android:title="4x6"/>
-    <!--</group>-->
 
-    <!--<group android:enabled="true"> </group>-->
-    <!--<group android:enabled="true">-->
-        <!--<item-->
-            <!--android:id="@+id/help1"-->
-            <!--android:title="Help1"></item>-->
-    <!--</group>-->
 
 </menu>

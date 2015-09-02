@@ -32,6 +32,6 @@ dependencies {
     compile 'com.davemorrissey.labs:subsampling-scale-image-view:3.1.4'
     compile 'com.github.chrisbanes.photoview:library:1.2.3'
     compile 'com.github.shell-software:fab:1.1.2'
-    compile 'com.shehabic.droppy:Droppy:0.2.5.1@aar'
+    compile files('libs/YouTubeAndroidPlayerApi.jar')
 }
 //    compile 'com.github.chrisbanes.photoview:library:1.2.4'

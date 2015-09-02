@@ -1,7 +1,6 @@
 package com.sqisland.swipe;
 
 import android.app.Activity;
-import android.bluetooth.BluetoothClass;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +9,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Point;
@@ -27,40 +25,30 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.shehabic.droppy.DroppyClickCallbackInterface;
-import com.shehabic.droppy.DroppyMenuItem;
-import com.shehabic.droppy.DroppyMenuPopup;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.logging.Logger;
 
 
 
@@ -75,7 +63,6 @@ public class PreviewActivity extends ActionBarActivity {
     private LinearLayout toolbar;
     private View statusBar;
     private boolean isDeleteMode;
-    private PopupMenu popup;
     private ImageButton trashBtn;
     private ImageButton cancelBtn;
     protected TextView info;
@@ -86,8 +73,7 @@ public class PreviewActivity extends ActionBarActivity {
     private int columnsInPortrait;
     private int columnsInLandscape;
     protected static ImageButton starBtn;
-//    DroppyMenuPopup droppyMenu;
-    PopupWindow popupWindow;
+    private PopupWindow popupWindow;
 
 
     // Completely deletes photo from Gallery folder
@@ -230,44 +216,6 @@ public class PreviewActivity extends ActionBarActivity {
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu items for use in the action bar
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
-
-        return true;
-    }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu items for use in the action bar
-//        MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.menu.menu_main, menu);
-//
-//        // To show icons in the actionbar's overflow menu:
-//        // http://stackoverflow.com/questions/18374183/how-to-show-icons-in-overflow-menu-in-actionbar
-//        //if(featureId == Window.FEATURE_ACTION_BAR && menu != null){
-//                Toast.makeText(this, "Occured1",Toast.LENGTH_SHORT).show();
-//        if(menu.getClass().getSimpleName().equals("MenuBuilder")){
-//            try{
-//                Method m = menu.getClass().getDeclaredMethod(
-//                        "setOptionalIconsVisible", Boolean.TYPE);
-//                Toast.makeText(this, "Occured2",Toast.LENGTH_SHORT).show();
-//                m.setAccessible(true);
-//                m.invoke(menu, true);
-//            }
-//            catch(NoSuchMethodException e){
-//                Log.e("LOG", "onMenuOpened", e);
-//            }
-//            catch(Exception e){
-//                throw new RuntimeException(e);
-//            }
-//        }
-//        //}
-//
-//        return super.onCreateOptionsMenu(menu);
-//    }
 
 
     @Override
@@ -531,33 +479,13 @@ public class PreviewActivity extends ActionBarActivity {
             }
         });
 
-//        DroppyMenuPopup.Builder droppyBuilder = new DroppyMenuPopup.Builder(PreviewActivity.this, menu);
-//
-//        droppyBuilder.addMenuItem(new DroppyMenuItem("Layout"))
-//                .addMenuItem(new DroppyMenuItem(""))
 
-//        DroppyMenuPopup.Builder droppyBuilder = new DroppyMenuPopup.Builder(this, menu);
-//        droppyMenu = droppyBuilder.fromMenu(R.menu.menu_main)
-//                .triggerOnAnchorClick(false)
-//                .setOnClick(new DroppyClickCallbackInterface() {
-//                    @Override
-//                    public void call(View v, int id) {
-//                        Log.d("Id:", String.valueOf(id));
-//                    }
-//                })
-//                .build();
         ImageButton menu = (ImageButton) toolbar.findViewById(R.id.popupMenu);
 
-        popup = new PopupMenu(this, menu);
-        MenuInflater menuInflater = popup.getMenuInflater();
-        menuInflater.inflate(R.menu.menu_main, popup.getMenu());
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                popup.show();
-
                 int[] location = new int[2];
-//                currentRowId = position;
 
                 // Get the x, y location and store it in the location[] array
                 location[0] = (int) v.getX();
@@ -572,32 +500,6 @@ public class PreviewActivity extends ActionBarActivity {
             }
         });
 
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                int id = item.getItemId();
-                // setting new recyclerView parameters
-                switch (item.getItemId()) {
-                    case R.id.pl1x3:
-                        reloadRecyclerView(1, 3);
-                        return true;
-                    case R.id.pl2x4:
-                        reloadRecyclerView(2, 4);
-                        return true;
-                    case R.id.pl3x5:
-                        reloadRecyclerView(3, 5);
-                        return true;
-                    case R.id.pl4x6:
-                        reloadRecyclerView(4, 6);
-                        return true;
-                }
-
-                if (id == R.id.action_settings) {
-                    return true;
-                }
-                return true;
-            }
-        });
 
         images = getCameraImages(new ArrayList<String>());
         if (images.size() > 0) {
@@ -677,9 +579,11 @@ public class PreviewActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 popupWindow.dismiss();
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?v=eOtEC4wCA40")));
-                Log.i("Video", "Video Playing....");
-
+//
+                Intent intent = new Intent();
+                intent.setClass(PreviewActivity.this, YouTubeActivity.class);
+                intent.putExtra("video", "t21C09JiRc4");
+                startActivity(intent);
             }
         });
 
@@ -741,8 +645,6 @@ public class PreviewActivity extends ActionBarActivity {
         popupWindow.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
         popupWindow.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
         popupWindow.setFocusable(true);
-
-//        Log.wtf("WIDTH", "+popupWindow.getWidth());
 
         int OFFSET_X = - 430 ;
         int OFFSET_Y = 50;
@@ -848,12 +750,6 @@ public class PreviewActivity extends ActionBarActivity {
         switchColorAndVisibility();
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
 
     // reloads recyclerView with new options
     public void reloadRecyclerView(int columnsInPortrait, int columnsInLandscape) {
