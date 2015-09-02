@@ -18,7 +18,6 @@ import android.support.v4.content.CursorLoader;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -92,8 +91,9 @@ public class PreviewActivity extends ActionBarActivity {
         ArrayList<File> filesForDeleting = new ArrayList<>();
         Set<String> set = sharedPreferences.getStringSet("checkedItems", new HashSet<String>());
         Iterator iter = set.iterator();
+        ArrayList<String> tempList = new ArrayList<String>(images);
         while(iter.hasNext()){
-            String str = images.get(Integer.parseInt((String) iter.next()));
+            String str = tempList.get(Integer.parseInt((String) iter.next()));
             if (SivAdapter.favoritesUri.contains(str)){
                 if (filter.equals("Favorites") && purpose.equals("PreviewActivity")){
                     SivAdapter.favoritesUri.remove(str);
@@ -208,6 +208,9 @@ public class PreviewActivity extends ActionBarActivity {
     protected void onResume() {
         super.onResume();
         images = getCameraImages(new ArrayList<String>());
+        boolean swipeActivityFavoritesChanges;
+        swipeActivityFavoritesChanges = sharedPreferences.getBoolean("swipe_activity_favorites_changes", false);
+
 
 
         isPlus = sharedPreferences.getBoolean("isPlus", true);
@@ -224,11 +227,14 @@ public class PreviewActivity extends ActionBarActivity {
 
         // Second part of conditional statement is:
         //                  Check if the last media file in the list has changed
-        if (deletedItemsInSwipeActivity || (!images.get(0).equals(lastMediaUril))) {
+        if (deletedItemsInSwipeActivity || (!images.get(0).equals(lastMediaUril)) || swipeActivityFavoritesChanges) {
 
             reloadRecyclerView(columnsInPortrait, columnsInLandscape);
             deletedItemsInSwipeActivity = false;
 
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("swipe_activity_favorites_changes", false);
+            editor.commit();
         }
     }
 
@@ -347,10 +353,12 @@ public class PreviewActivity extends ActionBarActivity {
                     switchStarOn = false;
                 }
 
+                ArrayList<String> tempList = new ArrayList<String>(images);
                 for(int i=0; i<SivAdapter.checkedItems.size(); i++){
-                    String temp = images.get(SivAdapter.checkedItems.get(i));
+                    int checkedItem = SivAdapter.checkedItems.get(i);
+                    String temp = tempList.get(checkedItem);
+
                     if (!SivAdapter.favoritesUri.contains(temp)) {
-                        Log.d("LOG", "Occured; "+SivAdapter.favoritesUri.size());
                         SivAdapter.favoritesUri.add(temp);
                     }else{
                         if (!switchStarOn){
@@ -374,9 +382,9 @@ public class PreviewActivity extends ActionBarActivity {
                         recyclerView.getChildAt(i).findViewById(R.id.favoritesMark).setVisibility(visibilityTo);
                     }
                 }
+                    images = getCameraImages(new ArrayList<String>());
                     easyDissmisDeleteMode();
                 if(!switchStarOn) {
-                    images = getCameraImages(new ArrayList<String>());
                     reloadRecyclerView(columnsInPortrait, columnsInLandscape);
                 }
             }
@@ -623,6 +631,7 @@ public class PreviewActivity extends ActionBarActivity {
         info.setText(getResources().getString(R.string.gallery));
 
         SivAdapter.checkedItems = new ArrayList<Integer>();
+
         ColorMatrix matrix = new ColorMatrix();
         matrix.setSaturation(1.0f);
         ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
@@ -637,7 +646,6 @@ public class PreviewActivity extends ActionBarActivity {
     }
 
     public void dissmisDeleteMode(){
-        Log.e("DISMISSDELETEMODE", "DISMISSDELETEMODE");
         SharedPreferences.Editor editor = sharedPreferences.edit();
         isDeleteMode = false;
         Set<String> set = new HashSet<>();

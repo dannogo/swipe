@@ -208,6 +208,7 @@ public class SivAdapter extends RecyclerView.Adapter<SivAdapter.MyViewHolder> {
 
             }else{
                 deleteMode = sharedPreferences.getBoolean("isDeleteMode", false);
+//                checkedItems =
                 if (!deleteMode) {
                     // launching Swipe Activity and submitting position of clicked item
                     Intent intent = new Intent();

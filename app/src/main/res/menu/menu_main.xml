@@ -7,6 +7,12 @@
           android:orderInCategory="100"
           app:showAsAction="never"/>
 
+    <!--<group android:checkableBehavior="none" android:enabled="false">-->
+        <!--<item android:id="@+id/menu_gap"-->
+            <!--android:title="@string/hr"-->
+            <!--android:enabled="false" />-->
+    <!--</group>-->
+
     <item android:id="@+id/pl1x3"
           android:title="1x3"/>
     <item android:id="@+id/pl2x4"

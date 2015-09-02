@@ -93,6 +93,25 @@ public class SwipeActivity extends ActionBarActivity{
         }
 
 
+        ImageButton starInToolbar = (ImageButton) toolbar.findViewById(R.id.starBtn);
+        if (SivAdapter.favoritesUri.contains(images.get(currentPosition))) {
+            starInToolbar.setVisibility(View.GONE);
+        }else{
+            starInToolbar.setVisibility(View.VISIBLE);
+        }
+        starInToolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FavoritesConfirmation confirmation = new FavoritesConfirmation();
+                Bundle data = new Bundle();
+                data.putInt("position", currentPosition);
+                confirmation.setArguments(data);
+                confirmation.show(getFragmentManager(), "FavoritesConfirmation");
+
+            }
+        });
+
+
         // Preparing viewPager
         viewPager = (ViewPager) findViewById(R.id.view_pager);
         adapter = new ImagePagerAdapter();
@@ -127,6 +146,13 @@ public class SwipeActivity extends ActionBarActivity{
                 toolbarTitle.setText(simplifyImageName(images, position));
 //                ImageView star = (ImageView) viewPager.findViewById(R.id.starInSingle);
 //                if (SivAdapter.favoritesUri.contains())
+
+                ImageView starInToolbar = (ImageView) toolbar.findViewById(R.id.starBtn);
+                if (SivAdapter.favoritesUri.contains(images.get(position))) {
+                    starInToolbar.setVisibility(View.GONE);
+                }else{
+                    starInToolbar.setVisibility(View.VISIBLE);
+                }
 
                 com.software.shell.fab.ActionButton fabTrash = (ActionButton) viewPager.findViewWithTag("fab_trash_" + position);
                 com.software.shell.fab.ActionButton fabCamera = (ActionButton) viewPager.findViewWithTag("fab_camera_" + position);
@@ -248,8 +274,7 @@ public class SwipeActivity extends ActionBarActivity{
 
         ImageButton cancelBtn = (ImageButton) findViewById(R.id.cancelBtn);
         cancelBtn.setVisibility(View.GONE);
-        ImageButton starBtn = (ImageButton) findViewById(R.id.starBtn);
-        starBtn.setVisibility(View.GONE);
+
 
 
     }
@@ -321,10 +346,12 @@ public class SwipeActivity extends ActionBarActivity{
         public Object instantiateItem(ViewGroup container, final int position) {
 
             RelativeLayout rlImage = (RelativeLayout) getLayoutInflater().inflate(R.layout.view_pager_item, null);
-
             PhotoView draweeView = (PhotoView) rlImage.findViewById(R.id.imageFullScreen);
             draweeView.setMaximumScale(10.0f);
             ImageView star = (ImageView) rlImage.findViewById(R.id.starInSingle);
+            star.setTag("star_" + position);
+//            ImageView starInToolbar = (ImageView) toolbar.findViewById(R.id.starBtn);
+//                starInToolbar.setVisibility(View.INVISIBLE);
 
             final String imagePath = images.get(position);
             if (SivAdapter.favoritesUri.contains(imagePath)){
@@ -391,6 +418,7 @@ public class SwipeActivity extends ActionBarActivity{
                 fabCamera.setVisibility(View.INVISIBLE);
                 fabMagnifier.setVisibility(View.INVISIBLE);
                 fabTrash.setVisibility(View.INVISIBLE);
+
             }
 
             PhotoViewAttacher mAttacher = new PhotoViewAttacher(photoView);

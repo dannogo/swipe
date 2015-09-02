@@ -11,4 +11,6 @@
     <string name="ok">Ok</string>
     <string name="share">share</string>
     <string name="camera">camera</string>
+    <string name="hr">____________</string>
+    <string name="addingToFavorites">Media has been added to favorites</string>
 </resources>
