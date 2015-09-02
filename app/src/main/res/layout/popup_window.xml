@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llSortChangePopup"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#EEE"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+
+    android:orientation="vertical" >
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:text="Modes"
+        android:layout_weight="1.0"
+        android:layout_marginLeft="20dp"
+        android:gravity="center_vertical"
+        android:textSize="18dp"
+        android:textColor="#777" />
+
+    <ImageView
+        android:layout_marginLeft="11dp"
+        android:layout_marginRight="11dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="0dp"
+        android:paddingBottom="5dp"
+        android:src="@drawable/divider"/>
+
+    <LinearLayout
+        android:id="@+id/id1x3"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:orientation="horizontal"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:clickable="true"
+        android:background="@drawable/menu_item_selector"
+
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:text="1x3"
+            android:gravity="center_vertical"
+            android:textSize="18dp"
+            android:textColor="@color/primaryColor"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/id2x4"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:orientation="horizontal"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:clickable="true"
+        android:background="@drawable/menu_item_selector"
+
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:text="2x4"
+            android:gravity="center_vertical"
+            android:textSize="18dp"
+            android:textColor="@color/primaryColor"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/id3x5"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:orientation="horizontal"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:clickable="true"
+        android:background="@drawable/menu_item_selector"
+
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:text="3x5"
+            android:gravity="center_vertical"
+            android:textSize="18dp"
+            android:textColor="@color/primaryColor"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/id4x6"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:orientation="horizontal"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:clickable="true"
+        android:background="@drawable/menu_item_selector"
+
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:text="4x6"
+            android:gravity="center_vertical"
+            android:textSize="18dp"
+            android:textColor="@color/primaryColor"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:text="Help"
+        android:layout_weight="1.0"
+        android:layout_marginLeft="20dp"
+        android:gravity="center_vertical"
+        android:textSize="18dp"
+        android:textColor="#777" />
+
+    <ImageView
+        android:layout_marginLeft="11dp"
+        android:layout_marginRight="11dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="0dp"
+        android:paddingBottom="5dp"
+        android:src="@drawable/divider"/>
+
+    <LinearLayout
+        android:id="@+id/tellFriend"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:orientation="horizontal"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:clickable="true"
+        android:background="@drawable/menu_item_selector"
+
+        >
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/tell_friend"
+            android:layout_gravity="center_vertical"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:text="Tell a friend"
+            android:gravity="center_vertical"
+            android:textSize="18dp"
+            android:textColor="@color/primaryColor"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/help"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:orientation="horizontal"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:clickable="true"
+        android:background="@drawable/menu_item_selector"
+
+        >
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/help"
+            android:layout_gravity="center_vertical"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:text="Help"
+            android:gravity="center_vertical"
+            android:textSize="18dp"
+            android:textColor="@color/primaryColor"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/feedback"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:orientation="horizontal"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:clickable="true"
+        android:background="@drawable/menu_item_selector"
+
+        >
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/message"
+            android:layout_gravity="center_vertical"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:text="Feedback"
+            android:gravity="center_vertical"
+            android:textSize="18dp"
+            android:textColor="@color/primaryColor"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/review"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:orientation="horizontal"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:clickable="true"
+        android:background="@drawable/menu_item_selector"
+
+        >
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/star_blue_five"
+            android:layout_gravity="center_vertical"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:text="Review"
+            android:gravity="center_vertical"
+            android:textSize="18dp"
+            android:textColor="@color/primaryColor"/>
+
+    </LinearLayout>
+
+
+
+    <!--<TextView-->
+        <!--android:id="@+id/tvPriority"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Priority"-->
+        <!--android:layout_weight="1.0"-->
+        <!--android:layout_marginLeft="20dp"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:clickable="true"-->
+        <!--android:onClick="popupSortOnClick"-->
+        <!--android:textColor="#333" />-->
+
+
+    <!--&lt;!&ndash;<ImageView&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_marginLeft="11dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:src="@drawable/divider"/>&ndash;&gt;-->
+
+    <!--<TextView-->
+        <!--android:id="@+id/tvTime"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Time"-->
+        <!--android:layout_weight="1.0"-->
+        <!--android:layout_marginLeft="20dp"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:clickable="true"-->
+        <!--android:onClick="popupSortOnClick"-->
+        <!--android:textColor="#333" />-->
+
+    <!--<ImageView-->
+        <!--android:layout_marginLeft="11dp"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:src="@drawable/divider"/>-->
+
+    <!--<TextView-->
+        <!--android:id="@+id/tvStatus"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Status"-->
+        <!--android:layout_weight="1.0"-->
+        <!--android:layout_marginLeft="20dp"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:textColor="#333"-->
+        <!--android:clickable="true"-->
+        <!--android:onClick="popupSortOnClick"-->
+        <!--android:paddingBottom="10dp"/>-->
+
+</LinearLayout>

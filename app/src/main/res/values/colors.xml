@@ -6,4 +6,5 @@
     <color name="deleteModeColor">#1A237E</color>
     <color name="cyan">#3949AB</color>
     <color name="pressedButtonInFilterTab">#555</color>
+    <color name="pressedMenuItem">#DDD</color>
 </resources>

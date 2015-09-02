@@ -1,16 +1,23 @@
 package com.sqisland.swipe;
 
+import android.app.Activity;
+import android.bluetooth.BluetoothClass;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
@@ -18,26 +25,43 @@ import android.support.v4.content.CursorLoader;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Display;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.shehabic.droppy.DroppyClickCallbackInterface;
+import com.shehabic.droppy.DroppyMenuItem;
+import com.shehabic.droppy.DroppyMenuPopup;
+
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.logging.Logger;
+
 
 
 public class PreviewActivity extends ActionBarActivity {
@@ -62,6 +86,8 @@ public class PreviewActivity extends ActionBarActivity {
     private int columnsInPortrait;
     private int columnsInLandscape;
     protected static ImageButton starBtn;
+//    DroppyMenuPopup droppyMenu;
+    PopupWindow popupWindow;
 
 
     // Completely deletes photo from Gallery folder
@@ -202,6 +228,46 @@ public class PreviewActivity extends ActionBarActivity {
         }
         return result;
     }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+
+        return true;
+    }
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu items for use in the action bar
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.menu_main, menu);
+//
+//        // To show icons in the actionbar's overflow menu:
+//        // http://stackoverflow.com/questions/18374183/how-to-show-icons-in-overflow-menu-in-actionbar
+//        //if(featureId == Window.FEATURE_ACTION_BAR && menu != null){
+//                Toast.makeText(this, "Occured1",Toast.LENGTH_SHORT).show();
+//        if(menu.getClass().getSimpleName().equals("MenuBuilder")){
+//            try{
+//                Method m = menu.getClass().getDeclaredMethod(
+//                        "setOptionalIconsVisible", Boolean.TYPE);
+//                Toast.makeText(this, "Occured2",Toast.LENGTH_SHORT).show();
+//                m.setAccessible(true);
+//                m.invoke(menu, true);
+//            }
+//            catch(NoSuchMethodException e){
+//                Log.e("LOG", "onMenuOpened", e);
+//            }
+//            catch(Exception e){
+//                throw new RuntimeException(e);
+//            }
+//        }
+//        //}
+//
+//        return super.onCreateOptionsMenu(menu);
+//    }
 
 
     @Override
@@ -465,14 +531,44 @@ public class PreviewActivity extends ActionBarActivity {
             }
         });
 
+//        DroppyMenuPopup.Builder droppyBuilder = new DroppyMenuPopup.Builder(PreviewActivity.this, menu);
+//
+//        droppyBuilder.addMenuItem(new DroppyMenuItem("Layout"))
+//                .addMenuItem(new DroppyMenuItem(""))
+
+//        DroppyMenuPopup.Builder droppyBuilder = new DroppyMenuPopup.Builder(this, menu);
+//        droppyMenu = droppyBuilder.fromMenu(R.menu.menu_main)
+//                .triggerOnAnchorClick(false)
+//                .setOnClick(new DroppyClickCallbackInterface() {
+//                    @Override
+//                    public void call(View v, int id) {
+//                        Log.d("Id:", String.valueOf(id));
+//                    }
+//                })
+//                .build();
         ImageButton menu = (ImageButton) toolbar.findViewById(R.id.popupMenu);
+
         popup = new PopupMenu(this, menu);
         MenuInflater menuInflater = popup.getMenuInflater();
         menuInflater.inflate(R.menu.menu_main, popup.getMenu());
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                popup.show();
+//                popup.show();
+
+                int[] location = new int[2];
+//                currentRowId = position;
+
+                // Get the x, y location and store it in the location[] array
+                location[0] = (int) v.getX();
+                location[1] = (int) v.getY();
+                v.getLocationOnScreen(location);
+
+                //Initialize the Point with x, and y positions
+                Point point = new Point();
+                point.x = location[0];
+                point.y = location[1];
+                showStatusPopup(PreviewActivity.this, point);
             }
         });
 
@@ -518,6 +614,177 @@ public class PreviewActivity extends ActionBarActivity {
 
         reloadRecyclerView(columnsInPortrait, columnsInLandscape);
 
+    }
+
+    // Show popup window
+    private void showStatusPopup(final Activity context, Point p) {
+
+//        RelativeLayout viewGroup = (RelativeLayout) context.findViewById(R.id.previewActivityMainLayout);
+        LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = layoutInflater.inflate(R.layout.popup_window, null);
+
+        View mode1x3 = layout.findViewById(R.id.id1x3);
+        mode1x3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+                reloadRecyclerView(1, 3);
+            }
+        });
+
+        View mode2x4 = layout.findViewById(R.id.id2x4);
+        mode2x4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+                reloadRecyclerView(2, 4);
+            }
+        });
+
+        View mode3x5 = layout.findViewById(R.id.id3x5);
+        mode3x5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+                reloadRecyclerView(3, 5);
+            }
+        });
+
+        View mode4x6 = layout.findViewById(R.id.id4x6);
+        mode4x6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+                reloadRecyclerView(4, 6);
+            }
+        });
+
+        View tellFriend = layout.findViewById(R.id.tellFriend);
+        tellFriend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "https://www.google.com");
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
+            }
+        });
+
+        View help = layout.findViewById(R.id.help);
+        help.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?v=eOtEC4wCA40")));
+                Log.i("Video", "Video Playing....");
+
+            }
+        });
+
+        View feedback = layout.findViewById(R.id.feedback);
+        feedback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+
+//                int sdkVersion = android.os.Build.VERSION.SDK_INT; //for example 17
+                PackageManager manager = context.getPackageManager();
+                String version = "unknown";
+                try {
+                    PackageInfo info = manager.getPackageInfo(
+                            context.getPackageName(), 0);
+                    version = info.versionName;
+                }catch (PackageManager.NameNotFoundException e){
+                    Log.e("Exception", e.getMessage());
+                }
+
+                String extraText = "[Your feedback here]";
+                StringBuilder stringBuilder = new StringBuilder(extraText);
+
+                stringBuilder.append('\n');
+                stringBuilder.append('\n');
+                stringBuilder.append(" -----------------");
+                stringBuilder.append('\n');
+                stringBuilder.append("Device name: "+getDeviceName());
+                stringBuilder.append('\n');
+                stringBuilder.append("OS version: "+android.os.Build.VERSION.RELEASE);
+                stringBuilder.append('\n');
+                stringBuilder.append("Application Version: "+version);
+
+
+
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                        "mailto","santa_claus@laplandia.com", null));
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "SwipeIV Customer Feedback");
+                emailIntent.putExtra(Intent.EXTRA_TEXT, stringBuilder.toString());
+                startActivity(Intent.createChooser(emailIntent, "Send email..."));
+            }
+        });
+
+        View review = layout.findViewById(R.id.review);
+        review.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "https://www.google.com");
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
+            }
+        });
+
+        popupWindow = new PopupWindow(context);
+        popupWindow.setContentView(layout);
+        popupWindow.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
+        popupWindow.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
+        popupWindow.setFocusable(true);
+
+//        Log.wtf("WIDTH", "+popupWindow.getWidth());
+
+        int OFFSET_X = - 430 ;
+        int OFFSET_Y = 50;
+
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+
+        popupWindow.showAtLocation(layout, Gravity.NO_GRAVITY, p.x + OFFSET_X, p.y + OFFSET_Y);
+    }
+
+
+    // Returns device name
+    public static String getDeviceName() {
+        String manufacturer = Build.MANUFACTURER;
+        String model = Build.MODEL;
+        if (model.startsWith(manufacturer)) {
+            return capitalize(model);
+        }
+        if (manufacturer.equalsIgnoreCase("HTC")) {
+            // make sure "HTC" is fully capitalized.
+            return "HTC " + model;
+        }
+        return capitalize(manufacturer) + " " + model;
+    }
+
+    private static String capitalize(String str) {
+        if (TextUtils.isEmpty(str)) {
+            return str;
+        }
+        char[] arr = str.toCharArray();
+        boolean capitalizeNext = true;
+        String phrase = "";
+        for (char c : arr) {
+            if (capitalizeNext && Character.isLetter(c)) {
+                phrase += Character.toUpperCase(c);
+                capitalizeNext = false;
+                continue;
+            } else if (Character.isWhitespace(c)) {
+                capitalizeNext = true;
+            }
+            phrase += c;
+        }
+        return phrase;
     }
 
     private void filterButtonServing(String filter, View view){
@@ -581,12 +848,12 @@ public class PreviewActivity extends ActionBarActivity {
         switchColorAndVisibility();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+//        return true;
+//    }
 
     // reloads recyclerView with new options
     public void reloadRecyclerView(int columnsInPortrait, int columnsInLandscape) {
