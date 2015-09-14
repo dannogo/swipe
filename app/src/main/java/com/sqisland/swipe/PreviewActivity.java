@@ -28,8 +28,6 @@ import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +35,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -336,7 +333,7 @@ public class PreviewActivity extends ActionBarActivity {
         cameraBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    launchCamera(getApplicationContext());
+                    ServingClass.launchCamera(getApplicationContext());
             }
         });
 
@@ -344,12 +341,7 @@ public class PreviewActivity extends ActionBarActivity {
         shareBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, "https://www.google.com");
-                sendIntent.setType("text/plain");
-                startActivity(sendIntent);
-
+                ServingClass.shareBtnAction(PreviewActivity.this);
             }
         });
 
@@ -415,11 +407,7 @@ public class PreviewActivity extends ActionBarActivity {
         trashBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RemoveConfirmationDialog dialog = new RemoveConfirmationDialog();
-                Bundle data = new Bundle();
-                data.putString("purpose", "PreviewActivity");
-                dialog.setArguments(data);
-                dialog.show(getFragmentManager(), "Confirmation");
+                ServingClass.trashBtnAction(PreviewActivity.this, -1);
             }
         });
 
@@ -443,15 +431,7 @@ public class PreviewActivity extends ActionBarActivity {
         squareBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isPlus){
-                    ((ImageButton)v).setImageResource(R.drawable.stop_empty);
-                    ((ImageButton)findViewById(R.id.plusMinus)).setImageResource(R.drawable.plus_alone);
-
-                    isPlus = true;
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putBoolean("isPlus", true);
-                    editor.commit();
-                }
+                isPlus = ServingClass.squareBtnAction(PreviewActivity.this, v, isPlus, sharedPreferences);
             }
         });
 
@@ -467,15 +447,7 @@ public class PreviewActivity extends ActionBarActivity {
         plusMinus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isPlus){
-                    ((ImageButton)v).setImageResource(R.drawable.minus_alone);
-                    ((ImageButton)findViewById(R.id.squareBtn)).setImageResource(R.drawable.stop_painted);
-
-                    isPlus = false;
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putBoolean("isPlus", false);
-                    editor.commit();
-                }
+                isPlus = ServingClass.plusMinusBtnAction(PreviewActivity.this, v, isPlus, sharedPreferences);
             }
         });
 
@@ -566,11 +538,7 @@ public class PreviewActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 popupWindow.dismiss();
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, "https://www.google.com");
-                sendIntent.setType("text/plain");
-                startActivity(sendIntent);
+                ServingClass.shareBtnAction(PreviewActivity.this);
             }
         });
 
@@ -615,7 +583,7 @@ public class PreviewActivity extends ActionBarActivity {
                 stringBuilder.append('\n');
                 stringBuilder.append("OS version: "+android.os.Build.VERSION.RELEASE);
                 stringBuilder.append('\n');
-                stringBuilder.append("Application Version: "+version);
+                stringBuilder.append("Application version: "+version);
 
 
 
@@ -632,11 +600,7 @@ public class PreviewActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 popupWindow.dismiss();
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, "https://www.google.com");
-                sendIntent.setType("text/plain");
-                startActivity(sendIntent);
+                ServingClass.shareBtnAction(PreviewActivity.this);
             }
         });
 
@@ -818,17 +782,6 @@ public class PreviewActivity extends ActionBarActivity {
         switchColorAndVisibility();
         info.setText(getResources().getString(R.string.gallery));
         reloadRecyclerView(columnsInPortrait, columnsInLandscape);
-    }
-
-
-
-    protected static void launchCamera(Context context){
-        // find out the package of Camera app
-        Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-        String pack = intent.resolveActivity(context.getPackageManager()).getPackageName();
-
-        Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(pack);
-        context.startActivity(launchIntent);
     }
 
     @Override

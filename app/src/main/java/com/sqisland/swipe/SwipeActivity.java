@@ -144,8 +144,6 @@ public class SwipeActivity extends ActionBarActivity{
                 currentPosition = position;
 
                 toolbarTitle.setText(simplifyImageName(images, position));
-//                ImageView star = (ImageView) viewPager.findViewById(R.id.starInSingle);
-//                if (SivAdapter.favoritesUri.contains())
 
                 ImageView starInToolbar = (ImageView) toolbar.findViewById(R.id.starBtn);
                 if (SivAdapter.favoritesUri.contains(images.get(position))) {
@@ -183,7 +181,7 @@ public class SwipeActivity extends ActionBarActivity{
         cameraBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PreviewActivity.launchCamera(context);
+                ServingClass.launchCamera(context);
             }
         });
 
@@ -191,11 +189,7 @@ public class SwipeActivity extends ActionBarActivity{
         shareBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, "https://www.google.com");
-                sendIntent.setType("text/plain");
-                startActivity(sendIntent);
+                ServingClass.shareBtnAction(SwipeActivity.this);
             }
         });
 
@@ -203,12 +197,8 @@ public class SwipeActivity extends ActionBarActivity{
         trashBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RemoveConfirmationDialog dialog = new RemoveConfirmationDialog();
-                Bundle data = new Bundle();
-                data.putString("purpose", "SwipeActivity");
-                data.putInt("position", currentPosition);
-                dialog.setArguments(data);
-                dialog.show(getFragmentManager(), "Confirmation");
+                ServingClass.trashBtnAction(SwipeActivity.this, currentPosition);
+
             }
         });
 
@@ -232,23 +222,17 @@ public class SwipeActivity extends ActionBarActivity{
         });
 
         ImageButton squareBtn = (ImageButton) toolbar.findViewById(R.id.squareBtn);
+
         if (isPlus){
             squareBtn.setImageResource(R.drawable.stop_empty);
         }else{
             squareBtn.setImageResource(R.drawable.stop_painted);
         }
+
         squareBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isPlus){
-                    ((ImageButton)v).setImageResource(R.drawable.stop_empty);
-                    ((ImageButton)findViewById(R.id.plusMinus)).setImageResource(R.drawable.plus_alone);
-
-                    isPlus = true;
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putBoolean("isPlus", true);
-                    editor.commit();
-                }
+                isPlus = ServingClass.squareBtnAction(SwipeActivity.this, v, isPlus, sharedPreferences);
             }
         });
         ImageButton plusMinus = (ImageButton) toolbar.findViewById(R.id.plusMinus);
@@ -260,15 +244,7 @@ public class SwipeActivity extends ActionBarActivity{
         plusMinus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isPlus){
-                    ((ImageButton)v).setImageResource(R.drawable.minus_alone);
-                    ((ImageButton)findViewById(R.id.squareBtn)).setImageResource(R.drawable.stop_painted);
-
-                    isPlus = false;
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putBoolean("isPlus", false);
-                    editor.commit();
-                }
+                isPlus = ServingClass.plusMinusBtnAction(SwipeActivity.this, v, isPlus, sharedPreferences);
             }
         });
 
@@ -350,8 +326,6 @@ public class SwipeActivity extends ActionBarActivity{
             draweeView.setMaximumScale(10.0f);
             ImageView star = (ImageView) rlImage.findViewById(R.id.starInSingle);
             star.setTag("star_" + position);
-//            ImageView starInToolbar = (ImageView) toolbar.findViewById(R.id.starBtn);
-//                starInToolbar.setVisibility(View.INVISIBLE);
 
             final String imagePath = images.get(position);
             if (SivAdapter.favoritesUri.contains(imagePath)){
@@ -387,12 +361,7 @@ public class SwipeActivity extends ActionBarActivity{
             fabTrash.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    RemoveConfirmationDialog dialog = new RemoveConfirmationDialog();
-                    Bundle data = new Bundle();
-                    data.putString("purpose", "SwipeActivity");
-                    data.putInt("position", position);
-                    dialog.setArguments(data);
-                    dialog.show(getFragmentManager(), "Confirmation");
+                    ServingClass.trashBtnAction(SwipeActivity.this, position);
                 }
             });
 
@@ -401,7 +370,7 @@ public class SwipeActivity extends ActionBarActivity{
             fabCamera.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    PreviewActivity.launchCamera(SwipeActivity.this);
+                    ServingClass.launchCamera(SwipeActivity.this);
                 }
             });
 
