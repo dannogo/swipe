@@ -3,48 +3,92 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="48dp"
-    android:background="@color/primaryColor"
+    android:background="@color/app_skin"
     android:weightSum="4"
     android:layout_below="@+id/recyclerViewPreviews"
     >
 
-    <Button
-        android:text="Photo"
-        android:id="@+id/photo_filter"
+        <!--android:text="Photo"-->
+        <!--android:textColor="@drawable/filter_button_reaction"-->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/photo_filter_wrap"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="@android:color/transparent"
-        android:textColor="@drawable/filter_button_reaction"
-        />
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        >
+        <ImageButton
+            android:src="@drawable/photo_off"
+            android:id="@+id/photo_filter"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerInside"
+            android:background="@android:color/transparent"
+            />
+    </LinearLayout>
 
-    <Button
-        android:text="Video"
-        android:id="@+id/video_filter"
+        <!--android:text="Video"-->
+        <!--android:textColor="@drawable/filter_button_reaction"-->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/video_filter_wrap"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        >
+        <ImageButton
+            android:src="@drawable/video_off"
+            android:id="@+id/video_filter"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerInside"
+            android:background="@android:color/transparent"
+            />
+    </LinearLayout>
+        <!--android:text="All"-->
+        <!--android:textColor="@drawable/filter_button_reaction"-->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/without_filter_wrap"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
         android:background="@android:color/transparent"
-        android:textColor="@drawable/filter_button_reaction"
-        />
+        >
+        <ImageButton
+            android:src="@drawable/all_off"
+            android:id="@+id/without_filter"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerInside"
+            android:background="@android:color/transparent"
+            />
 
-    <Button
-        android:text="All"
-        android:id="@+id/without_filter"
+    </LinearLayout>
+        <!--android:text="Favorites"-->
+        <!--android:textColor="@drawable/filter_button_reaction"-->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/favorites_filter_wrap"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="@android:color/transparent"
-        android:textColor="@drawable/filter_button_reaction"
-        />
-
-    <Button
-        android:text="Favorites"
-        android:id="@+id/favorites_filter"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@android:color/transparent"
-        android:textColor="@drawable/filter_button_reaction"
-        />
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        >
+        <ImageButton
+            android:src="@drawable/favorites_off"
+            android:id="@+id/favorites_filter"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerInside"
+            android:background="@android:color/transparent"
+            />
+    </LinearLayout>
 </LinearLayout>

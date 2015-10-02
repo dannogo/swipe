@@ -31,7 +31,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -71,6 +70,7 @@ public class PreviewActivity extends ActionBarActivity {
     private int columnsInLandscape;
     protected static ImageButton starBtn;
     private PopupWindow popupWindow;
+    private LinearLayout filterTab;
 
 
     // Completely deletes photo from Gallery folder
@@ -236,9 +236,18 @@ public class PreviewActivity extends ActionBarActivity {
             plusMinus.setImageResource(R.drawable.minus_alone);
         }
 
+//        Toast.makeText(this, "count: "+images.size(), Toast.LENGTH_SHORT).show();
+//        Log.e("COUNT", ""+images.size());
+        boolean isLastItemInImagesEqualsToLastMediaUril = false;
+        if (images.size() > 0){
+            isLastItemInImagesEqualsToLastMediaUril = images.get(0).equals(lastMediaUril);
+        }
+
         // Second part of conditional statement is:
         //                  Check if the last media file in the list has changed
-        if (deletedItemsInSwipeActivity || (!images.get(0).equals(lastMediaUril)) || swipeActivityFavoritesChanges) {
+        if (deletedItemsInSwipeActivity
+                || !isLastItemInImagesEqualsToLastMediaUril
+                || swipeActivityFavoritesChanges) {
 
             reloadRecyclerView(columnsInPortrait, columnsInLandscape);
             deletedItemsInSwipeActivity = false;
@@ -255,11 +264,15 @@ public class PreviewActivity extends ActionBarActivity {
         setContentView(R.layout.activity_preview);
 
         toolbar = (LinearLayout) findViewById(R.id.double_toolbar);
-        toolbar.setBackgroundColor(getResources().getColor(R.color.primaryColor));
+        toolbar.setBackgroundColor(getResources().getColor(R.color.app_skin));
+
 
         statusBar = findViewById(R.id.statusBarBackground);
         statusBar.getLayoutParams().height = getStatusBarHeight();
-        statusBar.setBackgroundColor(getResources().getColor(R.color.primaryColor));
+        statusBar.setBackgroundColor(getResources().getColor(R.color.app_skin));
+
+        filterTab = (LinearLayout) findViewById(R.id.filter_tab);
+        filterTab.setBackgroundColor(getResources().getColor(R.color.app_skin));
 
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) toolbar.getLayoutParams();
         params.topMargin = getStatusBarHeight();
@@ -280,7 +293,7 @@ public class PreviewActivity extends ActionBarActivity {
 
 
         // Filter bar buttons
-        Button photoFilter = (Button) findViewById(R.id.photo_filter);
+        ImageButton photoFilter = (ImageButton) findViewById(R.id.photo_filter);
         photoFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -292,7 +305,7 @@ public class PreviewActivity extends ActionBarActivity {
                 }
             }
         });
-        Button videoFilter = (Button) findViewById(R.id.video_filter);
+        ImageButton videoFilter = (ImageButton) findViewById(R.id.video_filter);
         videoFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -304,7 +317,7 @@ public class PreviewActivity extends ActionBarActivity {
                 }
             }
         });
-        Button withoutFilter = (Button) findViewById(R.id.without_filter);
+        ImageButton withoutFilter = (ImageButton) findViewById(R.id.without_filter);
         withoutFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -316,7 +329,7 @@ public class PreviewActivity extends ActionBarActivity {
                 }
             }
         });
-        final Button favoritesFilter = (Button) findViewById(R.id.favorites_filter);
+        final ImageButton favoritesFilter = (ImageButton) findViewById(R.id.favorites_filter);
         favoritesFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -658,41 +671,95 @@ public class PreviewActivity extends ActionBarActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("filter", filter);
         editor.commit();
-        view.setBackgroundColor(getResources().getColor(R.color.pressedButtonInFilterTab));
-        view.invalidate();
+
+        int imageOn;
+
+        switch (filter){
+            case "Photo":
+                imageOn = R.drawable.photo_on;
+                break;
+            case "Video":
+                imageOn = R.drawable.video_on;
+                break;
+            case "All":
+                imageOn = R.drawable.all_on;
+                break;
+            case "Favorites":
+                imageOn = R.drawable.favorites_on_yellow;
+                break;
+            default:
+                imageOn = R.drawable.all_on;
+                break;
+        }
+
+        ((ImageButton)view).setImageResource(imageOn);
+
         easyDissmisDeleteMode();
         reloadRecyclerView(columnsInPortrait, columnsInLandscape);
     }
 
 // check or uncheck filter tab buttons
     private void filterButtonProperState(String filter, boolean check){
-        Button btn;
+        ImageButton btn;
+        int imageOn;
+        int imageOff;
+//        boolean isFavorites = false;
         switch (filter){
             case "Photo":
-                btn = (Button) this.findViewById(R.id.photo_filter);
+                btn = (ImageButton) this.findViewById(R.id.photo_filter);
+                imageOn = R.drawable.photo_on;
+                imageOff = R.drawable.photo_off;
                 break;
             case "Video":
-                btn = (Button) this.findViewById(R.id.video_filter);
+                btn = (ImageButton) this.findViewById(R.id.video_filter);
+                imageOn = R.drawable.video_on;
+                imageOff = R.drawable.video_off;
                 break;
             case "All":
-                btn = (Button) this.findViewById(R.id.without_filter);
+                btn = (ImageButton) this.findViewById(R.id.without_filter);
+                imageOn = R.drawable.all_on;
+                imageOff = R.drawable.all_off;
                 break;
             case "Favorites":
-                btn = (Button) this.findViewById(R.id.favorites_filter);
+                btn = (ImageButton) this.findViewById(R.id.favorites_filter);
+                imageOn = R.drawable.favorites_on_yellow;
+                imageOff = R.drawable.favorites_off;
+//                isFavorites = true;
                 break;
             default:
-                btn = (Button) this.findViewById(R.id.without_filter);
+                btn = (ImageButton) this.findViewById(R.id.without_filter);
+                imageOn = R.drawable.all_on;
+                imageOff = R.drawable.all_off;
                 break;
         }
         if (check){
-            btn.setBackgroundColor(getResources().getColor(R.color.pressedButtonInFilterTab));
+            btn.setImageResource(imageOn);
+//            if(isFavorites){
+//                toolbar.setBackgroundColor(getResources().getColor(R.color.favorites_skin));
+//                statusBar.setBackgroundColor(getResources().getColor(R.color.favorites_skin));
+//                Toast.makeText(this, "isFav", Toast.LENGTH_SHORT).show();
+//            }else{
+//                toolbar.setBackgroundColor(getResources().getColor(R.color.app_skin));
+//                statusBar.setBackgroundColor(getResources().getColor(R.color.app_skin));
+//            }
         }else{
-            btn.setBackgroundColor(getResources().getColor(R.color.primaryColor));
+            btn.setImageResource(imageOff);
         }
 
     }
 
     private void switchColorAndVisibility(){
+
+        if (filter.equals("Favorites")){
+            filterTab.setBackgroundColor(getResources().getColor(R.color.favorites_skin));
+            toolbar.setBackgroundColor(getResources().getColor(R.color.favorites_skin));
+            statusBar.setBackgroundColor(getResources().getColor(R.color.favorites_skin));
+        }else{
+            filterTab.setBackgroundColor(getResources().getColor(R.color.app_skin));
+            toolbar.setBackgroundColor(getResources().getColor(R.color.app_skin));
+            statusBar.setBackgroundColor(getResources().getColor(R.color.app_skin));
+        }
+
         if (isDeleteMode) {
             trashBtn.setVisibility(View.VISIBLE);
             cancelBtn.setVisibility(View.VISIBLE);
@@ -703,8 +770,8 @@ public class PreviewActivity extends ActionBarActivity {
             trashBtn.setVisibility(View.GONE);
             cancelBtn.setVisibility(View.GONE);
             starBtn.setVisibility(View.GONE);
-            toolbar.setBackgroundColor(getResources().getColor(R.color.primaryColor));
-            statusBar.setBackgroundColor(getResources().getColor(R.color.primaryColor));
+//            toolbar.setBackgroundColor(getResources().getColor(R.color.app_skin));
+//            statusBar.setBackgroundColor(getResources().getColor(R.color.app_skin));
         }
 
     }
