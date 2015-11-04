@@ -685,7 +685,7 @@ public class PreviewActivity extends ActionBarActivity {
                 imageOn = R.drawable.all_on;
                 break;
             case "Favorites":
-                imageOn = R.drawable.favorites_on_yellow;
+                imageOn = R.drawable.favorites_on;
                 break;
             default:
                 imageOn = R.drawable.all_on;
@@ -722,7 +722,7 @@ public class PreviewActivity extends ActionBarActivity {
                 break;
             case "Favorites":
                 btn = (ImageButton) this.findViewById(R.id.favorites_filter);
-                imageOn = R.drawable.favorites_on_yellow;
+                imageOn = R.drawable.favorites_on;
                 imageOff = R.drawable.favorites_off;
 //                isFavorites = true;
                 break;
