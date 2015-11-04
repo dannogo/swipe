@@ -50,8 +50,8 @@ import java.util.Set;
 
 public class PreviewActivity extends ActionBarActivity {
 
-    private RecyclerView recyclerView;
-    private SivAdapter adapter;
+    protected RecyclerView recyclerView;
+    protected SivAdapter adapter;
     private ArrayList<String> images;
     protected static boolean deletedItemsInSwipeActivity = false;
     protected String lastMediaUril;
@@ -62,7 +62,7 @@ public class PreviewActivity extends ActionBarActivity {
     private ImageButton trashBtn;
     private ImageButton cancelBtn;
     protected TextView info;
-    private boolean isPlus;
+    protected boolean isPlus;
     private ImageButton squareBtn;
     private ImageButton plusMinus;
     protected static String filter;
@@ -71,6 +71,8 @@ public class PreviewActivity extends ActionBarActivity {
     protected static ImageButton starBtn;
     private PopupWindow popupWindow;
     private LinearLayout filterTab;
+    protected TextView squareCounterView;
+    protected static int squareCounter = 0;
 
 
     // Completely deletes photo from Gallery folder
@@ -158,18 +160,22 @@ public class PreviewActivity extends ActionBarActivity {
         String selection = "";
 
         if (filter.equals("Photo")){
+            info.setText("Photo");
             selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "="
                     + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
         }else if (filter.equals("Video")){
+            info.setText("Video");
             selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "="
                     + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
         }else if (filter.equals("All")){
+            info.setText("All");
             selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "="
                     + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE
                     + " OR "
                     + MediaStore.Files.FileColumns.MEDIA_TYPE + "="
                     + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
         }else if (filter.equals("Favorites")){
+            info.setText("Favorites");
             return SivAdapter.favoritesUri;
         }
 
@@ -225,19 +231,15 @@ public class PreviewActivity extends ActionBarActivity {
 
 
         isPlus = sharedPreferences.getBoolean("isPlus", true);
+
         if (isPlus){
-            squareBtn.setImageResource(R.drawable.stop_empty);
-        }else{
             squareBtn.setImageResource(R.drawable.stop_painted);
-        }
-        if (isPlus){
-            plusMinus.setImageResource(R.drawable.plus_alone);
+            plusMinus.setImageResource(R.drawable.plus_painted);
         }else{
-            plusMinus.setImageResource(R.drawable.minus_alone);
+            squareBtn.setImageResource(R.drawable.stop_empty);
+            plusMinus.setImageResource(R.drawable.plus_empty);
         }
 
-//        Toast.makeText(this, "count: "+images.size(), Toast.LENGTH_SHORT).show();
-//        Log.e("COUNT", ""+images.size());
         boolean isLastItemInImagesEqualsToLastMediaUril = false;
         if (images.size() > 0){
             isLastItemInImagesEqualsToLastMediaUril = images.get(0).equals(lastMediaUril);
@@ -273,6 +275,7 @@ public class PreviewActivity extends ActionBarActivity {
 
         filterTab = (LinearLayout) findViewById(R.id.filter_tab);
         filterTab.setBackgroundColor(getResources().getColor(R.color.app_skin));
+        squareCounterView = (TextView) findViewById(R.id.squareCounter);
 
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) toolbar.getLayoutParams();
         params.topMargin = getStatusBarHeight();
@@ -280,6 +283,7 @@ public class PreviewActivity extends ActionBarActivity {
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         isPlus = sharedPreferences.getBoolean("isPlus", true);
+
         isDeleteMode = sharedPreferences.getBoolean("isDeleteMode", false);
         // taking saved in sharedPreferences parameters and saving them in fields
         columnsInPortrait = sharedPreferences.getInt("portrait", 3);
@@ -298,6 +302,7 @@ public class PreviewActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 if (!filter.equals("Photo")) {
+                    info.setText("Photo");
                     filterButtonProperState(filter, false);
                     filter = "Photo";
                     filterButtonServing(filter, v);
@@ -310,6 +315,7 @@ public class PreviewActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 if (!filter.equals("Video")) {
+                    info.setText("Video");
                     filterButtonProperState(filter, false);
                     filter = "Video";
                     filterButtonServing(filter, v);
@@ -322,6 +328,7 @@ public class PreviewActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 if (!filter.equals("All")) {
+                    info.setText("All");
                     filterButtonProperState(filter, false);
                     filter = "All";
                     filterButtonServing(filter, v);
@@ -334,6 +341,7 @@ public class PreviewActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 if (!filter.equals("Favorites")) {
+                    info.setText("Favorites");
                     filterButtonProperState(filter, false);
                     filter = "Favorites";
                     filterButtonServing(filter, v);
@@ -436,9 +444,9 @@ public class PreviewActivity extends ActionBarActivity {
         squareBtn = (ImageButton) toolbar.findViewById(R.id.squareBtn);
 
         if (isPlus){
-            squareBtn.setImageResource(R.drawable.stop_empty);
-        }else{
             squareBtn.setImageResource(R.drawable.stop_painted);
+        }else{
+            squareBtn.setImageResource(R.drawable.stop_empty);
         }
 
         squareBtn.setOnClickListener(new View.OnClickListener() {
@@ -452,9 +460,11 @@ public class PreviewActivity extends ActionBarActivity {
         plusMinus = (ImageButton) toolbar.findViewById(R.id.plusMinus);
 
         if (isPlus){
-            plusMinus.setImageResource(R.drawable.plus_alone);
+            plusMinus.setImageResource(R.drawable.plus_painted);
         }else{
-            plusMinus.setImageResource(R.drawable.minus_alone);
+            plusMinus.setImageResource(R.drawable.plus_empty);
+            squareCounterView.setText(String.valueOf(++squareCounter));
+            squareCounterView.setVisibility(View.VISIBLE);
         }
 
         plusMinus.setOnClickListener(new View.OnClickListener() {
@@ -822,7 +832,8 @@ public class PreviewActivity extends ActionBarActivity {
         editor.putBoolean("isDeleteMode", false);
         editor.commit();
         switchColorAndVisibility();
-        info.setText(getResources().getString(R.string.gallery));
+//        info.setText(getResources().getString(R.string.gallery));
+        info.setText(filter);
 
         SivAdapter.checkedItems = new ArrayList<Integer>();
 
@@ -847,7 +858,8 @@ public class PreviewActivity extends ActionBarActivity {
         editor.putBoolean("isDeleteMode", false);
         editor.commit();
         switchColorAndVisibility();
-        info.setText(getResources().getString(R.string.gallery));
+//        info.setText(getResources().getString(R.string.gallery));
+        info.setText(filter);
         reloadRecyclerView(columnsInPortrait, columnsInLandscape);
     }
 

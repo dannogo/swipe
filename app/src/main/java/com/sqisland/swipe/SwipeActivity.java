@@ -232,9 +232,9 @@ public class SwipeActivity extends ActionBarActivity{
         ImageButton squareBtn = (ImageButton) toolbar.findViewById(R.id.squareBtn);
 
         if (isPlus){
-            squareBtn.setImageResource(R.drawable.stop_empty);
+            squareBtn.setImageResource(R.drawable.stop_empty_old);
         }else{
-            squareBtn.setImageResource(R.drawable.stop_painted);
+            squareBtn.setImageResource(R.drawable.stop_painted_old);
         }
 
         squareBtn.setOnClickListener(new View.OnClickListener() {

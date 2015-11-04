@@ -8,6 +8,7 @@ import android.graphics.ColorMatrixColorFilter;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,6 +90,11 @@ public class SivAdapter extends RecyclerView.Adapter<SivAdapter.MyViewHolder> {
             holder.playicon.setVisibility(View.INVISIBLE);
         }
 
+        if (((PreviewActivity)context).isPlus){
+            holder.smallMagnifier.setVisibility(View.GONE);
+        }else{
+            holder.smallMagnifier.setVisibility(View.VISIBLE);
+        }
 
         if (favoritesUri.contains(images.get(position))){
             holder.star.setVisibility(View.VISIBLE);

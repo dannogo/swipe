@@ -52,12 +52,17 @@ public class ServingClass {
 
     protected static boolean squareBtnAction(Context context, View v, boolean isPlus, SharedPreferences sharedPreferences){
         if (!isPlus){
-            ((ImageButton)v).setImageResource(R.drawable.stop_empty);
-            ((ImageButton)((Activity)context).findViewById(R.id.plusMinus)).setImageResource(R.drawable.plus_alone);
+            ((ImageButton)v).setImageResource(R.drawable.stop_painted);
+            ((PreviewActivity)context).squareCounterView.setVisibility(View.GONE);
+            PreviewActivity.squareCounter = 0;
+            ((ImageButton)((Activity)context).findViewById(R.id.plusMinus)).setImageResource(R.drawable.plus_painted);
+            for (int i=0; i<((PreviewActivity)context).recyclerView.getChildCount(); i++){
+                ((PreviewActivity)context).recyclerView.getChildAt(i).findViewById(R.id.small_magnifier).setVisibility(View.GONE);
+            }
 
             isPlus = true;
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean("isPlus", true);
+            editor.putBoolean("isPlus", isPlus);
             editor.commit();
         }
         return isPlus;
@@ -65,14 +70,21 @@ public class ServingClass {
 
     protected static boolean plusMinusBtnAction(Context context, View v, boolean isPlus, SharedPreferences sharedPreferences){
         if (isPlus){
-            ((ImageButton)v).setImageResource(R.drawable.minus_alone);
-            ((ImageButton) ((Activity)context).findViewById(R.id.squareBtn)).setImageResource(R.drawable.stop_painted);
+            ((ImageButton)v).setImageResource(R.drawable.plus_empty);
+            ((ImageButton) ((Activity)context).findViewById(R.id.squareBtn)).setImageResource(R.drawable.stop_empty);
 
-            isPlus = false;
+            for (int i=0; i<((PreviewActivity)context).recyclerView.getChildCount(); i++){
+                ((PreviewActivity)context).recyclerView.getChildAt(i).findViewById(R.id.small_magnifier).setVisibility(View.VISIBLE);
+            }
+
+            ((PreviewActivity)context).squareCounterView.setText(String.valueOf(++PreviewActivity.squareCounter));
+            ((PreviewActivity)context).squareCounterView.setVisibility(View.VISIBLE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("isPlus", false);
             editor.commit();
+        }else{
+            ((PreviewActivity)context).squareCounterView.setText(String.valueOf(++PreviewActivity.squareCounter));
         }
-        return isPlus;
+        return false;
     }
 }

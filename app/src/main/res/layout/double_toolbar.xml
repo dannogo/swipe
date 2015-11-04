@@ -111,26 +111,42 @@
         android:orientation="horizontal"
         android:layout_weight="40">
 
-        <ImageButton
-            android:id="@+id/squareBtn"
-            android:src="@drawable/stop_empty"
+        <RelativeLayout
             android:layout_width="@dimen/large_icon_size_in_toolbar"
-            android:layout_height="@dimen/large_icon_size_in_toolbar"
-            android:scaleType="centerInside"
-            android:background="@drawable/toolbar_button_selector"
-            />
+            android:layout_height="@dimen/large_icon_size_in_toolbar">
+
+            <ImageButton
+                android:id="@+id/squareBtn"
+                android:layout_width="@dimen/large_icon_size_in_toolbar"
+                android:layout_height="@dimen/large_icon_size_in_toolbar"
+                android:scaleType="centerInside"
+                android:background="@android:color/transparent"
+                android:src="@drawable/stop_empty_old" />
+                <!--android:background="@drawable/toolbar_button_selector"-->
+
+            <TextView
+                android:id="@+id/squareCounter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:textColor="@color/cyan"
+                android:textStyle="bold"
+                android:visibility="gone"
+                android:text=""/>
+        </RelativeLayout>
 
         <ImageButton
             android:id="@+id/plusMinus"
             android:src="@drawable/plus_alone"
-            android:background="@drawable/toolbar_button_selector"
             android:layout_width="@dimen/large_icon_size_in_toolbar"
             android:layout_height="@dimen/large_icon_size_in_toolbar"
             android:scaleType="centerInside"
             android:layout_alignParentBottom="true"
+            android:background="@android:color/transparent"
             android:layout_centerHorizontal="true" />
+            <!--android:background="@drawable/toolbar_button_selector"-->
 
-            <!--android:background="@android:color/transparent"-->
         <ImageButton
             android:id="@+id/popupMenu"
             android:src="@drawable/menu"
