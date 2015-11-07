@@ -49,7 +49,9 @@ public class SwipeActivity extends ActionBarActivity{
     private static boolean isEditMode = false;
     private SharedPreferences sharedPreferences;
     private boolean isPlus;
-
+    protected TextView squareCounterView;
+    protected ImageButton squareBtn;
+    protected ImageButton plusMinus;
 
     // Gets height of the status bar
     public int getStatusBarHeight() {
@@ -74,6 +76,7 @@ public class SwipeActivity extends ActionBarActivity{
         toolbarTitle = (TextView) findViewById(R.id.info);
 
         toolbar = (LinearLayout) findViewById(R.id.double_toolbar);
+        squareCounterView = (TextView) findViewById(R.id.squareCounter);
 
         statusBar = findViewById(R.id.statusBarBackground);
         statusBar.getLayoutParams().height = getStatusBarHeight();
@@ -229,12 +232,45 @@ public class SwipeActivity extends ActionBarActivity{
             }
         });
 
-        ImageButton squareBtn = (ImageButton) toolbar.findViewById(R.id.squareBtn);
+        squareBtn = (ImageButton) toolbar.findViewById(R.id.squareBtn);
+        plusMinus = (ImageButton) toolbar.findViewById(R.id.plusMinus);
 
         if (isPlus){
-            squareBtn.setImageResource(R.drawable.stop_empty_old);
+            squareBtn.setImageResource(R.drawable.stop_painted);
+            plusMinus.setImageResource(R.drawable.plus_empty);
+
+            squareBtn.getLayoutParams().height = 120;
+            squareBtn.getLayoutParams().width = 120;
+            squareBtn.requestLayout();
+            plusMinus.getLayoutParams().height = 150;
+            plusMinus.getLayoutParams().width = 150;
+            plusMinus.requestLayout();
+
+//            squareBtn.getLayoutParams().height = R.dimen.small_icon_size_in_toolbar;
+//            squareBtn.getLayoutParams().width = R.dimen.small_icon_size_in_toolbar;
+//            squareBtn.requestLayout();
+//            plusMinus.getLayoutParams().height = R.dimen.large_icon_size_in_toolbar;
+//            plusMinus.getLayoutParams().width = R.dimen.large_icon_size_in_toolbar;
+//            plusMinus.requestLayout();
         }else{
-            squareBtn.setImageResource(R.drawable.stop_painted_old);
+            squareBtn.setImageResource(R.drawable.stop_empty);
+            plusMinus.setImageResource(R.drawable.plus_painted);
+            squareCounterView.setText(String.valueOf(ServingClass.squareCounter));
+            squareCounterView.setVisibility(View.VISIBLE);
+
+            plusMinus.getLayoutParams().height = 120;
+            plusMinus.getLayoutParams().width = 120;
+            plusMinus.requestLayout();
+            squareBtn.getLayoutParams().height = 150;
+            squareBtn.getLayoutParams().width = 150;
+            squareBtn.requestLayout();
+
+//            plusMinus.getLayoutParams().height = R.dimen.small_icon_size_in_toolbar;
+//            plusMinus.getLayoutParams().width = R.dimen.small_icon_size_in_toolbar;
+//            plusMinus.requestLayout();
+//            squareBtn.getLayoutParams().height = R.dimen.large_icon_size_in_toolbar;
+//            squareBtn.getLayoutParams().width = R.dimen.large_icon_size_in_toolbar;
+//            squareBtn.requestLayout();
         }
 
         squareBtn.setOnClickListener(new View.OnClickListener() {
@@ -243,12 +279,7 @@ public class SwipeActivity extends ActionBarActivity{
                 isPlus = ServingClass.squareBtnAction(SwipeActivity.this, v, isPlus, sharedPreferences);
             }
         });
-        ImageButton plusMinus = (ImageButton) toolbar.findViewById(R.id.plusMinus);
-        if (isPlus){
-            plusMinus.setImageResource(R.drawable.plus_alone);
-        }else{
-            plusMinus.setImageResource(R.drawable.minus_alone);
-        }
+
         plusMinus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

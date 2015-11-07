@@ -121,7 +121,9 @@
                 android:layout_height="@dimen/large_icon_size_in_toolbar"
                 android:scaleType="centerInside"
                 android:background="@android:color/transparent"
-                android:src="@drawable/stop_empty_old" />
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/stop_empty" />
                 <!--android:background="@drawable/toolbar_button_selector"-->
 
             <TextView
@@ -136,6 +138,10 @@
                 android:text=""/>
         </RelativeLayout>
 
+    <!--<RelativeLayout-->
+        <!--android:layout_width="@dimen/large_icon_size_in_toolbar"-->
+        <!--android:layout_height="@dimen/large_icon_size_in_toolbar">-->
+
         <ImageButton
             android:id="@+id/plusMinus"
             android:src="@drawable/plus_alone"
@@ -146,6 +152,7 @@
             android:background="@android:color/transparent"
             android:layout_centerHorizontal="true" />
             <!--android:background="@drawable/toolbar_button_selector"-->
+        <!--</RelativeLayout>-->
 
         <ImageButton
             android:id="@+id/popupMenu"

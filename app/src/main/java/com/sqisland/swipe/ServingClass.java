@@ -14,6 +14,8 @@ import android.widget.ImageButton;
  */
 public class ServingClass {
 
+    protected static int squareCounter = 1;
+
     protected static void trashBtnAction(Context context, int position){
         RemoveConfirmationDialog dialog = new RemoveConfirmationDialog();
         Bundle data = new Bundle();
@@ -53,11 +55,31 @@ public class ServingClass {
     protected static boolean squareBtnAction(Context context, View v, boolean isPlus, SharedPreferences sharedPreferences){
         if (!isPlus){
             ((ImageButton)v).setImageResource(R.drawable.stop_painted);
-            ((PreviewActivity)context).squareCounterView.setVisibility(View.GONE);
-            PreviewActivity.squareCounter = 0;
-            ((ImageButton)((Activity)context).findViewById(R.id.plusMinus)).setImageResource(R.drawable.plus_painted);
-            for (int i=0; i<((PreviewActivity)context).recyclerView.getChildCount(); i++){
-                ((PreviewActivity)context).recyclerView.getChildAt(i).findViewById(R.id.small_magnifier).setVisibility(View.GONE);
+            squareCounter = 1;
+            ((ImageButton)((Activity)context).findViewById(R.id.plusMinus)).setImageResource(R.drawable.plus_empty);
+            if (context instanceof PreviewActivity){
+
+                ((PreviewActivity)context).squareBtn.getLayoutParams().height = 120;
+                ((PreviewActivity)context).squareBtn.getLayoutParams().width = 120;
+                ((PreviewActivity)context).squareBtn.requestLayout();
+                ((PreviewActivity)context).plusMinus.getLayoutParams().height = 150;
+                ((PreviewActivity)context).plusMinus.getLayoutParams().width = 150;
+                ((PreviewActivity)context).plusMinus.requestLayout();
+
+                ((PreviewActivity)context).squareCounterView.setVisibility(View.GONE);
+                for (int i=0; i<((PreviewActivity)context).recyclerView.getChildCount(); i++){
+                    ((PreviewActivity)context).recyclerView.getChildAt(i).findViewById(R.id.small_magnifier).setVisibility(View.GONE);
+                }
+            }else{
+                ((SwipeActivity)context).squareCounterView.setVisibility(View.GONE);
+
+                ((SwipeActivity)context).squareBtn.getLayoutParams().height = 120;
+                ((SwipeActivity)context).squareBtn.getLayoutParams().width = 120;
+                ((SwipeActivity)context).squareBtn.requestLayout();
+                ((SwipeActivity)context).plusMinus.getLayoutParams().height = 150;
+                ((SwipeActivity)context).plusMinus.getLayoutParams().width = 150;
+                ((SwipeActivity)context).plusMinus.requestLayout();
+
             }
 
             isPlus = true;
@@ -70,20 +92,45 @@ public class ServingClass {
 
     protected static boolean plusMinusBtnAction(Context context, View v, boolean isPlus, SharedPreferences sharedPreferences){
         if (isPlus){
-            ((ImageButton)v).setImageResource(R.drawable.plus_empty);
+            ((ImageButton)v).setImageResource(R.drawable.plus_painted);
             ((ImageButton) ((Activity)context).findViewById(R.id.squareBtn)).setImageResource(R.drawable.stop_empty);
 
-            for (int i=0; i<((PreviewActivity)context).recyclerView.getChildCount(); i++){
-                ((PreviewActivity)context).recyclerView.getChildAt(i).findViewById(R.id.small_magnifier).setVisibility(View.VISIBLE);
+            if (context instanceof PreviewActivity) {
+                for (int i = 0; i < ((PreviewActivity) context).recyclerView.getChildCount(); i++) {
+                    ((PreviewActivity) context).recyclerView.getChildAt(i).findViewById(R.id.small_magnifier).setVisibility(View.VISIBLE);
+                }
+                ((PreviewActivity)context).squareCounterView.setText(String.valueOf(squareCounter));
+                ((PreviewActivity)context).squareCounterView.setVisibility(View.VISIBLE);
+
+                ((PreviewActivity)context).squareBtn.getLayoutParams().height = 150;
+                ((PreviewActivity)context).squareBtn.getLayoutParams().width = 150;
+                ((PreviewActivity)context).squareBtn.requestLayout();
+                ((PreviewActivity)context).plusMinus.getLayoutParams().height = 120;
+                ((PreviewActivity)context).plusMinus.getLayoutParams().width = 120;
+                ((PreviewActivity)context).plusMinus.requestLayout();
+
+            }else{
+                ((SwipeActivity)context).squareCounterView.setText(String.valueOf(squareCounter));
+                ((SwipeActivity)context).squareCounterView.setVisibility(View.VISIBLE);
+
+                ((SwipeActivity)context).squareBtn.getLayoutParams().height = 150;
+                ((SwipeActivity)context).squareBtn.getLayoutParams().width = 150;
+                ((SwipeActivity)context).squareBtn.requestLayout();
+                ((SwipeActivity)context).plusMinus.getLayoutParams().height = 120;
+                ((SwipeActivity)context).plusMinus.getLayoutParams().width = 120;
+                ((SwipeActivity)context).plusMinus.requestLayout();
+
             }
 
-            ((PreviewActivity)context).squareCounterView.setText(String.valueOf(++PreviewActivity.squareCounter));
-            ((PreviewActivity)context).squareCounterView.setVisibility(View.VISIBLE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("isPlus", false);
             editor.commit();
         }else{
-            ((PreviewActivity)context).squareCounterView.setText(String.valueOf(++PreviewActivity.squareCounter));
+            if (context instanceof PreviewActivity) {
+                ((PreviewActivity) context).squareCounterView.setText(String.valueOf(++squareCounter));
+            }else{
+                ((SwipeActivity) context).squareCounterView.setText(String.valueOf(++squareCounter));
+            }
         }
         return false;
     }

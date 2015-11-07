@@ -63,8 +63,8 @@ public class PreviewActivity extends ActionBarActivity {
     private ImageButton cancelBtn;
     protected TextView info;
     protected boolean isPlus;
-    private ImageButton squareBtn;
-    private ImageButton plusMinus;
+    protected ImageButton squareBtn;
+    protected ImageButton plusMinus;
     protected static String filter;
     private int columnsInPortrait;
     private int columnsInLandscape;
@@ -72,7 +72,7 @@ public class PreviewActivity extends ActionBarActivity {
     private PopupWindow popupWindow;
     private LinearLayout filterTab;
     protected TextView squareCounterView;
-    protected static int squareCounter = 0;
+//    protected static int squareCounter = 0;
 
 
     // Completely deletes photo from Gallery folder
@@ -158,26 +158,32 @@ public class PreviewActivity extends ActionBarActivity {
         };
 
         String selection = "";
-
+        String toast = "";
         if (filter.equals("Photo")){
-            info.setText("Photo");
+            toast = "Photo";
+            info.setText(toast);
             selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "="
                     + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
         }else if (filter.equals("Video")){
-            info.setText("Video");
+            toast = "Video";
+            info.setText(toast);
             selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "="
                     + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
         }else if (filter.equals("All")){
-            info.setText("All");
+            toast = "All";
+            info.setText(toast);
             selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "="
                     + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE
                     + " OR "
                     + MediaStore.Files.FileColumns.MEDIA_TYPE + "="
                     + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
         }else if (filter.equals("Favorites")){
-            info.setText("Favorites");
+            toast="Favorites";
+            info.setText(toast);
             return SivAdapter.favoritesUri;
         }
+
+        Toast.makeText(this, toast, Toast.LENGTH_SHORT).show();
 
         Uri queryUri = MediaStore.Files.getContentUri("external");
 
@@ -234,10 +240,41 @@ public class PreviewActivity extends ActionBarActivity {
 
         if (isPlus){
             squareBtn.setImageResource(R.drawable.stop_painted);
-            plusMinus.setImageResource(R.drawable.plus_painted);
+            plusMinus.setImageResource(R.drawable.plus_empty);
+
+            squareBtn.getLayoutParams().height = 120;
+            squareBtn.getLayoutParams().width = 120;
+            squareBtn.requestLayout();
+            plusMinus.getLayoutParams().height = 150;
+            plusMinus.getLayoutParams().width = 150;
+            plusMinus.requestLayout();
+
+//            squareBtn.getLayoutParams().height = R.dimen.small_icon_size_in_toolbar;
+//            squareBtn.getLayoutParams().width = R.dimen.small_icon_size_in_toolbar;
+//            squareBtn.requestLayout();
+//            plusMinus.getLayoutParams().height = R.dimen.large_icon_size_in_toolbar;
+//            plusMinus.getLayoutParams().width = R.dimen.large_icon_size_in_toolbar;
+//            plusMinus.requestLayout();
+            squareCounterView.setVisibility(View.GONE);
         }else{
             squareBtn.setImageResource(R.drawable.stop_empty);
-            plusMinus.setImageResource(R.drawable.plus_empty);
+            plusMinus.setImageResource(R.drawable.plus_painted);
+
+            plusMinus.getLayoutParams().height = 120;
+            plusMinus.getLayoutParams().width = 120;
+            plusMinus.requestLayout();
+            squareBtn.getLayoutParams().height = 150;
+            squareBtn.getLayoutParams().width = 150;
+            squareBtn.requestLayout();
+
+//            plusMinus.getLayoutParams().height = R.dimen.small_icon_size_in_toolbar;
+//            plusMinus.getLayoutParams().width = R.dimen.small_icon_size_in_toolbar;
+//            plusMinus.requestLayout();
+//            squareBtn.getLayoutParams().height = R.dimen.large_icon_size_in_toolbar;
+//            squareBtn.getLayoutParams().width = R.dimen.large_icon_size_in_toolbar;
+//            squareBtn.requestLayout();
+            squareCounterView.setVisibility(View.VISIBLE);
+            squareCounterView.setText(String.valueOf(ServingClass.squareCounter));
         }
 
         boolean isLastItemInImagesEqualsToLastMediaUril = false;
@@ -303,6 +340,7 @@ public class PreviewActivity extends ActionBarActivity {
             public void onClick(View v) {
                 if (!filter.equals("Photo")) {
                     info.setText("Photo");
+                    Toast.makeText(PreviewActivity.this, "Photo", Toast.LENGTH_SHORT).show();
                     filterButtonProperState(filter, false);
                     filter = "Photo";
                     filterButtonServing(filter, v);
@@ -315,6 +353,7 @@ public class PreviewActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 if (!filter.equals("Video")) {
+                    Toast.makeText(PreviewActivity.this, "Video", Toast.LENGTH_SHORT).show();
                     info.setText("Video");
                     filterButtonProperState(filter, false);
                     filter = "Video";
@@ -328,6 +367,7 @@ public class PreviewActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 if (!filter.equals("All")) {
+                    Toast.makeText(PreviewActivity.this, "All", Toast.LENGTH_SHORT).show();
                     info.setText("All");
                     filterButtonProperState(filter, false);
                     filter = "All";
@@ -341,6 +381,7 @@ public class PreviewActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 if (!filter.equals("Favorites")) {
+                    Toast.makeText(PreviewActivity.this, "Favorites", Toast.LENGTH_SHORT).show();
                     info.setText("Favorites");
                     filterButtonProperState(filter, false);
                     filter = "Favorites";
@@ -442,11 +483,16 @@ public class PreviewActivity extends ActionBarActivity {
         });
 
         squareBtn = (ImageButton) toolbar.findViewById(R.id.squareBtn);
+        plusMinus = (ImageButton) toolbar.findViewById(R.id.plusMinus);
 
         if (isPlus){
             squareBtn.setImageResource(R.drawable.stop_painted);
+            plusMinus.setImageResource(R.drawable.plus_empty);
         }else{
             squareBtn.setImageResource(R.drawable.stop_empty);
+            plusMinus.setImageResource(R.drawable.plus_painted);
+            squareCounterView.setText(String.valueOf(ServingClass.squareCounter));
+            squareCounterView.setVisibility(View.VISIBLE);
         }
 
         squareBtn.setOnClickListener(new View.OnClickListener() {
@@ -457,15 +503,15 @@ public class PreviewActivity extends ActionBarActivity {
         });
 
 
-        plusMinus = (ImageButton) toolbar.findViewById(R.id.plusMinus);
 
-        if (isPlus){
-            plusMinus.setImageResource(R.drawable.plus_painted);
-        }else{
-            plusMinus.setImageResource(R.drawable.plus_empty);
-            squareCounterView.setText(String.valueOf(++squareCounter));
-            squareCounterView.setVisibility(View.VISIBLE);
-        }
+
+//        if (isPlus){
+//            plusMinus.setImageResource(R.drawable.plus_empty);
+//        }else{
+//            plusMinus.setImageResource(R.drawable.plus_painted);
+//            squareCounterView.setText(String.valueOf(ServingClass.squareCounter));
+//            squareCounterView.setVisibility(View.VISIBLE);
+//        }
 
         plusMinus.setOnClickListener(new View.OnClickListener() {
             @Override
