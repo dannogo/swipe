@@ -53,16 +53,6 @@ public class SwipeActivity extends ActionBarActivity{
     protected ImageButton squareBtn;
     protected ImageButton plusMinus;
 
-    // Gets height of the status bar
-    public int getStatusBarHeight() {
-        int result = 0;
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = getResources().getDimensionPixelSize(resourceId);
-        }
-        return result;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,11 +69,11 @@ public class SwipeActivity extends ActionBarActivity{
         squareCounterView = (TextView) findViewById(R.id.squareCounter);
 
         statusBar = findViewById(R.id.statusBarBackground);
-        statusBar.getLayoutParams().height = getStatusBarHeight();
+        statusBar.getLayoutParams().height = ServingClass.getStatusBarHeight(this);
         statusBar.setBackgroundColor(Color.parseColor("#1A237E"));
 
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) toolbar.getLayoutParams();
-        params.topMargin = getStatusBarHeight();
+        params.topMargin = ServingClass.getStatusBarHeight(this);
         toolbar.setLayoutParams(params);
 
         // Getting position of chosen image from Intent
@@ -246,12 +236,6 @@ public class SwipeActivity extends ActionBarActivity{
             plusMinus.getLayoutParams().width = 150;
             plusMinus.requestLayout();
 
-//            squareBtn.getLayoutParams().height = R.dimen.small_icon_size_in_toolbar;
-//            squareBtn.getLayoutParams().width = R.dimen.small_icon_size_in_toolbar;
-//            squareBtn.requestLayout();
-//            plusMinus.getLayoutParams().height = R.dimen.large_icon_size_in_toolbar;
-//            plusMinus.getLayoutParams().width = R.dimen.large_icon_size_in_toolbar;
-//            plusMinus.requestLayout();
         }else{
             squareBtn.setImageResource(R.drawable.stop_empty);
             plusMinus.setImageResource(R.drawable.plus_painted);
@@ -265,12 +249,6 @@ public class SwipeActivity extends ActionBarActivity{
             squareBtn.getLayoutParams().width = 150;
             squareBtn.requestLayout();
 
-//            plusMinus.getLayoutParams().height = R.dimen.small_icon_size_in_toolbar;
-//            plusMinus.getLayoutParams().width = R.dimen.small_icon_size_in_toolbar;
-//            plusMinus.requestLayout();
-//            squareBtn.getLayoutParams().height = R.dimen.large_icon_size_in_toolbar;
-//            squareBtn.getLayoutParams().width = R.dimen.large_icon_size_in_toolbar;
-//            squareBtn.requestLayout();
         }
 
         squareBtn.setOnClickListener(new View.OnClickListener() {

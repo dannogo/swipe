@@ -36,11 +36,17 @@ public class ServingClass {
     }
 
     protected static void shareBtnAction(Context context){
+
+        Intent intent = new Intent();
+        intent.setClass(context, ShareActivity.class);
+        context.startActivity(intent);
+        /*
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TEXT, "https://www.google.com");
         sendIntent.setType("text/plain");
         context.startActivity(sendIntent);
+        */
     }
 
     protected static void launchCamera(Context context){
@@ -133,5 +139,15 @@ public class ServingClass {
             }
         }
         return false;
+    }
+
+    // Gets height of the status bar
+    public static int getStatusBarHeight(Context context) {
+        int result = 0;
+        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = context.getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 }

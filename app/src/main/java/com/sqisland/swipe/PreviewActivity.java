@@ -214,19 +214,6 @@ public class PreviewActivity extends ActionBarActivity {
         return result;
     }
 
-    // Gets height of the status bar
-    public int getStatusBarHeight() {
-        int result = 0;
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = getResources().getDimensionPixelSize(resourceId);
-        }
-        return result;
-    }
-
-
-
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -249,12 +236,6 @@ public class PreviewActivity extends ActionBarActivity {
             plusMinus.getLayoutParams().width = 150;
             plusMinus.requestLayout();
 
-//            squareBtn.getLayoutParams().height = R.dimen.small_icon_size_in_toolbar;
-//            squareBtn.getLayoutParams().width = R.dimen.small_icon_size_in_toolbar;
-//            squareBtn.requestLayout();
-//            plusMinus.getLayoutParams().height = R.dimen.large_icon_size_in_toolbar;
-//            plusMinus.getLayoutParams().width = R.dimen.large_icon_size_in_toolbar;
-//            plusMinus.requestLayout();
             squareCounterView.setVisibility(View.GONE);
         }else{
             squareBtn.setImageResource(R.drawable.stop_empty);
@@ -267,12 +248,6 @@ public class PreviewActivity extends ActionBarActivity {
             squareBtn.getLayoutParams().width = 150;
             squareBtn.requestLayout();
 
-//            plusMinus.getLayoutParams().height = R.dimen.small_icon_size_in_toolbar;
-//            plusMinus.getLayoutParams().width = R.dimen.small_icon_size_in_toolbar;
-//            plusMinus.requestLayout();
-//            squareBtn.getLayoutParams().height = R.dimen.large_icon_size_in_toolbar;
-//            squareBtn.getLayoutParams().width = R.dimen.large_icon_size_in_toolbar;
-//            squareBtn.requestLayout();
             squareCounterView.setVisibility(View.VISIBLE);
             squareCounterView.setText(String.valueOf(ServingClass.squareCounter));
         }
@@ -307,7 +282,7 @@ public class PreviewActivity extends ActionBarActivity {
 
 
         statusBar = findViewById(R.id.statusBarBackground);
-        statusBar.getLayoutParams().height = getStatusBarHeight();
+        statusBar.getLayoutParams().height = ServingClass.getStatusBarHeight(this);
         statusBar.setBackgroundColor(getResources().getColor(R.color.app_skin));
 
         filterTab = (LinearLayout) findViewById(R.id.filter_tab);
@@ -315,7 +290,7 @@ public class PreviewActivity extends ActionBarActivity {
         squareCounterView = (TextView) findViewById(R.id.squareCounter);
 
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) toolbar.getLayoutParams();
-        params.topMargin = getStatusBarHeight();
+        params.topMargin = ServingClass.getStatusBarHeight(this);
         toolbar.setLayoutParams(params);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -501,17 +476,6 @@ public class PreviewActivity extends ActionBarActivity {
                 isPlus = ServingClass.squareBtnAction(PreviewActivity.this, v, isPlus, sharedPreferences);
             }
         });
-
-
-
-
-//        if (isPlus){
-//            plusMinus.setImageResource(R.drawable.plus_empty);
-//        }else{
-//            plusMinus.setImageResource(R.drawable.plus_painted);
-//            squareCounterView.setText(String.valueOf(ServingClass.squareCounter));
-//            squareCounterView.setVisibility(View.VISIBLE);
-//        }
 
         plusMinus.setOnClickListener(new View.OnClickListener() {
             @Override
