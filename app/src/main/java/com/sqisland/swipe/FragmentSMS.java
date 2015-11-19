@@ -7,14 +7,21 @@ import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.telephony.PhoneNumberUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -32,6 +39,7 @@ public class FragmentSMS extends Fragment {
     private ArrayList<String> phones = new ArrayList<>();
     private ArrayList<String> photos = new ArrayList<>();
     android.support.design.widget.FloatingActionButton fab;
+    android.support.design.widget.FloatingActionButton fabTypeNumber;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -42,6 +50,46 @@ public class FragmentSMS extends Fragment {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getActivity(), ""+contactAdapter.checkedPhones, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        final EditText numberEditField = (EditText) rootView.findViewById(R.id.numberEditField);
+        final RelativeLayout fragmentSmsContent = (RelativeLayout) rootView.findViewById(R.id.fragmentSmsContent);
+//        final LinearLayout inputLayout = (LinearLayout) rootView.findViewById(R.id.inputLayout);
+        final android.support.design.widget.TextInputLayout validatingLayout = (TextInputLayout) rootView.findViewById(R.id.validatingLayout);
+        final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
+
+        numberEditField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE){
+                    if (numberEditField.getText().toString().matches("^[+]?[0-9]{10,13}$")){
+                        Toast.makeText(getActivity(), "MATCH", Toast.LENGTH_SHORT).show();
+
+                        validatingLayout.setVisibility(View.GONE);
+                        numberEditField.setText("");
+                        fragmentSmsContent.setVisibility(View.VISIBLE);
+                        validatingLayout.setErrorEnabled(false);
+                    }else{
+                        validatingLayout.setError("Invalide Number");
+//                        validatingLayout.setError("Invalide Number\n\nExamples:\n   0668286281\n   380668286281\n   +380668286281");
+                        numberEditField.requestFocus();
+                        imm.showSoftInput(numberEditField, InputMethodManager.SHOW_IMPLICIT);
+                    }
+                }
+                return false;
+            }
+        });
+
+        fabTypeNumber = (FloatingActionButton) rootView.findViewById(R.id.fabTypeNumber);
+        fabTypeNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentSmsContent.setVisibility(View.GONE);
+                validatingLayout.setVisibility(View.VISIBLE);
+                numberEditField.requestFocus();
+                imm.showSoftInput(numberEditField, InputMethodManager.SHOW_IMPLICIT);
+
             }
         });
 

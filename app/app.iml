@@ -107,8 +107,8 @@
     <orderEntry type="library" exported="" name="fab-1.1.2" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-22.0.0" level="project" />
     <orderEntry type="library" exported="" name="support-v4-23.0.1" level="project" />
-    <orderEntry type="library" exported="" name="support-annotations-23.0.1" level="project" />
     <orderEntry type="library" exported="" name="slf4j-api-1.7.9" level="project" />
+    <orderEntry type="library" exported="" name="support-annotations-23.0.1" level="project" />
     <orderEntry type="library" exported="" name="subsampling-scale-image-view-3.1.4" level="project" />
   </component>
 </module>

@@ -10,4 +10,5 @@
     <color name="app_skin">#3367d6</color>
     <color name="favorites_skin">#607d8b</color>
     <color name="red">#F00</color>
+    <color name="typeNumber">#e74c3c</color>
 </resources>
