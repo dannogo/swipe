@@ -11,6 +11,7 @@
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
         <!--<item name="android:windowTranslucentStatus">true</item>-->
         <item name="android:textSize">20sp</item>
+        <item name="colorAccent">#8e44ad</item>
     </style>
     <style name="ToolbarTitle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">20sp</item>

@@ -21,6 +21,7 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.content.CursorLoader;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -48,7 +49,7 @@ import java.util.Set;
 
 
 
-public class PreviewActivity extends ActionBarActivity {
+public class PreviewActivity extends AppCompatActivity {
 
     protected RecyclerView recyclerView;
     protected SivAdapter adapter;

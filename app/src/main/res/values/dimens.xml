@@ -8,4 +8,7 @@
     <dimen name="small_icon_size_in_toolbar">33dp</dimen>
     <dimen name="large_icon_size_in_toolbar">50dp</dimen>
     <dimen name="margin_between_icons">10dp</dimen>
+    <dimen name="fab_plus_navbar_margin">58dp</dimen>
+    <dimen name="fab_margin">12dp</dimen>
+    <dimen name="bottom_offset_dp">120dp</dimen>
 </resources>
