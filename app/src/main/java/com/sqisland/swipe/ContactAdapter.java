@@ -140,7 +140,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
                     contactStar.setImageResource(R.drawable.empty_star);
                 }
             }else if((view.getId() == deleteTemporary.getId())) {
-                Toast.makeText(context, "id: "+ databaseID.getText(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Temporary phone number deleted", Toast.LENGTH_SHORT).show();
                 for (int i=0; i<ids.size(); i++){
                     if (ids.get(i).equals(databaseID.getText().toString())){
                         ids.remove(i);
@@ -149,6 +149,9 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
                         photos.remove(i);
                         notifyItemRemoved(i);
                     }
+                }
+                if (checkedPhones.contains(phone.getText().toString())){
+                    checkedPhones.remove(phone.getText().toString());
                 }
             }else{
                 if (!checkedPhones.contains(currentPhone)) {
