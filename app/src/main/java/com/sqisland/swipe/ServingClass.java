@@ -70,8 +70,8 @@ public class ServingClass {
             ((ImageButton)((Activity)context).findViewById(R.id.plusMinus)).setImageResource(R.drawable.plus_empty);
             if (context instanceof PreviewActivity){
 
-                ((PreviewActivity)context).squareBtn.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.small_icon_size_in_toolbar);
-                ((PreviewActivity)context).squareBtn.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.small_icon_size_in_toolbar);
+                ((PreviewActivity)context).squareBtn.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.small_square_plus);
+                ((PreviewActivity)context).squareBtn.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.small_square_plus);
                 ((PreviewActivity)context).plusMinus.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
                 ((PreviewActivity)context).plusMinus.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
 
@@ -82,8 +82,8 @@ public class ServingClass {
             }else{
                 ((SwipeActivity)context).squareCounterView.setVisibility(View.GONE);
 
-                ((SwipeActivity)context).squareBtn.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.small_icon_size_in_toolbar);
-                ((SwipeActivity)context).squareBtn.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.small_icon_size_in_toolbar);
+                ((SwipeActivity)context).squareBtn.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.small_square_plus);
+                ((SwipeActivity)context).squareBtn.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.small_square_plus);
                 ((SwipeActivity)context).plusMinus.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
                 ((SwipeActivity)context).plusMinus.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
 
@@ -111,8 +111,8 @@ public class ServingClass {
 
                 ((PreviewActivity)context).squareBtn.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
                 ((PreviewActivity)context).squareBtn.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
-                ((PreviewActivity)context).plusMinus.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.small_icon_size_in_toolbar);
-                ((PreviewActivity)context).plusMinus.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.small_icon_size_in_toolbar);
+                ((PreviewActivity)context).plusMinus.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.small_square_plus);
+                ((PreviewActivity)context).plusMinus.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.small_square_plus);
 
             }else{
                 ((SwipeActivity)context).squareCounterView.setText(String.valueOf(squareCounter));
@@ -120,8 +120,8 @@ public class ServingClass {
 
                 ((SwipeActivity)context).squareBtn.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
                 ((SwipeActivity)context).squareBtn.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
-                ((SwipeActivity)context).plusMinus.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.small_icon_size_in_toolbar);
-                ((SwipeActivity)context).plusMinus.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.small_icon_size_in_toolbar);
+                ((SwipeActivity)context).plusMinus.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.small_square_plus);
+                ((SwipeActivity)context).plusMinus.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.small_square_plus);
 
             }
 

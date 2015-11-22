@@ -36,7 +36,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
             this.phones = new ArrayList<>(phones);
             this.photos = new ArrayList<>(photos);
         }else{
-            this.ids = new ArrayList<>(ServingClass.temporaryPhonesCounter);
+            this.ids = new ArrayList<>(ServingClass.temporaryPhonesIds);
             this.names = new ArrayList<>();
             this.phones = new ArrayList<>(ServingClass.temporaryPhones);
             this.photos = new ArrayList<>();
@@ -148,6 +148,9 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
                         phones.remove(i);
                         photos.remove(i);
                         notifyItemRemoved(i);
+                        ServingClass.temporaryPhonesIds.remove(databaseID.getText().toString());
+                        ServingClass.temporaryPhones.remove(phone.getText().toString());
+                        break;
                     }
                 }
                 if (checkedPhones.contains(phone.getText().toString())){

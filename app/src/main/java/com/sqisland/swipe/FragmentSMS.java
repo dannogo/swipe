@@ -76,8 +76,7 @@ public class FragmentSMS extends Fragment {
 
                         ServingClass.temporaryPhones.add(0, v.getText().toString());
                         ServingClass.temporaryPhonesIds.add(0, getResources().getString(R.string.temporary)+ServingClass.temporaryPhonesCounter++);
-//                        contactAdapter.notifyItemChanged(0);
-//                        contactAdapter.notifyDataSetChanged();
+
                         contactAdapter.notifyItemInserted(0);
                         contactList.scrollToPosition(0);
 
@@ -85,7 +84,6 @@ public class FragmentSMS extends Fragment {
                         numberEditField.setText("");
                         fragmentSmsContent.setVisibility(View.VISIBLE);
                         validatingLayout.setErrorEnabled(false);
-//                        ViewCompat.setBackgroundTintList(numberEditField, new ColorStateList(new int[][]{new int[0]}, new int[]{0xFFde3309}));
                         ViewCompat.setBackgroundTintList(numberEditField, new ColorStateList(new int[][]{new int[]{0xFFde3309}}, new int[]{Color.parseColor("#00BFA5")}));
                         validatingLayout.setHint(getResources().getString(R.string.type_number));
                     }else{

@@ -231,8 +231,8 @@ public class SwipeActivity extends AppCompatActivity{
             squareBtn.setImageResource(R.drawable.stop_painted);
             plusMinus.setImageResource(R.drawable.plus_empty);
 
-            squareBtn.getLayoutParams().height = (int) getResources().getDimension(R.dimen.small_icon_size_in_toolbar);
-            squareBtn.getLayoutParams().width = (int) getResources().getDimension(R.dimen.small_icon_size_in_toolbar);
+            squareBtn.getLayoutParams().height = (int) getResources().getDimension(R.dimen.small_square_plus);
+            squareBtn.getLayoutParams().width = (int) getResources().getDimension(R.dimen.small_square_plus);
             plusMinus.getLayoutParams().height = (int) getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
             plusMinus.getLayoutParams().width = (int) getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
 
@@ -242,8 +242,8 @@ public class SwipeActivity extends AppCompatActivity{
             squareCounterView.setText(String.valueOf(ServingClass.squareCounter));
             squareCounterView.setVisibility(View.VISIBLE);
 
-            plusMinus.getLayoutParams().height = (int) getResources().getDimension(R.dimen.small_icon_size_in_toolbar);
-            plusMinus.getLayoutParams().width = (int) getResources().getDimension(R.dimen.small_icon_size_in_toolbar);
+            plusMinus.getLayoutParams().height = (int) getResources().getDimension(R.dimen.small_square_plus);
+            plusMinus.getLayoutParams().width = (int) getResources().getDimension(R.dimen.small_square_plus);
             squareBtn.getLayoutParams().height = (int) getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
             squareBtn.getLayoutParams().width = (int) getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
 
