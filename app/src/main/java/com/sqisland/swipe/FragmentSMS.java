@@ -1,8 +1,10 @@
 package com.sqisland.swipe;
 
 import android.content.ContentResolver;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -10,6 +12,8 @@ import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.telephony.PhoneNumberUtils;
@@ -55,7 +59,6 @@ public class FragmentSMS extends Fragment {
 
         final EditText numberEditField = (EditText) rootView.findViewById(R.id.numberEditField);
         final RelativeLayout fragmentSmsContent = (RelativeLayout) rootView.findViewById(R.id.fragmentSmsContent);
-//        final LinearLayout inputLayout = (LinearLayout) rootView.findViewById(R.id.inputLayout);
         final android.support.design.widget.TextInputLayout validatingLayout = (TextInputLayout) rootView.findViewById(R.id.validatingLayout);
         final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
 
@@ -65,16 +68,20 @@ public class FragmentSMS extends Fragment {
                 if (actionId == EditorInfo.IME_ACTION_DONE){
                     if (numberEditField.getText().toString().matches("^[+]?[0-9]{10,13}$")){
                         Toast.makeText(getActivity(), "MATCH", Toast.LENGTH_SHORT).show();
-
+                        // Добавить запись в начало списков данных в ContactAdapter
+                        // NotifyDataChange
+                        //
                         validatingLayout.setVisibility(View.GONE);
                         numberEditField.setText("");
                         fragmentSmsContent.setVisibility(View.VISIBLE);
                         validatingLayout.setErrorEnabled(false);
+//                        ViewCompat.setBackgroundTintList(numberEditField, new ColorStateList(new int[][]{new int[0]}, new int[]{0xFFde3309}));
+                        ViewCompat.setBackgroundTintList(numberEditField, new ColorStateList(new int[][]{new int[]{0xFFde3309}}, new int[]{Color.parseColor("#00BFA5")}));
+                        validatingLayout.setHint(getResources().getString(R.string.type_number));
                     }else{
                         validatingLayout.setError("Invalide Number");
-//                        validatingLayout.setError("Invalide Number\n\nExamples:\n   0668286281\n   380668286281\n   +380668286281");
-                        numberEditField.requestFocus();
-                        imm.showSoftInput(numberEditField, InputMethodManager.SHOW_IMPLICIT);
+                        validatingLayout.setHint("Try again");
+                        return true;
                     }
                 }
                 return false;

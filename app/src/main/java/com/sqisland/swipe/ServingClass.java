@@ -65,12 +65,10 @@ public class ServingClass {
             ((ImageButton)((Activity)context).findViewById(R.id.plusMinus)).setImageResource(R.drawable.plus_empty);
             if (context instanceof PreviewActivity){
 
-                ((PreviewActivity)context).squareBtn.getLayoutParams().height = 120;
-                ((PreviewActivity)context).squareBtn.getLayoutParams().width = 120;
-                ((PreviewActivity)context).squareBtn.requestLayout();
-                ((PreviewActivity)context).plusMinus.getLayoutParams().height = 150;
-                ((PreviewActivity)context).plusMinus.getLayoutParams().width = 150;
-                ((PreviewActivity)context).plusMinus.requestLayout();
+                ((PreviewActivity)context).squareBtn.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.small_icon_size_in_toolbar);
+                ((PreviewActivity)context).squareBtn.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.small_icon_size_in_toolbar);
+                ((PreviewActivity)context).plusMinus.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
+                ((PreviewActivity)context).plusMinus.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
 
                 ((PreviewActivity)context).squareCounterView.setVisibility(View.GONE);
                 for (int i=0; i<((PreviewActivity)context).recyclerView.getChildCount(); i++){
@@ -79,12 +77,10 @@ public class ServingClass {
             }else{
                 ((SwipeActivity)context).squareCounterView.setVisibility(View.GONE);
 
-                ((SwipeActivity)context).squareBtn.getLayoutParams().height = 120;
-                ((SwipeActivity)context).squareBtn.getLayoutParams().width = 120;
-                ((SwipeActivity)context).squareBtn.requestLayout();
-                ((SwipeActivity)context).plusMinus.getLayoutParams().height = 150;
-                ((SwipeActivity)context).plusMinus.getLayoutParams().width = 150;
-                ((SwipeActivity)context).plusMinus.requestLayout();
+                ((SwipeActivity)context).squareBtn.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.small_icon_size_in_toolbar);
+                ((SwipeActivity)context).squareBtn.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.small_icon_size_in_toolbar);
+                ((SwipeActivity)context).plusMinus.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
+                ((SwipeActivity)context).plusMinus.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
 
             }
 
@@ -108,23 +104,19 @@ public class ServingClass {
                 ((PreviewActivity)context).squareCounterView.setText(String.valueOf(squareCounter));
                 ((PreviewActivity)context).squareCounterView.setVisibility(View.VISIBLE);
 
-                ((PreviewActivity)context).squareBtn.getLayoutParams().height = 150;
-                ((PreviewActivity)context).squareBtn.getLayoutParams().width = 150;
-                ((PreviewActivity)context).squareBtn.requestLayout();
-                ((PreviewActivity)context).plusMinus.getLayoutParams().height = 120;
-                ((PreviewActivity)context).plusMinus.getLayoutParams().width = 120;
-                ((PreviewActivity)context).plusMinus.requestLayout();
+                ((PreviewActivity)context).squareBtn.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
+                ((PreviewActivity)context).squareBtn.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
+                ((PreviewActivity)context).plusMinus.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.small_icon_size_in_toolbar);
+                ((PreviewActivity)context).plusMinus.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.small_icon_size_in_toolbar);
 
             }else{
                 ((SwipeActivity)context).squareCounterView.setText(String.valueOf(squareCounter));
                 ((SwipeActivity)context).squareCounterView.setVisibility(View.VISIBLE);
 
-                ((SwipeActivity)context).squareBtn.getLayoutParams().height = 150;
-                ((SwipeActivity)context).squareBtn.getLayoutParams().width = 150;
-                ((SwipeActivity)context).squareBtn.requestLayout();
-                ((SwipeActivity)context).plusMinus.getLayoutParams().height = 120;
-                ((SwipeActivity)context).plusMinus.getLayoutParams().width = 120;
-                ((SwipeActivity)context).plusMinus.requestLayout();
+                ((SwipeActivity)context).squareBtn.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
+                ((SwipeActivity)context).squareBtn.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
+                ((SwipeActivity)context).plusMinus.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.small_icon_size_in_toolbar);
+                ((SwipeActivity)context).plusMinus.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.small_icon_size_in_toolbar);
 
             }
 

@@ -11,4 +11,5 @@
     <color name="favorites_skin">#607d8b</color>
     <color name="red">#F00</color>
     <color name="typeNumber">#e74c3c</color>
+    <!--<color name="edit_text_green_underline"></color>-->
 </resources>

@@ -230,24 +230,20 @@ public class PreviewActivity extends AppCompatActivity {
             squareBtn.setImageResource(R.drawable.stop_painted);
             plusMinus.setImageResource(R.drawable.plus_empty);
 
-            squareBtn.getLayoutParams().height = 120;
-            squareBtn.getLayoutParams().width = 120;
-            squareBtn.requestLayout();
-            plusMinus.getLayoutParams().height = 150;
-            plusMinus.getLayoutParams().width = 150;
-            plusMinus.requestLayout();
+            squareBtn.getLayoutParams().height = (int) getResources().getDimension(R.dimen.small_icon_size_in_toolbar);
+            squareBtn.getLayoutParams().width = (int) getResources().getDimension(R.dimen.small_icon_size_in_toolbar);
+            plusMinus.getLayoutParams().height = (int) getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
+            plusMinus.getLayoutParams().width = (int) getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
 
             squareCounterView.setVisibility(View.GONE);
         }else{
             squareBtn.setImageResource(R.drawable.stop_empty);
             plusMinus.setImageResource(R.drawable.plus_painted);
 
-            plusMinus.getLayoutParams().height = 120;
-            plusMinus.getLayoutParams().width = 120;
-            plusMinus.requestLayout();
-            squareBtn.getLayoutParams().height = 150;
-            squareBtn.getLayoutParams().width = 150;
-            squareBtn.requestLayout();
+            plusMinus.getLayoutParams().height = (int) getResources().getDimension(R.dimen.small_icon_size_in_toolbar);
+            plusMinus.getLayoutParams().width = (int) getResources().getDimension(R.dimen.small_icon_size_in_toolbar);
+            squareBtn.getLayoutParams().height = (int) getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
+            squareBtn.getLayoutParams().width = (int) getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
 
             squareCounterView.setVisibility(View.VISIBLE);
             squareCounterView.setText(String.valueOf(ServingClass.squareCounter));
