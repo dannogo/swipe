@@ -15,6 +15,7 @@
     <string name="hr">____________</string>
     <string name="addingToFavorites">Media has been added to favorites</string>
     <string name="type_number">Type phone number</string>
+    <string name="temporary">temporary</string>
 
     <string-array name="shareTabs">
         <item>SMS</item>

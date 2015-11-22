@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
@@ -90,12 +91,12 @@ public class SwipeActivity extends AppCompatActivity{
         ImageButton starInToolbar = (ImageButton) toolbar.findViewById(R.id.starBtn);
         if (SivAdapter.favoritesUri.contains(images.get(currentPosition))) {
             starInToolbar.setVisibility(View.GONE);
-            toolbar.setBackgroundColor(getResources().getColor(R.color.favorites_skin));
-            statusBar.setBackgroundColor(getResources().getColor(R.color.favorites_skin));
+            toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.favorites_skin));
+            statusBar.setBackgroundColor(ContextCompat.getColor(this, R.color.favorites_skin));
         }else{
             starInToolbar.setVisibility(View.VISIBLE);
-            toolbar.setBackgroundColor(getResources().getColor(R.color.app_skin));
-            statusBar.setBackgroundColor(getResources().getColor(R.color.app_skin));
+            toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.app_skin));
+            statusBar.setBackgroundColor(ContextCompat.getColor(this, R.color.app_skin));
         }
         starInToolbar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,12 +147,12 @@ public class SwipeActivity extends AppCompatActivity{
                 ImageView starInToolbar = (ImageView) toolbar.findViewById(R.id.starBtn);
                 if (SivAdapter.favoritesUri.contains(images.get(position))) {
                     starInToolbar.setVisibility(View.GONE);
-                    toolbar.setBackgroundColor(getResources().getColor(R.color.favorites_skin));
-                    statusBar.setBackgroundColor(getResources().getColor(R.color.favorites_skin));
+                    toolbar.setBackgroundColor(ContextCompat.getColor(context, R.color.favorites_skin));
+                    statusBar.setBackgroundColor(ContextCompat.getColor(context, R.color.favorites_skin));
                 }else{
                     starInToolbar.setVisibility(View.VISIBLE);
-                    toolbar.setBackgroundColor(getResources().getColor(R.color.app_skin));
-                    statusBar.setBackgroundColor(getResources().getColor(R.color.app_skin));
+                    toolbar.setBackgroundColor(ContextCompat.getColor(context, R.color.app_skin));
+                    statusBar.setBackgroundColor(ContextCompat.getColor(context, R.color.app_skin));
                 }
 
                 com.software.shell.fab.ActionButton fabTrash = (ActionButton) viewPager.findViewWithTag("fab_trash_" + position);

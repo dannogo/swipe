@@ -50,6 +50,18 @@
     </LinearLayout>
 
     <ImageView
+        android:id="@+id/deleteTemporary"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/delete_green"
+        android:layout_marginRight="0dp"
+        android:padding="10dp"
+        android:layout_weight="0"
+        android:visibility="gone"
+        />
+
+    <ImageView
         android:id="@+id/contactStar"
         android:layout_width="45dp"
         android:layout_height="45dp"

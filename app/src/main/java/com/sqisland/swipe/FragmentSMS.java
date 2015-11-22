@@ -46,7 +46,7 @@ public class FragmentSMS extends Fragment {
     android.support.design.widget.FloatingActionButton fabTypeNumber;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_sms, container, false);
 
         fab = (android.support.design.widget.FloatingActionButton) rootView.findViewById(R.id.fabSMS);
@@ -67,10 +67,20 @@ public class FragmentSMS extends Fragment {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE){
                     if (numberEditField.getText().toString().matches("^[+]?[0-9]{10,13}$")){
-                        Toast.makeText(getActivity(), "MATCH", Toast.LENGTH_SHORT).show();
-                        // Добавить запись в начало списков данных в ContactAdapter
-                        // NotifyDataChange
-                        //
+
+
+                        contactAdapter.ids.add(0, getResources().getString(R.string.temporary)+ServingClass.temporaryPhonesCounter);
+                        contactAdapter.names.add(0, getResources().getString(R.string.temporary));
+                        contactAdapter.phones.add(0, v.getText().toString());
+                        contactAdapter.photos.add(0, getResources().getString(R.string.temporary));
+
+                        ServingClass.temporaryPhones.add(0, v.getText().toString());
+                        ServingClass.temporaryPhonesIds.add(0, getResources().getString(R.string.temporary)+ServingClass.temporaryPhonesCounter++);
+//                        contactAdapter.notifyItemChanged(0);
+//                        contactAdapter.notifyDataSetChanged();
+                        contactAdapter.notifyItemInserted(0);
+                        contactList.scrollToPosition(0);
+
                         validatingLayout.setVisibility(View.GONE);
                         numberEditField.setText("");
                         fragmentSmsContent.setVisibility(View.VISIBLE);

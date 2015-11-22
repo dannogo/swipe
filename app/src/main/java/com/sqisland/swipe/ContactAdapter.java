@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -17,21 +18,39 @@ import java.util.ArrayList;
 public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactViewHolder>{
 
     private LayoutInflater inflater;
-    private ArrayList<String> ids;
-    private ArrayList<String> names;
-    private ArrayList<String> phones;
-    private ArrayList<String> photos;
+    protected ArrayList<String> ids;
+    protected ArrayList<String> names;
+    protected ArrayList<String> phones;
+    protected ArrayList<String> photos;
     protected ArrayList<String> checkedPhones = new ArrayList<>();
     protected ArrayList<String> staredPhones = new ArrayList<>();
-    Context context;
+//    protected static ArrayList<String> temporaryPhones = new ArrayList<>();
+    private Context context;
 
     public ContactAdapter(Context context, ArrayList<String> ids,
                           ArrayList<String> names, ArrayList<String> phones, ArrayList<String> photos){
         inflater = LayoutInflater.from(context);
-        this.ids = new ArrayList<>(ids);
-        this.names = new ArrayList<>(names);
-        this.phones = new ArrayList<>(phones);
-        this.photos = new ArrayList<>(photos);
+        if (ServingClass.temporaryPhones.isEmpty()) {
+            this.ids = new ArrayList<>(ids);
+            this.names = new ArrayList<>(names);
+            this.phones = new ArrayList<>(phones);
+            this.photos = new ArrayList<>(photos);
+        }else{
+            this.ids = new ArrayList<>(ServingClass.temporaryPhonesCounter);
+            this.names = new ArrayList<>();
+            this.phones = new ArrayList<>(ServingClass.temporaryPhones);
+            this.photos = new ArrayList<>();
+            for (int i=0; i<ServingClass.temporaryPhones.size(); i++){
+                this.names.add(context.getResources().getString(R.string.temporary));
+                this.photos.add(context.getResources().getString(R.string.temporary));
+            }
+            this.ids.addAll(ids);
+            this.names.addAll(names);
+            this.phones.addAll(phones);
+            this.photos.addAll(photos);
+        }
+
+
         this.context = context;
 
     }
@@ -45,21 +64,31 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
 
     @Override
     public void onBindViewHolder(ContactViewHolder holder, int position) {
-        if (photos.get(position) == null) {
-            holder.icon.setImageResource(R.drawable.contact);
-        }else{
-            holder.icon.setImageURI(Uri.parse(photos.get(position)));
+        if (ids.get(position).startsWith(context.getResources().getString(R.string.temporary))){
+            holder.icon.setImageResource(R.drawable.trailer);
+            holder.contactStar.setVisibility(View.GONE);
+            holder.deleteTemporary.setVisibility(View.VISIBLE);
+        }else {
+            holder.contactStar.setVisibility(View.VISIBLE);
+            holder.deleteTemporary.setVisibility(View.GONE);
+            if (photos.get(position) == null) {
+                holder.icon.setImageResource(R.drawable.contact);
+            } else {
+                holder.icon.setImageURI(Uri.parse(photos.get(position)));
+            }
+
+            if (staredPhones.contains(phones.get(position))){
+                holder.contactStar.setImageResource(R.drawable.star);
+            }else{
+                holder.contactStar.setImageResource(R.drawable.empty_star);
+            }
         }
         if (checkedPhones.contains(phones.get(position))){
             holder.checkbox.setImageResource(R.drawable.checked_checkbox_50);
         }else{
             holder.checkbox.setImageResource(R.drawable.unchecked_checkbox_50);
         }
-        if (staredPhones.contains(phones.get(position))){
-            holder.contactStar.setImageResource(R.drawable.star);
-        }else{
-            holder.contactStar.setImageResource(R.drawable.empty_star);
-        }
+
 
 
         holder.name.setText(names.get(position));
@@ -81,6 +110,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
         private TextView databaseID;
         private ImageView checkbox;
         private ImageView contactStar;
+        private ImageView deleteTemporary;
 
         public ContactViewHolder(View itemView, Context context) {
             super(itemView);
@@ -90,10 +120,12 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
             databaseID = (TextView) itemView.findViewById(R.id.databaseID);
             checkbox = (ImageView) itemView.findViewById(R.id.contactCheckbox);
             contactStar = (ImageView) itemView.findViewById(R.id.contactStar);
+            deleteTemporary = (ImageView) itemView.findViewById(R.id.deleteTemporary);
 
             checkbox.setOnClickListener(this);
             itemView.setOnClickListener(this);
             contactStar.setOnClickListener(this);
+            deleteTemporary.setOnClickListener(this);
         }
 
         @Override
@@ -106,6 +138,17 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
                 }else{
                     staredPhones.remove(currentPhone);
                     contactStar.setImageResource(R.drawable.empty_star);
+                }
+            }else if((view.getId() == deleteTemporary.getId())) {
+                Toast.makeText(context, "id: "+ databaseID.getText(), Toast.LENGTH_SHORT).show();
+                for (int i=0; i<ids.size(); i++){
+                    if (ids.get(i).equals(databaseID.getText().toString())){
+                        ids.remove(i);
+                        names.remove(i);
+                        phones.remove(i);
+                        photos.remove(i);
+                        notifyItemRemoved(i);
+                    }
                 }
             }else{
                 if (!checkedPhones.contains(currentPhone)) {

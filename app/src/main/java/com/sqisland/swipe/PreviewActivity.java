@@ -19,6 +19,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
@@ -275,15 +276,15 @@ public class PreviewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_preview);
 
         toolbar = (LinearLayout) findViewById(R.id.double_toolbar);
-        toolbar.setBackgroundColor(getResources().getColor(R.color.app_skin));
+        toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.app_skin));
 
 
         statusBar = findViewById(R.id.statusBarBackground);
         statusBar.getLayoutParams().height = ServingClass.getStatusBarHeight(this);
-        statusBar.setBackgroundColor(getResources().getColor(R.color.app_skin));
+        statusBar.setBackgroundColor(ContextCompat.getColor(this, R.color.app_skin));
 
         filterTab = (LinearLayout) findViewById(R.id.filter_tab);
-        filterTab.setBackgroundColor(getResources().getColor(R.color.app_skin));
+        filterTab.setBackgroundColor(ContextCompat.getColor(this, R.color.app_skin));
         squareCounterView = (TextView) findViewById(R.id.squareCounter);
 
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) toolbar.getLayoutParams();
@@ -518,6 +519,14 @@ public class PreviewActivity extends AppCompatActivity {
 
         reloadRecyclerView(columnsInPortrait, columnsInLandscape);
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ServingClass.temporaryPhones = new ArrayList<>();
+        ServingClass.temporaryPhonesIds = new ArrayList<>();
+        ServingClass.temporaryPhonesCounter = 0;
     }
 
     // Show popup window
@@ -768,21 +777,21 @@ public class PreviewActivity extends AppCompatActivity {
     private void switchColorAndVisibility(){
 
         if (filter.equals("Favorites")){
-            filterTab.setBackgroundColor(getResources().getColor(R.color.favorites_skin));
-            toolbar.setBackgroundColor(getResources().getColor(R.color.favorites_skin));
-            statusBar.setBackgroundColor(getResources().getColor(R.color.favorites_skin));
+            filterTab.setBackgroundColor(ContextCompat.getColor(this, R.color.favorites_skin));
+            toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.favorites_skin));
+            statusBar.setBackgroundColor(ContextCompat.getColor(this, R.color.favorites_skin));
         }else{
-            filterTab.setBackgroundColor(getResources().getColor(R.color.app_skin));
-            toolbar.setBackgroundColor(getResources().getColor(R.color.app_skin));
-            statusBar.setBackgroundColor(getResources().getColor(R.color.app_skin));
+            filterTab.setBackgroundColor(ContextCompat.getColor(this, R.color.app_skin));
+            toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.app_skin));
+            statusBar.setBackgroundColor(ContextCompat.getColor(this, R.color.app_skin));
         }
 
         if (isDeleteMode) {
             trashBtn.setVisibility(View.VISIBLE);
             cancelBtn.setVisibility(View.VISIBLE);
             starBtn.setVisibility(View.VISIBLE);
-            toolbar.setBackgroundColor(getResources().getColor(R.color.deleteModeColor));
-            statusBar.setBackgroundColor(getResources().getColor(R.color.deleteModeColor));
+            toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.deleteModeColor));
+            statusBar.setBackgroundColor(ContextCompat.getColor(this, R.color.deleteModeColor));
         }else{
             trashBtn.setVisibility(View.GONE);
             cancelBtn.setVisibility(View.GONE);
