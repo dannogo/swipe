@@ -31,7 +31,8 @@
         </activity>
         <activity
             android:name=".SwipeActivity"
-            android:label="@string/title_activity_swipe" />
+            android:label="@string/title_activity_swipe"
+            />
         <activity
             android:name=".YouTubeActivity"
             android:theme="@style/AppTheme.with.painted.navbar"

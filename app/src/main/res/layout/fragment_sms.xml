@@ -27,6 +27,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <EditText
+            android:id="@+id/search_field"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:hint="Search contacts"
+            android:visibility="invisible"
+            />
 
         <RelativeLayout
             android:id="@+id/progressBar"
@@ -46,7 +53,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fadeScrollbars="false"
-            android:scrollbars="vertical" />
+            android:scrollbars="vertical"
+            android:layout_below="@+id/search_field"
+            />
+
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fabSMS"

@@ -17,6 +17,8 @@
     <string name="type_number">Type phone number</string>
     <string name="temporary">temporary</string>
 
+    <string name="share_message">https://play.google.com/store</string>
+
     <string-array name="shareTabs">
         <item>SMS</item>
         <item>Other</item>

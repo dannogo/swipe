@@ -1,6 +1,9 @@
 package com.sqisland.swipe;
 
+import android.app.PendingIntent;
 import android.content.ContentResolver;
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -17,10 +20,14 @@ import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.telephony.PhoneNumberUtils;
+import android.telephony.SmsManager;
+import android.telephony.SmsMessage;
+import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -44,6 +51,7 @@ public class FragmentSMS extends Fragment {
     private ArrayList<String> photos = new ArrayList<>();
     android.support.design.widget.FloatingActionButton fab;
     android.support.design.widget.FloatingActionButton fabTypeNumber;
+    protected EditText searchField;
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
@@ -54,6 +62,17 @@ public class FragmentSMS extends Fragment {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getActivity(), ""+contactAdapter.checkedPhones, Toast.LENGTH_SHORT).show();
+
+                SmsManager sms = SmsManager.getDefault();
+                PendingIntent sentPI;
+                String SENT = "SMS_SENT";
+                sentPI = PendingIntent.getBroadcast(getActivity(), 0,new Intent(SENT), 0);
+
+                for (int i=0; i<contactAdapter.checkedPhones.size(); i++){
+                    sms.sendTextMessage(contactAdapter.checkedPhones.get(i).replaceAll("[^+0-9]",""), null, getResources().getString(R.string.share_message), sentPI, null);
+                }
+
+
             }
         });
 
@@ -68,14 +87,13 @@ public class FragmentSMS extends Fragment {
                 if (actionId == EditorInfo.IME_ACTION_DONE){
                     if (numberEditField.getText().toString().matches("^[+]?[0-9]{10,13}$")){
 
-
                         contactAdapter.ids.add(0, getResources().getString(R.string.temporary)+ServingClass.temporaryPhonesCounter);
                         contactAdapter.names.add(0, getResources().getString(R.string.temporary));
                         contactAdapter.phones.add(0, v.getText().toString());
                         contactAdapter.photos.add(0, getResources().getString(R.string.temporary));
 
                         ServingClass.temporaryPhones.add(0, v.getText().toString());
-                        ServingClass.temporaryPhonesIds.add(0, getResources().getString(R.string.temporary)+ServingClass.temporaryPhonesCounter++);
+                        ServingClass.temporaryPhonesIds.add(0, getResources().getString(R.string.temporary) + ServingClass.temporaryPhonesCounter++);
 
                         contactAdapter.notifyItemInserted(0);
                         contactList.scrollToPosition(0);
@@ -92,6 +110,7 @@ public class FragmentSMS extends Fragment {
                         return true;
                     }
                 }
+                imm.hideSoftInputFromWindow(searchField.getWindowToken(), 0);
                 return false;
             }
         });
@@ -104,13 +123,13 @@ public class FragmentSMS extends Fragment {
                 validatingLayout.setVisibility(View.VISIBLE);
                 numberEditField.requestFocus();
                 imm.showSoftInput(numberEditField, InputMethodManager.SHOW_IMPLICIT);
-
             }
         });
 
         progressBar = (RelativeLayout) rootView.findViewById(R.id.progressBar);
         contactList = (RecyclerView) rootView.findViewById(R.id.contactList);
         contactList.addItemDecoration(new DividerItemDecoration(getActivity(), null, true, true));
+        searchField = (EditText) rootView.findViewById(R.id.search_field);
         new LoadContactData().execute();
 
         contactList.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -120,29 +139,36 @@ public class FragmentSMS extends Fragment {
         contactList.addItemDecoration(bottomOffsetDecoration);
 
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) fab.getLayoutParams();
+        RelativeLayout.LayoutParams paramsTypeNumber = (RelativeLayout.LayoutParams) fabTypeNumber.getLayoutParams();
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
             params.bottomMargin = (int)getResources().getDimension(R.dimen.fab_plus_navbar_margin);
+            paramsTypeNumber.bottomMargin = (int)getResources().getDimension(R.dimen.fab_plus_navbar_margin);
         }else{
             params.bottomMargin = (int)getResources().getDimension(R.dimen.fab_margin);
+            paramsTypeNumber.bottomMargin = (int)getResources().getDimension(R.dimen.fab_margin);
         }
         fab.setLayoutParams(params);
+        fabTypeNumber.setLayoutParams(paramsTypeNumber);
 
         return rootView;
     }
+
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) fab.getLayoutParams();
-
+        RelativeLayout.LayoutParams paramsTypeNumber = (RelativeLayout.LayoutParams) fabTypeNumber.getLayoutParams();
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             params.bottomMargin = (int)getResources().getDimension(R.dimen.fab_margin);
+            paramsTypeNumber.bottomMargin = (int)getResources().getDimension(R.dimen.fab_margin);
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
             params.bottomMargin = (int)getResources().getDimension(R.dimen.fab_plus_navbar_margin);
+            paramsTypeNumber.bottomMargin = (int)getResources().getDimension(R.dimen.fab_plus_navbar_margin);
         }
         fab.setLayoutParams(params);
-
+        fabTypeNumber.setLayoutParams(paramsTypeNumber);
     }
 
     static class BottomOffsetDecoration extends RecyclerView.ItemDecoration {
@@ -173,7 +199,7 @@ public class FragmentSMS extends Fragment {
 
             ContentResolver cr = getActivity().getContentResolver();
             Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-                    null, null, null, null);
+                    null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME+" ASC");
             if (cur.getCount() > 0) {
                 while (cur.moveToNext()) {
                     String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
@@ -187,20 +213,25 @@ public class FragmentSMS extends Fragment {
                                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                                 null,
                                 ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
-                                new String[]{id}, null);
+                                new String[]{id},
+                                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME+" ASC");
                         while (pCur.moveToNext()) {
                             String phoneNo = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
-                            if (phones.isEmpty()){
-                                ids.add(id);
-                                names.add(name);
-                                phones.add(phoneNo);
-                                photos.add(photoUri);
-                            }else if (!(PhoneNumberUtils.compare(phones.get(phones.size()-1), phoneNo))) {
-                                ids.add(id);
-                                names.add(name);
-                                phones.add(phoneNo);
-                                photos.add(photoUri);
+                            // Skiping short and other inappropriate numbers
+                            if (phoneNo.replaceAll("[^+0-9]","").matches("^[+]?[0-9]{10,13}$")) {
+
+                                if (phones.isEmpty()) {
+                                    ids.add(id);
+                                    names.add(name);
+                                    phones.add(phoneNo);
+                                    photos.add(photoUri);
+                                } else if (!(PhoneNumberUtils.compare(phones.get(phones.size() - 1), phoneNo))) {
+                                    ids.add(id);
+                                    names.add(name);
+                                    phones.add(phoneNo);
+                                    photos.add(photoUri);
+                                }
                             }
                         }
                         pCur.close();
@@ -218,6 +249,7 @@ public class FragmentSMS extends Fragment {
             contactAdapter = new ContactAdapter(getActivity(), ids, names, phones, photos);
             contactList.setAdapter(contactAdapter);
             progressBar.setVisibility(View.GONE);
+            searchField.setVisibility(View.VISIBLE);
         }
 
     }

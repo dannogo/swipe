@@ -19,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -265,8 +266,6 @@ public class SwipeActivity extends AppCompatActivity{
 
         ImageButton cancelBtn = (ImageButton) findViewById(R.id.cancelBtn);
         cancelBtn.setVisibility(View.GONE);
-
-
 
     }
 
