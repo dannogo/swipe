@@ -33,6 +33,7 @@
             android:layout_height="60dp"
             android:hint="Search contacts"
             android:visibility="invisible"
+            android:inputType="textCapWords"
             />
 
         <RelativeLayout

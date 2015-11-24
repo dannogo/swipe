@@ -129,7 +129,7 @@ public class SwipeActivity extends AppCompatActivity{
             toolbar.setVisibility(View.INVISIBLE);
         }
 
-        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             public void onPageScrollStateChanged(int state) {
             }
 

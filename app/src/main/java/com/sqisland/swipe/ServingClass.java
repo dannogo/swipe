@@ -19,6 +19,7 @@ public class ServingClass {
     protected static int squareCounter = 1;
     protected static ArrayList<String> temporaryPhones = new ArrayList<>();
     protected static ArrayList<String> temporaryPhonesIds = new ArrayList<>();
+    protected static ArrayList<String> checkedPhones = new ArrayList<>();
     protected static int temporaryPhonesCounter = 0;
 
     protected static void trashBtnAction(Context context, int position){

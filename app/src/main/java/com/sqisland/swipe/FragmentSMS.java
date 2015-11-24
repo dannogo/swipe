@@ -2,7 +2,6 @@ package com.sqisland.swipe;
 
 import android.app.PendingIntent;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
@@ -11,29 +10,28 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.SmsManager;
-import android.telephony.SmsMessage;
-import android.text.InputType;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -61,17 +59,21 @@ public class FragmentSMS extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getActivity(), ""+contactAdapter.checkedPhones, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity(), ""+ServingClass.checkedPhones, Toast.LENGTH_SHORT).show();
+                for (int i=0; i<contactList.getChildCount(); i++){
+                    ((ImageView)contactList.getChildAt(i).findViewById(R.id.contactCheckbox)).setImageResource(R.drawable.unchecked_checkbox_50);
+                }
 
                 SmsManager sms = SmsManager.getDefault();
                 PendingIntent sentPI;
                 String SENT = "SMS_SENT";
                 sentPI = PendingIntent.getBroadcast(getActivity(), 0,new Intent(SENT), 0);
 
-                for (int i=0; i<contactAdapter.checkedPhones.size(); i++){
-                    sms.sendTextMessage(contactAdapter.checkedPhones.get(i).replaceAll("[^+0-9]",""), null, getResources().getString(R.string.share_message), sentPI, null);
+                for (int i=0; i<ServingClass.checkedPhones.size(); i++){
+                    sms.sendTextMessage(ServingClass.checkedPhones.get(i).replaceAll("[^+0-9]",""), null, getResources().getString(R.string.share_message), sentPI, null);
                 }
 
+                ServingClass.checkedPhones = new ArrayList<String>();
 
             }
         });
@@ -129,7 +131,63 @@ public class FragmentSMS extends Fragment {
         progressBar = (RelativeLayout) rootView.findViewById(R.id.progressBar);
         contactList = (RecyclerView) rootView.findViewById(R.id.contactList);
         contactList.addItemDecoration(new DividerItemDecoration(getActivity(), null, true, true));
+
+        final Handler handler = new Handler();
+        final ArrayList<String> searchResultIds = new ArrayList<>();
+        final ArrayList<String> searchResultNames = new ArrayList<>();
+        final ArrayList<String> searchResultPhones = new ArrayList<>();
+        final ArrayList<String> searchResultPhotos = new ArrayList<>();
+
+
         searchField = (EditText) rootView.findViewById(R.id.search_field);
+        searchField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                handler.removeMessages(0);
+
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        searchResultIds.clear();
+                        searchResultNames.clear();
+                        searchResultPhones.clear();
+                        searchResultPhotos.clear();
+
+                        String lowerSubstring = searchField.getText().toString().toLowerCase();
+
+                        if (!searchField.getText().toString().equals("")) {
+                            for (int i = 0; i < names.size(); i++) {
+                                if (names.get(i).toLowerCase().contains(lowerSubstring)) {
+                                    searchResultIds.add(ids.get(i));
+                                    searchResultNames.add(names.get(i));
+                                    searchResultPhones.add(phones.get(i));
+                                    searchResultPhotos.add(photos.get(i));
+                                }
+                            }
+                            contactAdapter = new ContactAdapter(getActivity(), searchResultIds,
+                                    searchResultNames, searchResultPhones, searchResultPhotos, searchField.getText().toString().toLowerCase());
+                            contactList.setAdapter(contactAdapter);
+                        }else{
+                            contactAdapter = new ContactAdapter(getActivity(), ids,
+                                    names, phones, photos, null);
+                            contactList.setAdapter(contactAdapter);
+                        }
+                    }
+                }, 1000);
+
+
+            }
+        });
         new LoadContactData().execute();
 
         contactList.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -152,7 +210,6 @@ public class FragmentSMS extends Fragment {
 
         return rootView;
     }
-
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -246,7 +303,7 @@ public class FragmentSMS extends Fragment {
         protected void onPostExecute(Void v) {
             super.onPostExecute(v);
 
-            contactAdapter = new ContactAdapter(getActivity(), ids, names, phones, photos);
+            contactAdapter = new ContactAdapter(getActivity(), ids, names, phones, photos, null);
             contactList.setAdapter(contactAdapter);
             progressBar.setVisibility(View.GONE);
             searchField.setVisibility(View.VISIBLE);

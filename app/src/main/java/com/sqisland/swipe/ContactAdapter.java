@@ -1,8 +1,15 @@
 package com.sqisland.swipe;
 
+import android.app.Application;
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.BackgroundColorSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,15 +29,16 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
     protected ArrayList<String> names;
     protected ArrayList<String> phones;
     protected ArrayList<String> photos;
-    protected ArrayList<String> checkedPhones = new ArrayList<>();
+//    protected ArrayList<String> checkedPhones = new ArrayList<>();
     protected ArrayList<String> staredPhones = new ArrayList<>();
+    private String searchSubstring;
 //    protected static ArrayList<String> temporaryPhones = new ArrayList<>();
     private Context context;
 
     public ContactAdapter(Context context, ArrayList<String> ids,
-                          ArrayList<String> names, ArrayList<String> phones, ArrayList<String> photos){
+                          ArrayList<String> names, ArrayList<String> phones, ArrayList<String> photos, String searchSubstring){
         inflater = LayoutInflater.from(context);
-        if (ServingClass.temporaryPhones.isEmpty()) {
+        if (ServingClass.temporaryPhones.isEmpty() || (searchSubstring != null)) {
             this.ids = new ArrayList<>(ids);
             this.names = new ArrayList<>(names);
             this.phones = new ArrayList<>(phones);
@@ -50,7 +58,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
             this.photos.addAll(photos);
         }
 
-
+        this.searchSubstring = searchSubstring;
         this.context = context;
 
     }
@@ -83,15 +91,24 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
                 holder.contactStar.setImageResource(R.drawable.empty_star);
             }
         }
-        if (checkedPhones.contains(phones.get(position))){
+        if (ServingClass.checkedPhones.contains(phones.get(position))){
             holder.checkbox.setImageResource(R.drawable.checked_checkbox_50);
         }else{
             holder.checkbox.setImageResource(R.drawable.unchecked_checkbox_50);
         }
 
 
-
-        holder.name.setText(names.get(position));
+        if (searchSubstring != null){
+            int substringStartIndex = names.get(position).toLowerCase().indexOf(searchSubstring);
+            int subStringEndIndex = substringStartIndex + searchSubstring.length();
+            Spannable WordtoSpan = new SpannableString(names.get(position));
+//            WordtoSpan.setSpan(new ForegroundColorSpan(Color.parseColor("#e74c3c")), substringStartIndex, subStringEndIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            WordtoSpan.setSpan(new BackgroundColorSpan(Color.parseColor("#FFECB3")), substringStartIndex, subStringEndIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            holder.name.setText(WordtoSpan);
+        }else{
+            holder.name.setText(names.get(position));
+        }
+//        holder.name.setText(Html.fromHtml(names.get(position)));
         holder.phone.setText(phones.get(position));
         holder.databaseID.setText(ids.get(position));
     }
@@ -153,15 +170,15 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
                         break;
                     }
                 }
-                if (checkedPhones.contains(phone.getText().toString())){
-                    checkedPhones.remove(phone.getText().toString());
+                if (ServingClass.checkedPhones.contains(phone.getText().toString())){
+                    ServingClass.checkedPhones.remove(phone.getText().toString());
                 }
             }else{
-                if (!checkedPhones.contains(currentPhone)) {
-                    checkedPhones.add(currentPhone);
+                if (!ServingClass.checkedPhones.contains(currentPhone)) {
+                    ServingClass.checkedPhones.add(currentPhone);
                     checkbox.setImageResource(R.drawable.checked_checkbox_50);
                 }else{
-                    checkedPhones.remove(currentPhone);
+                    ServingClass.checkedPhones.remove(currentPhone);
                     checkbox.setImageResource(R.drawable.unchecked_checkbox_50);
                 }
             }
