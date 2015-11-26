@@ -78,7 +78,6 @@ public class ShareActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Toast.makeText(this, "ShareActivity onDestroy", Toast.LENGTH_SHORT).show();
         ServingClass.checkedPhones = new ArrayList<>();
     }
 

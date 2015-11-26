@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/speedDialRowContent"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:layout_margin="1dp"
+    >
+
+    <ImageView
+        android:id="@+id/speedDialPhoto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/contact_white"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="4dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:id="@+id/speedDialFirstCharacter"
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="%"
+                android:textColor="@color/fab_material_white"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/speedDialName"
+                android:layout_width="match_parent"
+                android:layout_height="17dp"
+                android:textSize="12sp"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:text="Name"
+                android:textColor="@color/fab_material_white" />
+
+            <TextView
+                android:id="@+id/speedDialPhone"
+                android:layout_width="match_parent"
+                android:layout_height="17dp"
+                android:textSize="12sp"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:text="Phone"
+                android:textColor="@color/fab_material_white" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/deleteContactFromSpeedDial"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentRight="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/cross_white" />
+
+        <ImageView
+            android:id="@+id/speedDialCheckmark"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentLeft="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/unchecked_checkbox_50_white" />
+    </RelativeLayout>
+
+
+</RelativeLayout>

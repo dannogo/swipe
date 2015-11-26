@@ -25,7 +25,8 @@
     <RelativeLayout
         android:id="@+id/fragmentSmsContent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
 
         <EditText
             android:id="@+id/search_field"
@@ -34,6 +35,23 @@
             android:hint="Search contacts"
             android:visibility="invisible"
             android:inputType="textCapWords"
+            />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/speedDial"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:fadeScrollbars="false"
+            android:scrollbars="vertical"
+            android:layout_below="@+id/search_field"
+            />
+        <ImageView
+            android:id="@+id/expandSpeedDial"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:src="@drawable/arrow_expand_50"
+            android:layout_below="@+id/speedDial"
+            android:scaleType="centerInside"
             />
 
         <RelativeLayout
@@ -55,7 +73,7 @@
             android:layout_height="wrap_content"
             android:fadeScrollbars="false"
             android:scrollbars="vertical"
-            android:layout_below="@+id/search_field"
+            android:layout_below="@+id/expandSpeedDial"
             />
 
 

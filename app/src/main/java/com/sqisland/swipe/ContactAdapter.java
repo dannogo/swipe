@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.Spannable;
@@ -29,14 +30,14 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
     protected ArrayList<String> names;
     protected ArrayList<String> phones;
     protected ArrayList<String> photos;
-//    protected ArrayList<String> checkedPhones = new ArrayList<>();
     protected ArrayList<String> staredPhones = new ArrayList<>();
+    private RecyclerView speedDial;
     private String searchSubstring;
-//    protected static ArrayList<String> temporaryPhones = new ArrayList<>();
     private Context context;
 
     public ContactAdapter(Context context, ArrayList<String> ids,
-                          ArrayList<String> names, ArrayList<String> phones, ArrayList<String> photos, String searchSubstring){
+                          ArrayList<String> names, ArrayList<String> phones, ArrayList<String> photos,
+                          String searchSubstring, RecyclerView speedDial){
         inflater = LayoutInflater.from(context);
         if (ServingClass.temporaryPhones.isEmpty() || (searchSubstring != null)) {
             this.ids = new ArrayList<>(ids);
@@ -60,6 +61,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
 
         this.searchSubstring = searchSubstring;
         this.context = context;
+        this.speedDial = speedDial;
 
     }
 
@@ -128,6 +130,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
         private ImageView checkbox;
         private ImageView contactStar;
         private ImageView deleteTemporary;
+        private SpeedDialAdapter speedDialAdapter;
 
         public ContactViewHolder(View itemView, Context context) {
             super(itemView);
@@ -139,6 +142,9 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
             contactStar = (ImageView) itemView.findViewById(R.id.contactStar);
             deleteTemporary = (ImageView) itemView.findViewById(R.id.deleteTemporary);
 
+            speedDialAdapter = (SpeedDialAdapter)speedDial.getAdapter();
+
+
             checkbox.setOnClickListener(this);
             itemView.setOnClickListener(this);
             contactStar.setOnClickListener(this);
@@ -149,9 +155,26 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
         public void onClick(View view) {
             String currentPhone = phone.getText().toString();
             if ((view.getId() == contactStar.getId()) ){
+                int currentPosition = phones.indexOf(currentPhone);
                 if (!staredPhones.contains(currentPhone)){
                     staredPhones.add(currentPhone);
                     contactStar.setImageResource(R.drawable.star);
+
+                    speedDialAdapter.ids.add(ids.get(currentPosition));
+                    speedDialAdapter.names.add(names.get(currentPosition));
+                    speedDialAdapter.phones.add(currentPhone);
+                    speedDialAdapter.photos.add(photos.get(currentPosition));
+                    speedDialAdapter.notifyItemInserted(speedDialAdapter.getItemCount() - 1);
+
+                    // It`s a spike for nullifying some tricky bug
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            speedDial.scrollToPosition(speedDialAdapter.getItemCount() - 1);
+                        }
+                    }, 50);
+
                 }else{
                     staredPhones.remove(currentPhone);
                     contactStar.setImageResource(R.drawable.empty_star);
@@ -181,6 +204,16 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
                     ServingClass.checkedPhones.remove(currentPhone);
                     checkbox.setImageResource(R.drawable.unchecked_checkbox_50);
                 }
+
+                // synchronizing checkmarks with speed dial list
+                for (int i=0; i<speedDial.getChildCount(); i++){
+                    if (ServingClass.checkedPhones.contains(((TextView) speedDial.getChildAt(i).findViewById(R.id.speedDialPhone)).getText().toString())) {
+                        ((ImageView) speedDial.getChildAt(i).findViewById(R.id.speedDialCheckmark)).setImageResource(R.drawable.checked_checkbox_50_white);
+                    }else{
+                        ((ImageView)speedDial.getChildAt(i).findViewById(R.id.speedDialCheckmark)).setImageResource(R.drawable.unchecked_checkbox_50_white);
+                    }
+                }
+
             }
         }
     }

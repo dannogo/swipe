@@ -16,12 +16,14 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.SmsManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +34,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -40,8 +43,9 @@ import java.util.ArrayList;
  */
 public class FragmentSMS extends Fragment {
 
-    private RecyclerView contactList;
+    protected RecyclerView contactList, speedDial ;
     private ContactAdapter contactAdapter;
+    private SpeedDialAdapter speedDialAdapter;
     private RelativeLayout progressBar;
     private ArrayList<String> ids = new ArrayList<>();
     private ArrayList<String> names = new ArrayList<>();
@@ -54,6 +58,13 @@ public class FragmentSMS extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_sms, container, false);
+
+        speedDial = (RecyclerView) rootView.findViewById(R.id.speedDial);
+//        speedDialAdapter = new SpeedDialAdapter(this, )
+        speedDial.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+        speedDialAdapter = new SpeedDialAdapter(getActivity(), new ArrayList<String>(),new ArrayList<String>(),
+                new ArrayList<String>(),new ArrayList<String>(), this);
+        speedDial.setAdapter(speedDialAdapter);
 
         fab = (android.support.design.widget.FloatingActionButton) rootView.findViewById(R.id.fabSMS);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -175,11 +186,11 @@ public class FragmentSMS extends Fragment {
                                 }
                             }
                             contactAdapter = new ContactAdapter(getActivity(), searchResultIds,
-                                    searchResultNames, searchResultPhones, searchResultPhotos, searchField.getText().toString().toLowerCase());
+                                    searchResultNames, searchResultPhones, searchResultPhotos, searchField.getText().toString().toLowerCase(), speedDial);
                             contactList.setAdapter(contactAdapter);
                         }else{
                             contactAdapter = new ContactAdapter(getActivity(), ids,
-                                    names, phones, photos, null);
+                                    names, phones, photos, null, speedDial);
                             contactList.setAdapter(contactAdapter);
                         }
                     }
@@ -303,10 +314,17 @@ public class FragmentSMS extends Fragment {
         protected void onPostExecute(Void v) {
             super.onPostExecute(v);
 
-            contactAdapter = new ContactAdapter(getActivity(), ids, names, phones, photos, null);
+            contactAdapter = new ContactAdapter(getActivity(), ids, names, phones, photos, null, speedDial);
             contactList.setAdapter(contactAdapter);
             progressBar.setVisibility(View.GONE);
             searchField.setVisibility(View.VISIBLE);
+            Log.w("LOG", "onPostExecute");
+            Log.w("LOG", "onPostExecute");
+            Log.w("LOG", "onPostExecute");
+            Log.w("LOG", "onPostExecute");
+            Log.w("LOG", "onPostExecute");
+            Log.w("LOG", "onPostExecute");
+            Log.w("LOG", "onPostExecute");
         }
 
     }
