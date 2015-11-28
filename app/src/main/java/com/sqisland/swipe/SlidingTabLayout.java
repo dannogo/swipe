@@ -1,8 +1,5 @@
 package com.sqisland.swipe;
 
-/**
- * Created by Admin on 12-Nov-15.
- */
 /*
  * Copyright 2014 Google Inc. All rights reserved.
  *

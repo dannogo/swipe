@@ -77,8 +77,6 @@ public class FragmentSMS extends Fragment {
             }
         });
         speedDial = (RecyclerView) rootView.findViewById(R.id.speedDial);
-//        speedDial.getViewTreeObserver()
-//                .addOnGlobalLayoutListener(new OnViewGlobalLayoutListener(speedDial));
         speedDial.setLayoutManager(new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.number_of_columns_in_speeddial)));
         speedDialAdapter = new SpeedDialAdapter(getActivity(), this);
         speedDial.setAdapter(speedDialAdapter);
@@ -348,7 +346,6 @@ public class FragmentSMS extends Fragment {
             if (!(speedDialAdapter.phones.size() == 0)) {
                 expandSpeedDial.setVisibility(View.VISIBLE);
             }
-//            speedDial.setVisibility(View.VISIBLE);
         }
 
     }

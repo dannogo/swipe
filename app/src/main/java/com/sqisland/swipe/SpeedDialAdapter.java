@@ -33,7 +33,6 @@ public class SpeedDialAdapter extends RecyclerView.Adapter<SpeedDialAdapter.Spee
     protected ArrayList<Integer> colors;
     private FragmentSMS fragmentSMS;
     private SharedPreferences prefs;
-//    private SharedPreferences.Editor editor;
 
     public SpeedDialAdapter(Context context, FragmentSMS fragmentSMS) {
         inflater = LayoutInflater.from(context);
@@ -57,7 +56,6 @@ public class SpeedDialAdapter extends RecyclerView.Adapter<SpeedDialAdapter.Spee
             colors = new ArrayList<>();
         }
         speedDialColors = context.getResources().getIntArray(R.array.speed_dial_colors);
-//        editor = prefs.edit();
     }
 
     @Override
@@ -86,7 +84,6 @@ public class SpeedDialAdapter extends RecyclerView.Adapter<SpeedDialAdapter.Spee
             holder.speedDialFirstCharacter.setText(names.get(position).substring(0, 1));
         }
 
-//        holder.speedDialRowContent.setBackgroundColor(colorPosition);
         holder.speedDialRowContent.setBackgroundColor(colors.get(position));
         holder.speedDialName.setText(names.get(position));
         holder.speedDialPhone.setText(phones.get(position));

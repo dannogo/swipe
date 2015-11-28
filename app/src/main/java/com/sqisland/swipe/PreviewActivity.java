@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
@@ -74,7 +75,6 @@ public class PreviewActivity extends AppCompatActivity {
     private PopupWindow popupWindow;
     private LinearLayout filterTab;
     protected TextView squareCounterView;
-//    protected static int squareCounter = 0;
 
 
     // Completely deletes photo from Gallery folder
@@ -185,7 +185,7 @@ public class PreviewActivity extends AppCompatActivity {
             return SivAdapter.favoritesUri;
         }
 
-        Toast.makeText(this, toast, Toast.LENGTH_SHORT).show();
+        ServingClass.showExtremelyShortToast(this, toast);
 
         Uri queryUri = MediaStore.Files.getContentUri("external");
 
@@ -313,7 +313,7 @@ public class PreviewActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (!filter.equals("Photo")) {
                     info.setText("Photo");
-                    Toast.makeText(PreviewActivity.this, "Photo", Toast.LENGTH_SHORT).show();
+                    ServingClass.showExtremelyShortToast(PreviewActivity.this, "Photo");
                     filterButtonProperState(filter, false);
                     filter = "Photo";
                     filterButtonServing(filter, v);
@@ -326,7 +326,7 @@ public class PreviewActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!filter.equals("Video")) {
-                    Toast.makeText(PreviewActivity.this, "Video", Toast.LENGTH_SHORT).show();
+                    ServingClass.showExtremelyShortToast(PreviewActivity.this, "Video");
                     info.setText("Video");
                     filterButtonProperState(filter, false);
                     filter = "Video";
@@ -340,7 +340,7 @@ public class PreviewActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!filter.equals("All")) {
-                    Toast.makeText(PreviewActivity.this, "All", Toast.LENGTH_SHORT).show();
+                    ServingClass.showExtremelyShortToast(PreviewActivity.this, "All");
                     info.setText("All");
                     filterButtonProperState(filter, false);
                     filter = "All";
@@ -354,7 +354,7 @@ public class PreviewActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!filter.equals("Favorites")) {
-                    Toast.makeText(PreviewActivity.this, "Favorites", Toast.LENGTH_SHORT).show();
+                    ServingClass.showExtremelyShortToast(PreviewActivity.this, "Favorites");
                     info.setText("Favorites");
                     filterButtonProperState(filter, false);
                     filter = "Favorites";

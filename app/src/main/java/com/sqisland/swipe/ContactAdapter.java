@@ -39,7 +39,6 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
     private Context context;
     FragmentSMS fragmentSMS;
     private SharedPreferences prefs;
-//    private SharedPreferences.Editor editor;
 
     public ContactAdapter(Context context, ArrayList<String> ids,
                           ArrayList<String> names, ArrayList<String> phones, ArrayList<String> photos,
@@ -77,7 +76,6 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
         this.context = context;
         this.speedDial = speedDial;
         this.fragmentSMS = fragmentSMS;
-//        editor = prefs.edit();
     }
 
     @Override

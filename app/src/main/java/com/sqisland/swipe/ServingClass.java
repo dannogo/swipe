@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,6 +17,7 @@ import android.view.animation.Transformation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -49,18 +51,31 @@ public class ServingClass {
         dialog.show(((Activity) context).getFragmentManager(), "Confirmation");
     }
 
+    protected static void showExtremelyShortToast(Context context, String message){
+        final Toast toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+        toast.show();
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                toast.cancel();
+            }
+        }, 300);
+    }
+
     protected static void shareBtnAction(Context context){
 
         Intent intent = new Intent();
         intent.setClass(context, ShareActivity.class);
         context.startActivity(intent);
-        /*
-        Intent sendIntent = new Intent();
-        sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_TEXT, "https://www.google.com");
-        sendIntent.setType("text/plain");
-        context.startActivity(sendIntent);
-        */
+
+//        Intent sendIntent = new Intent();
+//        sendIntent.setAction(Intent.ACTION_SEND);
+//        sendIntent.putExtra(Intent.EXTRA_TEXT, "https://www.google.com");
+//        sendIntent.setType("text/plain");
+//        context.startActivity(sendIntent);
+
     }
 
     protected static void launchCamera(Context context){
@@ -179,13 +194,11 @@ public class ServingClass {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = prefs.edit();
         if (expand){
-//            fragmentSMS.speedDial.setVisibility(View.VISIBLE);
             ServingClass.expand(fragmentSMS.speedDial, ((ShareActivity)context).speedDialHeight);
             fragmentSMS.expandSpeedDial.setImageResource(R.drawable.arrow_collapse_50);
             editor.putBoolean("expand", true);
         }else{
             ServingClass.collapse(fragmentSMS.speedDial);
-//            fragmentSMS.speedDial.setVisibility(View.GONE);
             fragmentSMS.expandSpeedDial.setImageResource(R.drawable.arrow_expand_50);
             editor.putBoolean("expand", false);
         }
