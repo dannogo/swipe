@@ -12,4 +12,6 @@
     <dimen name="fab_plus_navbar_margin">58dp</dimen>
     <dimen name="fab_margin">12dp</dimen>
     <dimen name="bottom_offset_dp">120dp</dimen>
+    <dimen name="height_of_item_in_speeddial">80dp</dimen>
+    <dimen name="max_speeddial_height">240dp</dimen>
 </resources>

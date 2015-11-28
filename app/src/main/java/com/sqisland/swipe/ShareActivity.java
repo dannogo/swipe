@@ -27,6 +27,7 @@ public class ShareActivity extends AppCompatActivity {
 
     private ViewPager sharePager;
     private SlidingTabLayout tabLayout;
+    protected int speedDialHeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

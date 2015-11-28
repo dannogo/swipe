@@ -3,6 +3,7 @@ package com.sqisland.swipe;
 import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -11,6 +12,7 @@ import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
@@ -28,6 +30,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -54,23 +57,37 @@ public class FragmentSMS extends Fragment {
     android.support.design.widget.FloatingActionButton fab;
     android.support.design.widget.FloatingActionButton fabTypeNumber;
     protected EditText searchField;
+    ImageView expandSpeedDial;
+    SharedPreferences prefs;
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_sms, container, false);
 
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        expandSpeedDial = (ImageView) rootView.findViewById(R.id.expandSpeedDial);
+        expandSpeedDial.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean expand = prefs.getBoolean("expand", true);
+
+                ServingClass.handleExpandCollapseSpeedDial(getActivity(), FragmentSMS.this, !expand);
+            }
+        });
         speedDial = (RecyclerView) rootView.findViewById(R.id.speedDial);
-//        speedDialAdapter = new SpeedDialAdapter(this, )
-        speedDial.setLayoutManager(new GridLayoutManager(getActivity(), 3));
-        speedDialAdapter = new SpeedDialAdapter(getActivity(), new ArrayList<String>(),new ArrayList<String>(),
-                new ArrayList<String>(),new ArrayList<String>(), this);
+//        speedDial.getViewTreeObserver()
+//                .addOnGlobalLayoutListener(new OnViewGlobalLayoutListener(speedDial));
+        speedDial.setLayoutManager(new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.number_of_columns_in_speeddial)));
+        speedDialAdapter = new SpeedDialAdapter(getActivity(), this);
         speedDial.setAdapter(speedDialAdapter);
 
         fab = (android.support.design.widget.FloatingActionButton) rootView.findViewById(R.id.fabSMS);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Toast.makeText(getActivity(), ""+ServingClass.checkedPhones, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), ""+ServingClass.checkedPhones, Toast.LENGTH_SHORT).show();
                 for (int i=0; i<contactList.getChildCount(); i++){
                     ((ImageView)contactList.getChildAt(i).findViewById(R.id.contactCheckbox)).setImageResource(R.drawable.unchecked_checkbox_50);
                 }
@@ -186,11 +203,11 @@ public class FragmentSMS extends Fragment {
                                 }
                             }
                             contactAdapter = new ContactAdapter(getActivity(), searchResultIds,
-                                    searchResultNames, searchResultPhones, searchResultPhotos, searchField.getText().toString().toLowerCase(), speedDial);
+                                    searchResultNames, searchResultPhones, searchResultPhotos, searchField.getText().toString().toLowerCase(), speedDial, FragmentSMS.this);
                             contactList.setAdapter(contactAdapter);
                         }else{
                             contactAdapter = new ContactAdapter(getActivity(), ids,
-                                    names, phones, photos, null, speedDial);
+                                    names, phones, photos, null, speedDial, FragmentSMS.this);
                             contactList.setAdapter(contactAdapter);
                         }
                     }
@@ -314,17 +331,24 @@ public class FragmentSMS extends Fragment {
         protected void onPostExecute(Void v) {
             super.onPostExecute(v);
 
-            contactAdapter = new ContactAdapter(getActivity(), ids, names, phones, photos, null, speedDial);
+            contactAdapter = new ContactAdapter(getActivity(), ids, names, phones, photos, null, speedDial, FragmentSMS.this);
             contactList.setAdapter(contactAdapter);
+            ServingClass.handleCountChangeInSpeedDial(getContext(), speedDial, true);
             progressBar.setVisibility(View.GONE);
             searchField.setVisibility(View.VISIBLE);
-            Log.w("LOG", "onPostExecute");
-            Log.w("LOG", "onPostExecute");
-            Log.w("LOG", "onPostExecute");
-            Log.w("LOG", "onPostExecute");
-            Log.w("LOG", "onPostExecute");
-            Log.w("LOG", "onPostExecute");
-            Log.w("LOG", "onPostExecute");
+
+            boolean expand = prefs.getBoolean("expand", true);
+
+            if (!expand){
+                ServingClass.handleExpandCollapseSpeedDial(getActivity(), FragmentSMS.this, false);
+            }else{
+                ServingClass.handleExpandCollapseSpeedDial(getActivity(), FragmentSMS.this, true);
+            }
+
+            if (!(speedDialAdapter.phones.size() == 0)) {
+                expandSpeedDial.setVisibility(View.VISIBLE);
+            }
+//            speedDial.setVisibility(View.VISIBLE);
         }
 
     }

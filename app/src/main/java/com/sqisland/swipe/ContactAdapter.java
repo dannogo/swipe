@@ -2,15 +2,17 @@ package com.sqisland.swipe;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
+
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.BackgroundColorSpan;
-import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by oleh on 18-Nov-15.
@@ -30,14 +33,17 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
     protected ArrayList<String> names;
     protected ArrayList<String> phones;
     protected ArrayList<String> photos;
-    protected ArrayList<String> staredPhones = new ArrayList<>();
+    protected ArrayList<String> staredPhones;
     private RecyclerView speedDial;
     private String searchSubstring;
     private Context context;
+    FragmentSMS fragmentSMS;
+    private SharedPreferences prefs;
+//    private SharedPreferences.Editor editor;
 
     public ContactAdapter(Context context, ArrayList<String> ids,
                           ArrayList<String> names, ArrayList<String> phones, ArrayList<String> photos,
-                          String searchSubstring, RecyclerView speedDial){
+                          String searchSubstring, RecyclerView speedDial, FragmentSMS fragmentSMS){
         inflater = LayoutInflater.from(context);
         if (ServingClass.temporaryPhones.isEmpty() || (searchSubstring != null)) {
             this.ids = new ArrayList<>(ids);
@@ -59,10 +65,19 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
             this.photos.addAll(photos);
         }
 
+        prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String[] starsArray = (prefs.getString("starsArray", "")).split(",");
+        if (!starsArray[0].equals("")) {
+            staredPhones = new ArrayList<>(Arrays.asList(starsArray));
+        }else{
+            staredPhones = new ArrayList<>();
+        }
+
         this.searchSubstring = searchSubstring;
         this.context = context;
         this.speedDial = speedDial;
-
+        this.fragmentSMS = fragmentSMS;
+//        editor = prefs.edit();
     }
 
     @Override
@@ -104,13 +119,11 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
             int substringStartIndex = names.get(position).toLowerCase().indexOf(searchSubstring);
             int subStringEndIndex = substringStartIndex + searchSubstring.length();
             Spannable WordtoSpan = new SpannableString(names.get(position));
-//            WordtoSpan.setSpan(new ForegroundColorSpan(Color.parseColor("#e74c3c")), substringStartIndex, subStringEndIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             WordtoSpan.setSpan(new BackgroundColorSpan(Color.parseColor("#FFECB3")), substringStartIndex, subStringEndIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             holder.name.setText(WordtoSpan);
         }else{
             holder.name.setText(names.get(position));
         }
-//        holder.name.setText(Html.fromHtml(names.get(position)));
         holder.phone.setText(phones.get(position));
         holder.databaseID.setText(ids.get(position));
     }
@@ -160,25 +173,54 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
                     staredPhones.add(currentPhone);
                     contactStar.setImageResource(R.drawable.star);
 
-                    speedDialAdapter.ids.add(ids.get(currentPosition));
-                    speedDialAdapter.names.add(names.get(currentPosition));
-                    speedDialAdapter.phones.add(currentPhone);
-                    speedDialAdapter.photos.add(photos.get(currentPosition));
-                    speedDialAdapter.notifyItemInserted(speedDialAdapter.getItemCount() - 1);
+                    if (!speedDialAdapter.phones.contains(currentPhone)) {
 
-                    // It`s a spike for nullifying some tricky bug
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            speedDial.scrollToPosition(speedDialAdapter.getItemCount() - 1);
-                        }
-                    }, 50);
+                        int randomInt = 0 + (int)(Math.random() * ((speedDialAdapter.speedDialColors.length-1) - 0));
+                        int randomColor = speedDialAdapter.speedDialColors[randomInt];
+                        speedDialAdapter.colors.add(randomColor);
+
+                        speedDialAdapter.names.add(names.get(currentPosition));
+                        speedDialAdapter.phones.add(currentPhone);
+                        speedDialAdapter.photos.add(photos.get(currentPosition));
+                        speedDialAdapter.notifyItemInserted(speedDialAdapter.getItemCount() - 1);
+
+                        // It`s a spike for nullifying some tricky bug
+                        final Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                speedDial.scrollToPosition(speedDialAdapter.getItemCount() - 1);
+                            }
+                        }, 50);
+                    }
 
                 }else{
                     staredPhones.remove(currentPhone);
                     contactStar.setImageResource(R.drawable.empty_star);
+
+                    if (speedDialAdapter.phones.contains(currentPhone)){
+                        int currentPositionInSpeedDialAdapter = speedDialAdapter.phones.indexOf(currentPhone);
+                        speedDialAdapter.names.remove(currentPositionInSpeedDialAdapter);
+                        speedDialAdapter.phones.remove(currentPositionInSpeedDialAdapter);
+                        speedDialAdapter.photos.remove(currentPositionInSpeedDialAdapter);
+                        speedDialAdapter.colors.remove(currentPositionInSpeedDialAdapter);
+
+                        speedDialAdapter.notifyItemRemoved(currentPositionInSpeedDialAdapter);
+                    }
+
                 }
+
+                ServingClass.saveStarsToSharedPreferences(context, staredPhones);
+
+                if (speedDialAdapter.phones.size() == 0){
+                    fragmentSMS.expandSpeedDial.setVisibility(View.GONE);
+                }else{
+                    fragmentSMS.expandSpeedDial.setVisibility(View.VISIBLE);
+                }
+
+
+                ServingClass.handleCountChangeInSpeedDial(context, speedDial, false);
+
             }else if((view.getId() == deleteTemporary.getId())) {
                 Toast.makeText(context, "Temporary phone number deleted", Toast.LENGTH_SHORT).show();
                 for (int i=0; i<ids.size(); i++){
@@ -213,7 +255,6 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
                         ((ImageView)speedDial.getChildAt(i).findViewById(R.id.speedDialCheckmark)).setImageResource(R.drawable.unchecked_checkbox_50_white);
                     }
                 }
-
             }
         }
     }

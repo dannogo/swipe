@@ -1,7 +1,9 @@
 package com.sqisland.swipe;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -14,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
 
 /**
  * Created by oleh on 11/25/15.
@@ -22,24 +26,38 @@ public class SpeedDialAdapter extends RecyclerView.Adapter<SpeedDialAdapter.Spee
 
     private LayoutInflater inflater;
     private Context context;
-    protected ArrayList<String> ids;
     protected ArrayList<String> names;
     protected ArrayList<String> phones;
     protected ArrayList<String> photos;
     int[] speedDialColors;
+    protected ArrayList<Integer> colors;
     private FragmentSMS fragmentSMS;
+    private SharedPreferences prefs;
+//    private SharedPreferences.Editor editor;
 
-    public SpeedDialAdapter(Context context, ArrayList<String> ids,
-                            ArrayList<String> names, ArrayList<String> phones,
-                            ArrayList<String> photos, FragmentSMS fragmentSMS) {
+    public SpeedDialAdapter(Context context, FragmentSMS fragmentSMS) {
         inflater = LayoutInflater.from(context);
         this.context = context;
         this.fragmentSMS = fragmentSMS;
-        this.ids = new ArrayList<>(ids);
-        this.names = new ArrayList<>(names);
-        this.phones = new ArrayList<>(phones);
-        this.photos = new ArrayList<>(photos);
+        prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String[] phonesArray = (prefs.getString("phonesArray", "")).split(",");
+        if (!phonesArray[0].equals("")) {
+            names = new ArrayList<>(Arrays.asList((prefs.getString("namesArray", "")).split(",")));
+            phones = new ArrayList<>(Arrays.asList(phonesArray));
+            photos = new ArrayList<>(Arrays.asList((prefs.getString("photosArray", "")).split(",")));
+            colors = new ArrayList<>();
+            String[] colorsArray = (prefs.getString("colorsArray", "")).split(",");
+            for (int i = 0; i < colorsArray.length; i++) {
+                colors.add(Integer.parseInt(colorsArray[i]));
+            }
+        }else{
+            names = new ArrayList<>();
+            phones = new ArrayList<>();
+            photos = new ArrayList<>();
+            colors = new ArrayList<>();
+        }
         speedDialColors = context.getResources().getIntArray(R.array.speed_dial_colors);
+//        editor = prefs.edit();
     }
 
     @Override
@@ -51,13 +69,7 @@ public class SpeedDialAdapter extends RecyclerView.Adapter<SpeedDialAdapter.Spee
 
     @Override
     public void onBindViewHolder(SpeedDialViewHolder holder, int position) {
-        int colorPosition;
-        if (position >= speedDialColors.length){
-            colorPosition = speedDialColors[position % speedDialColors.length];
-            Log.w("LOG", ""+(position % speedDialColors.length));
-        }else{
-            colorPosition = speedDialColors[position];
-        }
+
         if (ServingClass.checkedPhones.contains(phones.get(position))){
             holder.speedDialCheckmark.setImageResource(R.drawable.checked_checkbox_50_white);
         }else{
@@ -69,17 +81,20 @@ public class SpeedDialAdapter extends RecyclerView.Adapter<SpeedDialAdapter.Spee
             holder.speedDialFirstCharacter.setVisibility(View.INVISIBLE);
             holder.speedDialPhoto.setImageURI(Uri.parse(photos.get(position)));
         }else{
+            holder.speedDialPhoto.setVisibility(View.GONE);
+            holder.speedDialFirstCharacter.setVisibility(View.VISIBLE);
             holder.speedDialFirstCharacter.setText(names.get(position).substring(0, 1));
         }
 
-        holder.speedDialRowContent.setBackgroundColor(colorPosition);
+//        holder.speedDialRowContent.setBackgroundColor(colorPosition);
+        holder.speedDialRowContent.setBackgroundColor(colors.get(position));
         holder.speedDialName.setText(names.get(position));
         holder.speedDialPhone.setText(phones.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return ids.size();
+        return phones.size();
     }
 
     class SpeedDialViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -106,7 +121,31 @@ public class SpeedDialAdapter extends RecyclerView.Adapter<SpeedDialAdapter.Spee
         public void onClick(View view) {
             String currentPhone = speedDialPhone.getText().toString();
             if (view.getId() == deleteContactFromSpeedDial.getId()){
-                Toast.makeText(context, "Delete speeddial number", Toast.LENGTH_SHORT).show();
+
+                String phoneForDeletingFromSpeedDial = phones.get(getAdapterPosition());
+
+                names.remove(getAdapterPosition());
+                phones.remove(getAdapterPosition());
+                photos.remove(getAdapterPosition());
+                colors.remove(getAdapterPosition());
+                notifyItemRemoved(getAdapterPosition());
+
+                ContactAdapter contactAdapter = (ContactAdapter) fragmentSMS.contactList.getAdapter();
+                contactAdapter.staredPhones.remove(phoneForDeletingFromSpeedDial);
+
+                ServingClass.saveStarsToSharedPreferences(context, contactAdapter.staredPhones);
+
+                for (int i=0; i<fragmentSMS.contactList.getChildCount(); i++) {
+                    if ((((TextView) fragmentSMS.contactList.getChildAt(i).findViewById(R.id.contactDescription)).getText().toString().equals(phoneForDeletingFromSpeedDial))){
+                        ((ImageView)fragmentSMS.contactList.getChildAt(i).findViewById(R.id.contactStar)).setImageResource(R.drawable.empty_star);
+                    }
+                }
+
+                ServingClass.handleCountChangeInSpeedDial(context, fragmentSMS.speedDial, false);
+                if (phones.size() == 0){
+                    fragmentSMS.expandSpeedDial.setVisibility(View.GONE);
+                }
+
             }else if (view.getId() == itemView.getId()){
                 if (!ServingClass.checkedPhones.contains(currentPhone)){
                     ServingClass.checkedPhones.add(currentPhone);

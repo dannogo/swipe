@@ -40,18 +40,20 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/speedDial"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="80dp"
             android:fadeScrollbars="false"
             android:scrollbars="vertical"
             android:layout_below="@+id/search_field"
+            android:visibility="gone"
             />
         <ImageView
             android:id="@+id/expandSpeedDial"
             android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:src="@drawable/arrow_expand_50"
+            android:layout_height="30dp"
+            android:src="@drawable/arrow_collapse_50"
             android:layout_below="@+id/speedDial"
             android:scaleType="centerInside"
+            android:visibility="gone"
             />
 
         <RelativeLayout

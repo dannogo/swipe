@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="number_of_columns_in_speeddial">3</integer>
+    <integer name="height_of_item_in_speeddial_in_dp">80</integer>
+</resources>

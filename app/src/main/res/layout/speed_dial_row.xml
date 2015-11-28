@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/speedDialRowContent"
     android:layout_width="match_parent"
-    android:layout_height="80dp"
+    android:layout_height="@dimen/height_of_item_in_speeddial"
     android:layout_margin="1dp"
     >
 
