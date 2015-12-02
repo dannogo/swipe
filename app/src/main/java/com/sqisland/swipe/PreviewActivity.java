@@ -17,11 +17,13 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
+import android.support.v4.os.EnvironmentCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -42,11 +44,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.facebook.appevents.AppEventsLogger;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 
@@ -72,7 +77,6 @@ public class PreviewActivity extends AppCompatActivity {
     private int columnsInPortrait;
     private int columnsInLandscape;
     protected static ImageButton starBtn;
-    private PopupWindow popupWindow;
     private LinearLayout filterTab;
     protected TextView squareCounterView;
 
@@ -96,8 +100,6 @@ public class PreviewActivity extends AppCompatActivity {
             }
         }
     }
-
-
 
     public void deleteChecked(String purpose){
         ArrayList<String>  urisForDeleting = new ArrayList<>();
@@ -166,6 +168,7 @@ public class PreviewActivity extends AppCompatActivity {
             info.setText(toast);
             selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "="
                     + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
+//                    + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
         }else if (filter.equals("Video")){
             toast = "Video";
             info.setText(toast);
@@ -205,8 +208,29 @@ public class PreviewActivity extends AppCompatActivity {
             final int dataColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             do {
                 final String data = cursor.getString(dataColumn);
+
                 if (!deleted.contains(data)){
-                    result.add(data);
+
+                    // For additional sdcard
+                    String dir_pic = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
+                    if (data.contains("sdcard1") && dir_pic.contains("sdcard0")){
+
+                        String dir_dcim = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).toString();
+                        String dir_movies = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).toString();
+                        dir_pic = dir_pic.replaceFirst("sdcard0", "sdcard1");
+                        dir_dcim = dir_dcim.replaceFirst("sdcard0", "sdcard1");
+                        dir_movies = dir_movies.replaceFirst("sdcard0", "sdcard1");
+
+                        if (data.startsWith(dir_pic) || data.startsWith(dir_dcim) || data.startsWith(dir_movies)){
+                            result.add(data);
+                        }
+                    }
+//                    data.startsWith(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                    if (data.startsWith(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString())
+                            || data.startsWith(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).toString())
+                            || data.startsWith(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).toString())) {
+                        result.add(data);
+                    }
                 }
 
             } while (cursor.moveToNext());
@@ -217,13 +241,22 @@ public class PreviewActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+
+        // Logs 'app deactivate' App Event.
+        AppEventsLogger.deactivateApp(this);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         images = getCameraImages(new ArrayList<String>());
         boolean swipeActivityFavoritesChanges;
         swipeActivityFavoritesChanges = sharedPreferences.getBoolean("swipe_activity_favorites_changes", false);
 
-
+        // Logs 'install' and 'app activate' App Events.
+        AppEventsLogger.activateApp(this);
 
         isPlus = sharedPreferences.getBoolean("isPlus", true);
 
@@ -270,10 +303,13 @@ public class PreviewActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preview);
+
+
 
         toolbar = (LinearLayout) findViewById(R.id.double_toolbar);
         toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.app_skin));
@@ -499,7 +535,8 @@ public class PreviewActivity extends AppCompatActivity {
                 Point point = new Point();
                 point.x = location[0];
                 point.y = location[1];
-                showStatusPopup(PreviewActivity.this, point);
+
+                ServingClass.showStatusPopup(PreviewActivity.this, point);
             }
         });
 
@@ -529,168 +566,6 @@ public class PreviewActivity extends AppCompatActivity {
         ServingClass.temporaryPhonesCounter = 0;
     }
 
-    // Show popup window
-    private void showStatusPopup(final Activity context, Point p) {
-
-//        RelativeLayout viewGroup = (RelativeLayout) context.findViewById(R.id.previewActivityMainLayout);
-        LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View layout = layoutInflater.inflate(R.layout.popup_window, null);
-
-        View mode1x3 = layout.findViewById(R.id.id1x3);
-        mode1x3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-                reloadRecyclerView(1, 3);
-            }
-        });
-
-        View mode2x4 = layout.findViewById(R.id.id2x4);
-        mode2x4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-                reloadRecyclerView(2, 4);
-            }
-        });
-
-        View mode3x5 = layout.findViewById(R.id.id3x5);
-        mode3x5.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-                reloadRecyclerView(3, 5);
-            }
-        });
-
-        View mode4x6 = layout.findViewById(R.id.id4x6);
-        mode4x6.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-                reloadRecyclerView(4, 6);
-            }
-        });
-
-        View tellFriend = layout.findViewById(R.id.tellFriend);
-        tellFriend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-                ServingClass.shareBtnAction(PreviewActivity.this);
-            }
-        });
-
-        View help = layout.findViewById(R.id.help);
-        help.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-//
-                Intent intent = new Intent();
-                intent.setClass(PreviewActivity.this, YouTubeActivity.class);
-                intent.putExtra("video", "t21C09JiRc4");
-                startActivity(intent);
-            }
-        });
-
-        View feedback = layout.findViewById(R.id.feedback);
-        feedback.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-
-//                int sdkVersion = android.os.Build.VERSION.SDK_INT; //for example 17
-                PackageManager manager = context.getPackageManager();
-                String version = "unknown";
-                try {
-                    PackageInfo info = manager.getPackageInfo(
-                            context.getPackageName(), 0);
-                    version = info.versionName;
-                }catch (PackageManager.NameNotFoundException e){
-                    Log.e("Exception", e.getMessage());
-                }
-
-                String extraText = "[Your feedback here]";
-                StringBuilder stringBuilder = new StringBuilder(extraText);
-
-                stringBuilder.append('\n');
-                stringBuilder.append('\n');
-                stringBuilder.append(" -----------------");
-                stringBuilder.append('\n');
-                stringBuilder.append("Device name: "+getDeviceName());
-                stringBuilder.append('\n');
-                stringBuilder.append("OS version: "+android.os.Build.VERSION.RELEASE);
-                stringBuilder.append('\n');
-                stringBuilder.append("Application version: "+version);
-
-
-
-                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                        "mailto","santa_claus@laplandia.com", null));
-                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "SwipeIV Customer Feedback");
-                emailIntent.putExtra(Intent.EXTRA_TEXT, stringBuilder.toString());
-                startActivity(Intent.createChooser(emailIntent, "Send email..."));
-            }
-        });
-
-        View review = layout.findViewById(R.id.review);
-        review.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-                ServingClass.shareBtnAction(PreviewActivity.this);
-            }
-        });
-
-        popupWindow = new PopupWindow(context);
-        popupWindow.setContentView(layout);
-        popupWindow.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
-        popupWindow.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
-        popupWindow.setFocusable(true);
-
-        int OFFSET_X = - 430 ;
-        int OFFSET_Y = 50;
-
-        popupWindow.setBackgroundDrawable(new BitmapDrawable());
-
-        popupWindow.showAtLocation(layout, Gravity.NO_GRAVITY, p.x + OFFSET_X, p.y + OFFSET_Y);
-    }
-
-
-    // Returns device name
-    public static String getDeviceName() {
-        String manufacturer = Build.MANUFACTURER;
-        String model = Build.MODEL;
-        if (model.startsWith(manufacturer)) {
-            return capitalize(model);
-        }
-        if (manufacturer.equalsIgnoreCase("HTC")) {
-            // make sure "HTC" is fully capitalized.
-            return "HTC " + model;
-        }
-        return capitalize(manufacturer) + " " + model;
-    }
-
-    private static String capitalize(String str) {
-        if (TextUtils.isEmpty(str)) {
-            return str;
-        }
-        char[] arr = str.toCharArray();
-        boolean capitalizeNext = true;
-        String phrase = "";
-        for (char c : arr) {
-            if (capitalizeNext && Character.isLetter(c)) {
-                phrase += Character.toUpperCase(c);
-                capitalizeNext = false;
-                continue;
-            } else if (Character.isWhitespace(c)) {
-                capitalizeNext = true;
-            }
-            phrase += c;
-        }
-        return phrase;
-    }
 
     private void filterButtonServing(String filter, View view){
         images = getCameraImages(new ArrayList<String>());

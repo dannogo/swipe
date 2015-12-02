@@ -8,7 +8,6 @@ import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -88,6 +87,10 @@ public class FragmentSMS extends Fragment {
                 Toast.makeText(getActivity(), ""+ServingClass.checkedPhones, Toast.LENGTH_SHORT).show();
                 for (int i=0; i<contactList.getChildCount(); i++){
                     ((ImageView)contactList.getChildAt(i).findViewById(R.id.contactCheckbox)).setImageResource(R.drawable.unchecked_checkbox_50);
+                }
+
+                for (int i=0; i<speedDial.getChildCount(); i++){
+                    ((ImageView)speedDial.getChildAt(i).findViewById(R.id.speedDialCheckmark)).setImageResource(R.drawable.unchecked_checkbox_50_white);
                 }
 
                 SmsManager sms = SmsManager.getDefault();
@@ -219,7 +222,7 @@ public class FragmentSMS extends Fragment {
         contactList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         float offsetPx = getResources().getDimension(R.dimen.bottom_offset_dp);
-        BottomOffsetDecoration bottomOffsetDecoration = new BottomOffsetDecoration((int)offsetPx);
+        ServingClass.BottomOffsetDecoration bottomOffsetDecoration = new ServingClass.BottomOffsetDecoration((int)offsetPx);
         contactList.addItemDecoration(bottomOffsetDecoration);
 
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) fab.getLayoutParams();
@@ -254,26 +257,26 @@ public class FragmentSMS extends Fragment {
         fabTypeNumber.setLayoutParams(paramsTypeNumber);
     }
 
-    static class BottomOffsetDecoration extends RecyclerView.ItemDecoration {
-        private int mBottomOffset;
-
-        public BottomOffsetDecoration(int bottomOffset) {
-            mBottomOffset = bottomOffset;
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            super.getItemOffsets(outRect, view, parent, state);
-            int dataSize = state.getItemCount();
-            int position = parent.getChildAdapterPosition(view);
-            if (dataSize > 0 && position == dataSize - 1) {
-                outRect.set(0, 0, 0, mBottomOffset);
-            } else {
-                outRect.set(0, 0, 0, 0);
-            }
-
-        }
-    }
+//    static class BottomOffsetDecoration extends RecyclerView.ItemDecoration {
+//        private int mBottomOffset;
+//
+//        public BottomOffsetDecoration(int bottomOffset) {
+//            mBottomOffset = bottomOffset;
+//        }
+//
+//        @Override
+//        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+//            super.getItemOffsets(outRect, view, parent, state);
+//            int dataSize = state.getItemCount();
+//            int position = parent.getChildAdapterPosition(view);
+//            if (dataSize > 0 && position == dataSize - 1) {
+//                outRect.set(0, 0, 0, mBottomOffset);
+//            } else {
+//                outRect.set(0, 0, 0, 0);
+//            }
+//
+//        }
+//    }
 
     class LoadContactData extends AsyncTask<Void, Void, Void>{
 

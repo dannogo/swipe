@@ -1,6 +1,5 @@
 package com.sqisland.swipe;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -8,15 +7,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Display;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -57,6 +52,13 @@ public class ShareActivity extends AppCompatActivity {
                         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                     }
+
+                }else if (position == 2){
+//                    Intent sendIntent = new Intent();
+//                    sendIntent.setAction(Intent.ACTION_SEND);
+//                    sendIntent.putExtra(Intent.EXTRA_TEXT, "https://www.google.com");
+//                    sendIntent.setType("text/plain");
+//                    startActivity(sendIntent);
                 }
             }
 
@@ -114,6 +116,8 @@ public class ShareActivity extends AppCompatActivity {
             if (position == 0){
                 fragment = new FragmentSMS();
             }else if (position == 1){
+                fragment = new FragmentWhatsApp();
+            }else if (position == 2){
                 fragment = new FragmentOther();
             }
 
@@ -122,7 +126,7 @@ public class ShareActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
     }
 }

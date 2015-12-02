@@ -6,12 +6,10 @@
     android:padding="8dp"
     >
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/shareApplicationList"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fadeScrollbars="false"
-        android:scrollbars="vertical"
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Coming soon..."
         />
 
 </LinearLayout>

@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "com.sqisland.swipe"
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -35,5 +35,6 @@ dependencies {
     compile 'com.github.shell-software:fab:1.1.2'
     compile files('libs/YouTubeAndroidPlayerApi.jar')
     compile 'com.android.support:design:23.0.1'
+    compile 'com.facebook.android:facebook-android-sdk:4.6.0'
 }
 //    compile 'com.github.chrisbanes.photoview:library:1.2.4'

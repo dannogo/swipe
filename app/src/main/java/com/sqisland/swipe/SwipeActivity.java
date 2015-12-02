@@ -1,10 +1,13 @@
 package com.sqisland.swipe;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,6 +17,8 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,6 +29,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,13 +54,13 @@ public class SwipeActivity extends AppCompatActivity{
     private TextView toolbarTitle;
     public int currentPosition;
     private Context context;
-    private PopupMenu popup;
     private static boolean isEditMode = false;
     private SharedPreferences sharedPreferences;
     private boolean isPlus;
     protected TextView squareCounterView;
     protected ImageButton squareBtn;
     protected ImageButton plusMinus;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -150,7 +156,7 @@ public class SwipeActivity extends AppCompatActivity{
                     starInToolbar.setVisibility(View.GONE);
                     toolbar.setBackgroundColor(ContextCompat.getColor(context, R.color.favorites_skin));
                     statusBar.setBackgroundColor(ContextCompat.getColor(context, R.color.favorites_skin));
-                }else{
+                } else {
                     starInToolbar.setVisibility(View.VISIBLE);
                     toolbar.setBackgroundColor(ContextCompat.getColor(context, R.color.app_skin));
                     statusBar.setBackgroundColor(ContextCompat.getColor(context, R.color.app_skin));
@@ -207,13 +213,22 @@ public class SwipeActivity extends AppCompatActivity{
         });
 
         ImageButton menu = (ImageButton) toolbar.findViewById(R.id.popupMenu);
-        popup = new PopupMenu(this, menu);
-        MenuInflater menuInflater = popup.getMenuInflater();
-        menuInflater.inflate(R.menu.menu_swipe, popup.getMenu());
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                popup.show();
+                int[] location = new int[2];
+
+                // Get the x, y location and store it in the location[] array
+                location[0] = (int) v.getX();
+                location[1] = (int) v.getY();
+                v.getLocationOnScreen(location);
+
+                //Initialize the Point with x, and y positions
+                Point point = new Point();
+                point.x = location[0];
+                point.y = location[1];
+
+                ServingClass.showStatusPopup(SwipeActivity.this, point);
             }
         });
 
@@ -267,6 +282,7 @@ public class SwipeActivity extends AppCompatActivity{
         ImageButton cancelBtn = (ImageButton) findViewById(R.id.cancelBtn);
         cancelBtn.setVisibility(View.GONE);
 
+
     }
 
     protected static String simplifyImageName(ArrayList<String> images, int position){
@@ -278,23 +294,6 @@ public class SwipeActivity extends AppCompatActivity{
         builder.append(firstPart);
         builder.append(secondPart);
         return builder.toString();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_swipe, menu);
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-
-        return super.onOptionsItemSelected(item);
     }
 
     public void deleteAfterConfirmation(int position){

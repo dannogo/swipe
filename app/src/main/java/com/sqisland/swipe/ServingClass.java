@@ -4,11 +4,21 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
@@ -16,6 +26,8 @@ import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -70,12 +82,15 @@ public class ServingClass {
         intent.setClass(context, ShareActivity.class);
         context.startActivity(intent);
 
-//        Intent sendIntent = new Intent();
-//        sendIntent.setAction(Intent.ACTION_SEND);
-//        sendIntent.putExtra(Intent.EXTRA_TEXT, "https://www.google.com");
-//        sendIntent.setType("text/plain");
-//        context.startActivity(sendIntent);
+    }
 
+    protected static void temporaryShareForDummyBehavior(Context context){
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, "https://www.google.com");
+        sendIntent.setType("text/plain");
+//        sendIntent.setType("message/rfc822");
+        context.startActivity(sendIntent);
     }
 
     protected static void launchCamera(Context context){
@@ -207,7 +222,6 @@ public class ServingClass {
 
     public static int handleCountChangeInSpeedDial(Context context, RecyclerView speedDial, boolean onlySize){
 
-
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = prefs.edit();
         SpeedDialAdapter speedDialAdapter = (SpeedDialAdapter)speedDial.getAdapter();
@@ -322,4 +336,230 @@ public class ServingClass {
         v.startAnimation(a);
     }
 
+    // Show popup window
+    protected static void showStatusPopup(final Activity context, Point p) {
+        LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = layoutInflater.inflate(R.layout.popup_window, null);
+
+        final PopupWindow popupWindow = new PopupWindow(context);
+
+        View mode1x3 = layout.findViewById(R.id.id1x3);
+        View mode2x4 = layout.findViewById(R.id.id2x4);
+        View mode3x5 = layout.findViewById(R.id.id3x5);
+        View mode4x6 = layout.findViewById(R.id.id4x6);
+
+        if (context instanceof PreviewActivity) {
+            mode1x3.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    popupWindow.dismiss();
+                    ((PreviewActivity) context).reloadRecyclerView(1, 3);
+                }
+            });
+
+            mode2x4.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    popupWindow.dismiss();
+                    ((PreviewActivity) context).reloadRecyclerView(2, 4);
+                }
+            });
+
+            mode3x5.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    popupWindow.dismiss();
+                    ((PreviewActivity) context).reloadRecyclerView(3, 5);
+                }
+            });
+
+            mode4x6.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    popupWindow.dismiss();
+                    ((PreviewActivity) context).reloadRecyclerView(4, 6);
+                }
+            });
+
+        }else{
+            layout.findViewById(R.id.popupMenuModes).setVisibility(View.GONE);
+            layout.findViewById(R.id.popupMenuFirstDivider).setVisibility(View.GONE);
+            mode1x3.setVisibility(View.GONE);
+            mode2x4.setVisibility(View.GONE);
+            mode3x5.setVisibility(View.GONE);
+            mode4x6.setVisibility(View.GONE);
+        }
+
+        View tellFriend = layout.findViewById(R.id.tellFriend);
+        tellFriend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+                ServingClass.temporaryShareForDummyBehavior(context);
+            }
+        });
+
+        View browser = layout.findViewById(R.id.browser);
+        browser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+//                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
+//                context.startActivity(browserIntent);
+                Intent intent = new Intent();
+                intent.setClass(context, WebActivity.class);
+                context.startActivity(intent);
+            }
+        });
+
+        View help = layout.findViewById(R.id.help);
+        help.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+
+                Intent intent = new Intent();
+                intent.setClass(context, YouTubeActivity.class);
+                intent.putExtra("video", "t21C09JiRc4");
+                context.startActivity(intent);
+            }
+        });
+
+        View feedback = layout.findViewById(R.id.feedback);
+        feedback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+
+//                int sdkVersion = android.os.Build.VERSION.SDK_INT; //for example 17
+                PackageManager manager = context.getPackageManager();
+                String version = "unknown";
+                try {
+                    PackageInfo info = manager.getPackageInfo(
+                            context.getPackageName(), 0);
+                    version = info.versionName;
+                }catch (PackageManager.NameNotFoundException e){
+                    Log.e("Exception", e.getMessage());
+                }
+
+
+                String extraText = "[Your feedback here]";
+                StringBuilder stringBuilder = new StringBuilder(extraText);
+
+                stringBuilder.append('\n');
+                stringBuilder.append('\n');
+                stringBuilder.append(" -----------------");
+                stringBuilder.append('\n');
+                stringBuilder.append("Device name: " + ServingClass.getDeviceName());
+                stringBuilder.append('\n');
+                stringBuilder.append("OS version: "+android.os.Build.VERSION.RELEASE);
+                stringBuilder.append('\n');
+                stringBuilder.append("Application version: "+version);
+
+
+
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                        "mailto","santa_claus@laplandia.com", null));
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "SwipeIV Customer Feedback");
+                emailIntent.putExtra(Intent.EXTRA_TEXT, stringBuilder.toString());
+                context.startActivity(Intent.createChooser(emailIntent, "Send email..."));
+            }
+        });
+
+        View review = layout.findViewById(R.id.review);
+        review.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+                ServingClass.temporaryShareForDummyBehavior(context);
+            }
+        });
+
+        popupWindow.setContentView(layout);
+        popupWindow.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
+        popupWindow.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
+        popupWindow.setFocusable(true);
+
+        int OFFSET_X = - 430 ;
+        int OFFSET_Y = 50;
+
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+
+        popupWindow.showAtLocation(layout, Gravity.NO_GRAVITY, p.x + OFFSET_X, p.y + OFFSET_Y);
+    }
+
+    // Returns device name
+    public static String getDeviceName() {
+        String manufacturer = Build.MANUFACTURER;
+        String model = Build.MODEL;
+        if (model.startsWith(manufacturer)) {
+            return capitalize(model);
+        }
+        if (manufacturer.equalsIgnoreCase("HTC")) {
+            // make sure "HTC" is fully capitalized.
+            return "HTC " + model;
+        }
+        return capitalize(manufacturer) + " " + model;
+    }
+
+    private static String capitalize(String str) {
+        if (TextUtils.isEmpty(str)) {
+            return str;
+        }
+        char[] arr = str.toCharArray();
+        boolean capitalizeNext = true;
+        String phrase = "";
+        for (char c : arr) {
+            if (capitalizeNext && Character.isLetter(c)) {
+                phrase += Character.toUpperCase(c);
+                capitalizeNext = false;
+                continue;
+            } else if (Character.isWhitespace(c)) {
+                capitalizeNext = true;
+            }
+            phrase += c;
+        }
+        return phrase;
+    }
+
+// Folders on different devices
+//// Lenovo
+//        /storage/sdcard1/DCIM/
+//        /storage/sdcard1/DCIM/Camera/
+//        /storage/sdcard0/VK/
+//        /storage/sdcard0/download/
+//        /storage/sdcard0/DCIM/
+//    DIRECTORY_DCIM﹕ /storage/sdcard0/DCIM
+//    DIRECTORY_PICTURES﹕ /storage/sdcard0/Pictures
+//    DIRECTORY_DOWNLOADS﹕ /storage/sdcard0/Download
+//
+//// Nexus
+//        /storage/emulated/0/Pictures/Screenshots/
+//                /storage/emulated/0/Pictures/OGQ/
+//                /storage/emulated/0/DCIM/Camera/
+//    DIRECTORY_DCIM﹕ /storage/emulated/0/DCIM
+//    DIRECTORY_PICTURES﹕ /storage/emulated/0/Pictures
+//    DIRECTORY_DOWNLOADS﹕ /storage/emulated/0/Download
+
+    static class BottomOffsetDecoration extends RecyclerView.ItemDecoration {
+        private int mBottomOffset;
+
+        public BottomOffsetDecoration(int bottomOffset) {
+            mBottomOffset = bottomOffset;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            super.getItemOffsets(outRect, view, parent, state);
+            int dataSize = state.getItemCount();
+            int position = parent.getChildAdapterPosition(view);
+            if (dataSize > 0 && position == dataSize - 1) {
+                outRect.set(0, 0, 0, mBottomOffset);
+            } else {
+                outRect.set(0, 0, 0, 0);
+            }
+
+        }
+    }
 }
+

@@ -74,7 +74,7 @@ public class SpeedDialAdapter extends RecyclerView.Adapter<SpeedDialAdapter.Spee
             holder.speedDialCheckmark.setImageResource(R.drawable.unchecked_checkbox_50_white);
         }
 
-        if (photos.get(position) != null){
+        if ((photos.get(position) != null) && !(photos.get(position).equals("null"))){
             holder.speedDialPhoto.setVisibility(View.VISIBLE);
             holder.speedDialFirstCharacter.setVisibility(View.INVISIBLE);
             holder.speedDialPhoto.setImageURI(Uri.parse(photos.get(position)));

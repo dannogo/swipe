@@ -37,19 +37,20 @@
             <TextView
                 android:id="@+id/speedDialName"
                 android:layout_width="match_parent"
-                android:layout_height="17dp"
-                android:textSize="12sp"
+                android:layout_height="19dp"
+                android:textSize="14sp"
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:singleLine="true"
                 android:text="Name"
+                android:textStyle="bold"
                 android:textColor="@color/fab_material_white" />
 
             <TextView
                 android:id="@+id/speedDialPhone"
                 android:layout_width="match_parent"
-                android:layout_height="17dp"
-                android:textSize="12sp"
+                android:layout_height="15dp"
+                android:textSize="11sp"
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:singleLine="true"

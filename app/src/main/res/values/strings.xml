@@ -6,6 +6,8 @@
     <string name="title_activity_preview">PreviewActivity</string>
     <string name="title_activity_swipe">SwipeActivity</string>
     <string name="title_activity_share">ShareActivity</string>
+    <string name="title_activity_youtube">YoutubeActivity</string>
+    <string name="title_activity_web">Browser</string>
     <string name="delete">delete</string>
     <string name="cancel">cancel</string>
     <string name="gallery">Gallery</string>
@@ -17,10 +19,16 @@
     <string name="type_number">Type phone number</string>
     <string name="temporary">temporary</string>
 
+
+    <string name="app_id">744919878941582</string>
+    <string name="subjectForMailApps">Bla bla subject</string>
+    <string name="largeTextForMailApps">Bla bla text</string>
+
     <string name="share_message">https://play.google.com/store</string>
 
     <string-array name="shareTabs">
         <item>SMS</item>
+        <item>WhatsApp</item>
         <item>Other</item>
     </string-array>
 
