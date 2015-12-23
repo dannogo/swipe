@@ -38,7 +38,6 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
     private String searchSubstring;
     private Context context;
     FragmentSMS fragmentSMS;
-    private SharedPreferences prefs;
 
     public ContactAdapter(Context context, ArrayList<String> ids,
                           ArrayList<String> names, ArrayList<String> phones, ArrayList<String> photos,
@@ -64,8 +63,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
             this.photos.addAll(photos);
         }
 
-        prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        String[] starsArray = (prefs.getString("starsArray", "")).split(",");
+        String[] starsArray = (App.sharedPreferences.getString("starsArray", "")).split(",");
         if (!starsArray[0].equals("")) {
             staredPhones = new ArrayList<>(Arrays.asList(starsArray));
         }else{

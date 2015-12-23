@@ -2,11 +2,9 @@ package com.sqisland.swipe;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.net.Uri;
-import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,7 +31,6 @@ public class SivAdapter extends RecyclerView.Adapter<SivAdapter.MyViewHolder> {
     private ArrayList<String> images;
     protected static ArrayList<Integer> checkedItems = new ArrayList<Integer>();
     protected static ArrayList<String> favoritesUri = new ArrayList<String>();
-    private SharedPreferences sharedPreferences;
     boolean deleteMode = false;
     RecyclerView recyclerView;
                                                                     //, FragmentManager manager
@@ -43,8 +40,7 @@ public class SivAdapter extends RecyclerView.Adapter<SivAdapter.MyViewHolder> {
         this.context = context;
         this.imagePreviewSize = imagePreviewSize;
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        Set<String> set = sharedPreferences.getStringSet("checkedItems", new HashSet<String>());
+        Set<String> set = App.sharedPreferences.getStringSet("checkedItems", new HashSet<String>());
         if (set.size()>0){
             this.deleteMode = true;
         }
@@ -54,7 +50,7 @@ public class SivAdapter extends RecyclerView.Adapter<SivAdapter.MyViewHolder> {
             checkedItems.add(Integer.parseInt(str));
         }
 
-        Set<String> favUriSet = sharedPreferences.getStringSet("favoritesUri", new HashSet<String>());
+        Set<String> favUriSet = App.sharedPreferences.getStringSet("favoritesUri", new HashSet<String>());
 
         for (String s : favUriSet) {
             if (!favoritesUri.contains(s)) {
@@ -178,16 +174,14 @@ public class SivAdapter extends RecyclerView.Adapter<SivAdapter.MyViewHolder> {
                 }
             }
 
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-
-            editor.putBoolean("isDeleteMode", deleteMode);
+            App.editor.putBoolean("isDeleteMode", deleteMode);
 
             Set<String> set = new HashSet<>();
             for (int i=0; i<checkedItems.size(); i++){
                 set.add(checkedItems.get(i).toString());
             }
-            editor.putStringSet("checkedItems", set);
-            editor.commit();
+            App.editor.putStringSet("checkedItems", set);
+            App.editor.commit();
         }
 
         public void changeCheckedState(View v, boolean check){
@@ -213,8 +207,7 @@ public class SivAdapter extends RecyclerView.Adapter<SivAdapter.MyViewHolder> {
                 Toast.makeText(context, "Magnifier", Toast.LENGTH_SHORT).show();
 
             }else{
-                deleteMode = sharedPreferences.getBoolean("isDeleteMode", false);
-//                checkedItems =
+                deleteMode = App.sharedPreferences.getBoolean("isDeleteMode", false);
                 if (!deleteMode) {
                     // launching Swipe Activity and submitting position of clicked item
                     Intent intent = new Intent();
@@ -241,7 +234,7 @@ public class SivAdapter extends RecyclerView.Adapter<SivAdapter.MyViewHolder> {
                 Toast.makeText(context, "Magnifier", Toast.LENGTH_SHORT).show();
 
             }else {
-                deleteMode = sharedPreferences.getBoolean("isDeleteMode", false);
+                deleteMode = App.sharedPreferences.getBoolean("isDeleteMode", false);
                 if (!checkedItems.contains(getPosition())) {
                     checkItem(getPosition(), true);
                     changeCheckedState(v, true);

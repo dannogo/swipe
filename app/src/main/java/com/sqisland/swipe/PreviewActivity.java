@@ -1,48 +1,31 @@
 package com.sqisland.swipe;
 
-import android.app.Activity;
 import android.content.ContentResolver;
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
-import android.support.v4.os.EnvironmentCompat;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.Display;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 import com.facebook.appevents.AppEventsLogger;
 
@@ -51,7 +34,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 
@@ -134,7 +116,6 @@ public class PreviewActivity extends AppCompatActivity {
         deleteTask.execute(filesForDeleting);
 
         SivAdapter.checkedItems = new ArrayList<Integer>();
-        SharedPreferences.Editor editor = sharedPreferences.edit();
 
         set = new HashSet<>();
         Set<String> favUriSet = new HashSet<>();
@@ -142,9 +123,9 @@ public class PreviewActivity extends AppCompatActivity {
             favUriSet.add(SivAdapter.favoritesUri.get(i).toString());
         }
 
-        editor.putStringSet("checkedItems", set);
-        editor.putStringSet("favoritesUri", favUriSet);
-        editor.commit();
+        App.editor.putStringSet("checkedItems", set);
+        App.editor.putStringSet("favoritesUri", favUriSet);
+        App.editor.commit();
 
         reloadRecyclerView(columnsInPortrait, columnsInLandscape);
     }
@@ -297,9 +278,8 @@ public class PreviewActivity extends AppCompatActivity {
             reloadRecyclerView(columnsInPortrait, columnsInLandscape);
             deletedItemsInSwipeActivity = false;
 
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean("swipe_activity_favorites_changes", false);
-            editor.commit();
+            App.editor.putBoolean("swipe_activity_favorites_changes", false);
+            App.editor.commit();
         }
     }
 
@@ -327,7 +307,7 @@ public class PreviewActivity extends AppCompatActivity {
         params.topMargin = ServingClass.getStatusBarHeight(this);
         toolbar.setLayoutParams(params);
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        sharedPreferences = App.sharedPreferences;
         isPlus = sharedPreferences.getBoolean("isPlus", true);
 
         isDeleteMode = sharedPreferences.getBoolean("isDeleteMode", false);
@@ -445,14 +425,14 @@ public class PreviewActivity extends AppCompatActivity {
                     }
                 }
 
-                SharedPreferences.Editor editor = sharedPreferences.edit();
+
 
                 Set<String> favUriSet = new HashSet<>();
                 for (int i=0; i<SivAdapter.favoritesUri.size(); i++){
                     favUriSet.add(SivAdapter.favoritesUri.get(i).toString());
                 }
-                editor.putStringSet("favoritesUri", favUriSet);
-                editor.commit();
+                App.editor.putStringSet("favoritesUri", favUriSet);
+                App.editor.commit();
 
                 for (int i=0; i<recyclerView.getChildCount(); i++){
                     if (recyclerView.getChildAt(i).findViewById(R.id.checkmark).getVisibility() == View.VISIBLE){
@@ -569,9 +549,9 @@ public class PreviewActivity extends AppCompatActivity {
 
     private void filterButtonServing(String filter, View view){
         images = getCameraImages(new ArrayList<String>());
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("filter", filter);
-        editor.commit();
+
+        App.editor.putString("filter", filter);
+        App.editor.commit();
 
         int imageOn;
 
@@ -689,11 +669,9 @@ public class PreviewActivity extends AppCompatActivity {
         this.columnsInPortrait = columnsInPortrait;
         this.columnsInLandscape = columnsInLandscape;
         // saving new recycler view parameters to sharedPreferences
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("portrait", columnsInPortrait);
-        editor.putInt("landscape", columnsInLandscape);
-        editor.commit();
+        App.editor.putInt("portrait", columnsInPortrait);
+        App.editor.putInt("landscape", columnsInLandscape);
+        App.editor.commit();
 
         // Recognition of what orientation is now and getting current screen width
         Display display = getWindowManager().getDefaultDisplay();
@@ -716,12 +694,11 @@ public class PreviewActivity extends AppCompatActivity {
     }
 // function for cancel btn without reloading recyclerview
     public void easyDissmisDeleteMode(){
-        SharedPreferences.Editor editor = sharedPreferences.edit();
         isDeleteMode = false;
         Set<String> set = new HashSet<>();
-        editor.putStringSet("checkedItems", set);
-        editor.putBoolean("isDeleteMode", false);
-        editor.commit();
+        App.editor.putStringSet("checkedItems", set);
+        App.editor.putBoolean("isDeleteMode", false);
+        App.editor.commit();
         switchColorAndVisibility();
 //        info.setText(getResources().getString(R.string.gallery));
         info.setText(filter);
@@ -742,12 +719,11 @@ public class PreviewActivity extends AppCompatActivity {
     }
 
     public void dissmisDeleteMode(){
-        SharedPreferences.Editor editor = sharedPreferences.edit();
         isDeleteMode = false;
         Set<String> set = new HashSet<>();
-        editor.putStringSet("checkedItems", set);
-        editor.putBoolean("isDeleteMode", false);
-        editor.commit();
+        App.editor.putStringSet("checkedItems", set);
+        App.editor.putBoolean("isDeleteMode", false);
+        App.editor.commit();
         switchColorAndVisibility();
 //        info.setText(getResources().getString(R.string.gallery));
         info.setText(filter);

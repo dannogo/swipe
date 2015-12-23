@@ -29,7 +29,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -257,26 +256,6 @@ public class FragmentSMS extends Fragment {
         fabTypeNumber.setLayoutParams(paramsTypeNumber);
     }
 
-//    static class BottomOffsetDecoration extends RecyclerView.ItemDecoration {
-//        private int mBottomOffset;
-//
-//        public BottomOffsetDecoration(int bottomOffset) {
-//            mBottomOffset = bottomOffset;
-//        }
-//
-//        @Override
-//        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-//            super.getItemOffsets(outRect, view, parent, state);
-//            int dataSize = state.getItemCount();
-//            int position = parent.getChildAdapterPosition(view);
-//            if (dataSize > 0 && position == dataSize - 1) {
-//                outRect.set(0, 0, 0, mBottomOffset);
-//            } else {
-//                outRect.set(0, 0, 0, 0);
-//            }
-//
-//        }
-//    }
 
     class LoadContactData extends AsyncTask<Void, Void, Void>{
 

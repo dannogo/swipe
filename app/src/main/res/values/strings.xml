@@ -10,8 +10,8 @@
     <string name="title_activity_web">Browser</string>
     <string name="delete">delete</string>
     <string name="cancel">cancel</string>
-    <string name="gallery">Gallery</string>
     <string name="ok">Ok</string>
+    <string name="gallery">Gallery</string>
     <string name="share">share</string>
     <string name="camera">camera</string>
     <string name="hr">____________</string>

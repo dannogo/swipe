@@ -1,39 +1,25 @@
 package com.sqisland.swipe;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 import com.bumptech.glide.Glide;
 import com.software.shell.fab.ActionButton;
@@ -55,7 +41,6 @@ public class SwipeActivity extends AppCompatActivity{
     public int currentPosition;
     private Context context;
     private static boolean isEditMode = false;
-    private SharedPreferences sharedPreferences;
     private boolean isPlus;
     protected TextView squareCounterView;
     protected ImageButton squareBtn;
@@ -69,8 +54,7 @@ public class SwipeActivity extends AppCompatActivity{
         setContentView(R.layout.activity_swipe);
 
         context = this;
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        isPlus = sharedPreferences.getBoolean("isPlus", true);
+        isPlus = App.sharedPreferences.getBoolean("isPlus", true);
 
         toolbarTitle = (TextView) findViewById(R.id.info);
 
@@ -268,14 +252,14 @@ public class SwipeActivity extends AppCompatActivity{
         squareBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isPlus = ServingClass.squareBtnAction(SwipeActivity.this, v, isPlus, sharedPreferences);
+                isPlus = ServingClass.squareBtnAction(SwipeActivity.this, v, isPlus, App.sharedPreferences);
             }
         });
 
         plusMinus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isPlus = ServingClass.plusMinusBtnAction(SwipeActivity.this, v, isPlus, sharedPreferences);
+                isPlus = ServingClass.plusMinusBtnAction(SwipeActivity.this, v, isPlus, App.sharedPreferences);
             }
         });
 
