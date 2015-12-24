@@ -12,6 +12,7 @@ public class App extends Application{
 
     protected static SharedPreferences sharedPreferences;
     protected static SharedPreferences.Editor editor;
+    protected static boolean isPlus;
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -23,6 +24,7 @@ public class App extends Application{
         super.onCreate();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         editor = sharedPreferences.edit();
+        isPlus = sharedPreferences.getBoolean("isPlus", true);
     }
 
     @Override

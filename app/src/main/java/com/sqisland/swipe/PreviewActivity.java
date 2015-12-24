@@ -1,5 +1,6 @@
 package com.sqisland.swipe;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -17,6 +18,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,7 +40,7 @@ import java.util.Set;
 
 
 
-public class PreviewActivity extends AppCompatActivity {
+public class PreviewActivity extends AppCompatActivity implements View.OnClickListener{
 
     protected RecyclerView recyclerView;
     protected SivAdapter adapter;
@@ -52,7 +54,6 @@ public class PreviewActivity extends AppCompatActivity {
     private ImageButton trashBtn;
     private ImageButton cancelBtn;
     protected TextView info;
-    protected boolean isPlus;
     protected ImageButton squareBtn;
     protected ImageButton plusMinus;
     protected static String filter;
@@ -221,12 +222,83 @@ public class PreviewActivity extends AppCompatActivity {
         return result;
     }
 
+
     @Override
     protected void onPause() {
         super.onPause();
 
         // Logs 'app deactivate' App Event.
         AppEventsLogger.deactivateApp(this);
+    }
+
+    private void render(ServingClass.Btn btn) {
+        if (btn == ServingClass.Btn.NONE) {
+            if (App.isPlus) {
+                squareBtn.setImageResource(R.drawable.stop_painted);
+                plusMinus.setImageResource(R.drawable.plus_empty);
+
+                squareBtn.getLayoutParams().height = (int) getResources().getDimension(R.dimen.small_square_plus);
+                squareBtn.getLayoutParams().width = (int) getResources().getDimension(R.dimen.small_square_plus);
+                plusMinus.getLayoutParams().height = (int) getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
+                plusMinus.getLayoutParams().width = (int) getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
+
+                squareCounterView.setVisibility(View.GONE);
+            } else {
+                squareBtn.setImageResource(R.drawable.stop_empty);
+                plusMinus.setImageResource(R.drawable.plus_painted);
+
+                plusMinus.getLayoutParams().height = (int) getResources().getDimension(R.dimen.small_square_plus);
+                plusMinus.getLayoutParams().width = (int) getResources().getDimension(R.dimen.small_square_plus);
+                squareBtn.getLayoutParams().height = (int) getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
+                squareBtn.getLayoutParams().width = (int) getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
+
+                squareCounterView.setText(String.valueOf(ServingClass.squareCounter));
+                squareCounterView.setVisibility(View.VISIBLE);
+            }
+        }else if (btn == ServingClass.Btn.SQUARE){
+            if (!App.isPlus){
+                squareBtn.setImageResource(R.drawable.stop_painted);
+                ServingClass.squareCounter = 1;
+                plusMinus.setImageResource(R.drawable.plus_empty);
+
+                squareBtn.getLayoutParams().height = (int) getResources().getDimension(R.dimen.small_square_plus);
+                squareBtn.getLayoutParams().width = (int) getResources().getDimension(R.dimen.small_square_plus);
+                plusMinus.getLayoutParams().height = (int) getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
+                plusMinus.getLayoutParams().width = (int) getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
+
+                squareCounterView.setVisibility(View.GONE);
+                for (int i=0; i<recyclerView.getChildCount(); i++){
+                    recyclerView.getChildAt(i).findViewById(R.id.small_magnifier).setVisibility(View.GONE);
+                }
+
+                App.isPlus = true;
+                App.editor.putBoolean("isPlus", App.isPlus);
+                App.editor.commit();
+            }
+        }else if (btn == ServingClass.Btn.PLUS){
+            if (App.isPlus){
+                plusMinus.setImageResource(R.drawable.plus_painted);
+                squareBtn.setImageResource(R.drawable.stop_empty);
+
+                for (int i = 0; i < recyclerView.getChildCount(); i++) {
+                    recyclerView.getChildAt(i).findViewById(R.id.small_magnifier).setVisibility(View.VISIBLE);
+                }
+                squareCounterView.setText(String.valueOf(ServingClass.squareCounter));
+                squareCounterView.setVisibility(View.VISIBLE);
+
+                squareBtn.getLayoutParams().height = (int) getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
+                squareBtn.getLayoutParams().width = (int) getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
+                plusMinus.getLayoutParams().height = (int) getResources().getDimension(R.dimen.small_square_plus);
+                plusMinus.getLayoutParams().width = (int) getResources().getDimension(R.dimen.small_square_plus);
+
+
+                App.isPlus = false;
+                App.editor.putBoolean("isPlus", false);
+                App.editor.commit();
+            }else{
+                squareCounterView.setText(String.valueOf(++ServingClass.squareCounter));
+            }
+        }
     }
 
     @Override
@@ -239,30 +311,7 @@ public class PreviewActivity extends AppCompatActivity {
         // Logs 'install' and 'app activate' App Events.
         AppEventsLogger.activateApp(this);
 
-        isPlus = sharedPreferences.getBoolean("isPlus", true);
-
-        if (isPlus){
-            squareBtn.setImageResource(R.drawable.stop_painted);
-            plusMinus.setImageResource(R.drawable.plus_empty);
-
-            squareBtn.getLayoutParams().height = (int) getResources().getDimension(R.dimen.small_square_plus);
-            squareBtn.getLayoutParams().width = (int) getResources().getDimension(R.dimen.small_square_plus);
-            plusMinus.getLayoutParams().height = (int) getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
-            plusMinus.getLayoutParams().width = (int) getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
-
-            squareCounterView.setVisibility(View.GONE);
-        }else{
-            squareBtn.setImageResource(R.drawable.stop_empty);
-            plusMinus.setImageResource(R.drawable.plus_painted);
-
-            plusMinus.getLayoutParams().height = (int) getResources().getDimension(R.dimen.small_square_plus);
-            plusMinus.getLayoutParams().width = (int) getResources().getDimension(R.dimen.small_square_plus);
-            squareBtn.getLayoutParams().height = (int) getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
-            squareBtn.getLayoutParams().width = (int) getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
-
-            squareCounterView.setVisibility(View.VISIBLE);
-            squareCounterView.setText(String.valueOf(ServingClass.squareCounter));
-        }
+        render(ServingClass.Btn.NONE);
 
         boolean isLastItemInImagesEqualsToLastMediaUril = false;
         if (images.size() > 0){
@@ -280,6 +329,30 @@ public class PreviewActivity extends AppCompatActivity {
 
             App.editor.putBoolean("swipe_activity_favorites_changes", false);
             App.editor.commit();
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == squareBtn.getId()){
+            render(ServingClass.Btn.SQUARE);
+        }else if (v.getId() == plusMinus.getId()){
+            render(ServingClass.Btn.PLUS);
+        }
+    }
+
+    private void filterBtnAction(View v, ServingClass.Fil fil){
+        if (!filter.equals(fil.toString())) {
+            ServingClass.showExtremelyShortToast(this, fil.toString());
+            info.setText(fil.toString());
+            filterButtonProperState(filter, false);
+            filter = fil.toString();
+            filterButtonServing(filter, v);
+            if (fil.toString().equals("Favorites")){
+                starBtn.setImageResource(R.drawable.empty_star);
+            }else {
+                starBtn.setImageResource(R.drawable.star);
+            }
         }
     }
 
@@ -308,7 +381,7 @@ public class PreviewActivity extends AppCompatActivity {
         toolbar.setLayoutParams(params);
 
         sharedPreferences = App.sharedPreferences;
-        isPlus = sharedPreferences.getBoolean("isPlus", true);
+//        isPlus = sharedPreferences.getBoolean("isPlus", true);
 
         isDeleteMode = sharedPreferences.getBoolean("isDeleteMode", false);
         // taking saved in sharedPreferences parameters and saving them in fields
@@ -327,56 +400,28 @@ public class PreviewActivity extends AppCompatActivity {
         photoFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!filter.equals("Photo")) {
-                    info.setText("Photo");
-                    ServingClass.showExtremelyShortToast(PreviewActivity.this, "Photo");
-                    filterButtonProperState(filter, false);
-                    filter = "Photo";
-                    filterButtonServing(filter, v);
-                    starBtn.setImageResource(R.drawable.star);
-                }
+                filterBtnAction(v, ServingClass.Fil.PHOTO);
             }
         });
         ImageButton videoFilter = (ImageButton) findViewById(R.id.video_filter);
         videoFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!filter.equals("Video")) {
-                    ServingClass.showExtremelyShortToast(PreviewActivity.this, "Video");
-                    info.setText("Video");
-                    filterButtonProperState(filter, false);
-                    filter = "Video";
-                    filterButtonServing(filter, v);
-                    starBtn.setImageResource(R.drawable.star);
-                }
+                filterBtnAction(v, ServingClass.Fil.VIDEO);
             }
         });
         ImageButton withoutFilter = (ImageButton) findViewById(R.id.without_filter);
         withoutFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!filter.equals("All")) {
-                    ServingClass.showExtremelyShortToast(PreviewActivity.this, "All");
-                    info.setText("All");
-                    filterButtonProperState(filter, false);
-                    filter = "All";
-                    filterButtonServing(filter, v);
-                    starBtn.setImageResource(R.drawable.star);
-                }
+                filterBtnAction(v, ServingClass.Fil.ALL);
             }
         });
         final ImageButton favoritesFilter = (ImageButton) findViewById(R.id.favorites_filter);
         favoritesFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!filter.equals("Favorites")) {
-                    ServingClass.showExtremelyShortToast(PreviewActivity.this, "Favorites");
-                    info.setText("Favorites");
-                    filterButtonProperState(filter, false);
-                    filter = "Favorites";
-                    filterButtonServing(filter, v);
-                    starBtn.setImageResource(R.drawable.empty_star);
-                }
+                filterBtnAction(v, ServingClass.Fil.FAVORITES);
             }
         });
 
@@ -425,8 +470,6 @@ public class PreviewActivity extends AppCompatActivity {
                     }
                 }
 
-
-
                 Set<String> favUriSet = new HashSet<>();
                 for (int i=0; i<SivAdapter.favoritesUri.size(); i++){
                     favUriSet.add(SivAdapter.favoritesUri.get(i).toString());
@@ -472,32 +515,11 @@ public class PreviewActivity extends AppCompatActivity {
         });
 
         squareBtn = (ImageButton) toolbar.findViewById(R.id.squareBtn);
+        squareBtn.setOnClickListener(this);
         plusMinus = (ImageButton) toolbar.findViewById(R.id.plusMinus);
+        plusMinus.setOnClickListener(this);
 
-        if (isPlus){
-            squareBtn.setImageResource(R.drawable.stop_painted);
-            plusMinus.setImageResource(R.drawable.plus_empty);
-        }else{
-            squareBtn.setImageResource(R.drawable.stop_empty);
-            plusMinus.setImageResource(R.drawable.plus_painted);
-            squareCounterView.setText(String.valueOf(ServingClass.squareCounter));
-            squareCounterView.setVisibility(View.VISIBLE);
-        }
-
-        squareBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isPlus = ServingClass.squareBtnAction(PreviewActivity.this, v, isPlus, sharedPreferences);
-            }
-        });
-
-        plusMinus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isPlus = ServingClass.plusMinusBtnAction(PreviewActivity.this, v, isPlus, sharedPreferences);
-            }
-        });
-
+        render(ServingClass.Btn.NONE);
 
         ImageButton menu = (ImageButton) toolbar.findViewById(R.id.popupMenu);
 

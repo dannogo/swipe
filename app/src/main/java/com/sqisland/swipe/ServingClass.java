@@ -3,7 +3,6 @@ package com.sqisland.swipe;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
@@ -13,19 +12,14 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
-import android.view.animation.TranslateAnimation;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -102,81 +96,6 @@ public class ServingClass {
         context.startActivity(launchIntent);
     }
 
-    protected static boolean squareBtnAction(Context context, View v, boolean isPlus, SharedPreferences sharedPreferences){
-        if (!isPlus){
-            ((ImageButton)v).setImageResource(R.drawable.stop_painted);
-            squareCounter = 1;
-            ((ImageButton)((Activity)context).findViewById(R.id.plusMinus)).setImageResource(R.drawable.plus_empty);
-            if (context instanceof PreviewActivity){
-
-                ((PreviewActivity)context).squareBtn.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.small_square_plus);
-                ((PreviewActivity)context).squareBtn.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.small_square_plus);
-                ((PreviewActivity)context).plusMinus.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
-                ((PreviewActivity)context).plusMinus.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
-
-                ((PreviewActivity)context).squareCounterView.setVisibility(View.GONE);
-                for (int i=0; i<((PreviewActivity)context).recyclerView.getChildCount(); i++){
-                    ((PreviewActivity)context).recyclerView.getChildAt(i).findViewById(R.id.small_magnifier).setVisibility(View.GONE);
-                }
-            }else{
-                ((SwipeActivity)context).squareCounterView.setVisibility(View.GONE);
-
-                ((SwipeActivity)context).squareBtn.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.small_square_plus);
-                ((SwipeActivity)context).squareBtn.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.small_square_plus);
-                ((SwipeActivity)context).plusMinus.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
-                ((SwipeActivity)context).plusMinus.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
-
-            }
-
-            isPlus = true;
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean("isPlus", isPlus);
-            editor.commit();
-        }
-        return isPlus;
-    }
-
-    protected static boolean plusMinusBtnAction(Context context, View v, boolean isPlus, SharedPreferences sharedPreferences){
-        if (isPlus){
-            ((ImageButton)v).setImageResource(R.drawable.plus_painted);
-            ((ImageButton) ((Activity)context).findViewById(R.id.squareBtn)).setImageResource(R.drawable.stop_empty);
-
-            if (context instanceof PreviewActivity) {
-                for (int i = 0; i < ((PreviewActivity) context).recyclerView.getChildCount(); i++) {
-                    ((PreviewActivity) context).recyclerView.getChildAt(i).findViewById(R.id.small_magnifier).setVisibility(View.VISIBLE);
-                }
-                ((PreviewActivity)context).squareCounterView.setText(String.valueOf(squareCounter));
-                ((PreviewActivity)context).squareCounterView.setVisibility(View.VISIBLE);
-
-                ((PreviewActivity)context).squareBtn.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
-                ((PreviewActivity)context).squareBtn.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
-                ((PreviewActivity)context).plusMinus.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.small_square_plus);
-                ((PreviewActivity)context).plusMinus.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.small_square_plus);
-
-            }else{
-                ((SwipeActivity)context).squareCounterView.setText(String.valueOf(squareCounter));
-                ((SwipeActivity)context).squareCounterView.setVisibility(View.VISIBLE);
-
-                ((SwipeActivity)context).squareBtn.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
-                ((SwipeActivity)context).squareBtn.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
-                ((SwipeActivity)context).plusMinus.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.small_square_plus);
-                ((SwipeActivity)context).plusMinus.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.small_square_plus);
-
-            }
-
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean("isPlus", false);
-            editor.commit();
-        }else{
-            if (context instanceof PreviewActivity) {
-                ((PreviewActivity) context).squareCounterView.setText(String.valueOf(++squareCounter));
-            }else{
-                ((SwipeActivity) context).squareCounterView.setText(String.valueOf(++squareCounter));
-            }
-        }
-        return false;
-    }
-
     // Gets height of the status bar
     public static int getStatusBarHeight(Context context) {
         int result = 0;
@@ -188,8 +107,6 @@ public class ServingClass {
     }
 
     public static void saveStarsToSharedPreferences(Context context, ArrayList<String> staredPhones){
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = prefs.edit();
 
         int sizeOfArray = staredPhones.size();
 
@@ -199,31 +116,27 @@ public class ServingClass {
             phonesArray[i] = staredPhones.get(i);
             sb.append(phonesArray[i]).append(",");
         }
-        editor.putString("starsArray", sb.toString());
+        App.editor.putString("starsArray", sb.toString());
         Log.w("LOG", sb.toString());
-        editor.commit();
+        App.editor.commit();
 
     }
 
     public static void handleExpandCollapseSpeedDial(Context context, FragmentSMS fragmentSMS, boolean expand){
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = prefs.edit();
         if (expand){
             ServingClass.expand(fragmentSMS.speedDial, ((ShareActivity)context).speedDialHeight);
             fragmentSMS.expandSpeedDial.setImageResource(R.drawable.arrow_collapse_50);
-            editor.putBoolean("expand", true);
+            App.editor.putBoolean("expand", true);
         }else{
             ServingClass.collapse(fragmentSMS.speedDial);
             fragmentSMS.expandSpeedDial.setImageResource(R.drawable.arrow_expand_50);
-            editor.putBoolean("expand", false);
+            App.editor.putBoolean("expand", false);
         }
-        editor.commit();
+        App.editor.commit();
     }
 
     public static int handleCountChangeInSpeedDial(Context context, RecyclerView speedDial, boolean onlySize){
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = prefs.edit();
         SpeedDialAdapter speedDialAdapter = (SpeedDialAdapter)speedDial.getAdapter();
 
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) speedDial.getLayoutParams();
@@ -253,7 +166,7 @@ public class ServingClass {
                 phonesArray[i] = speedDialAdapter.phones.get(i);
                 sb.append(phonesArray[i]).append(",");
             }
-            editor.putString("phonesArray", sb.toString());
+            App.editor.putString("phonesArray", sb.toString());
 
             String[] namesArray = new String[sizeOfArray];
             sb = new StringBuilder();
@@ -261,7 +174,7 @@ public class ServingClass {
                 namesArray[i] = speedDialAdapter.names.get(i);
                 sb.append(namesArray[i]).append(",");
             }
-            editor.putString("namesArray", sb.toString());
+            App.editor.putString("namesArray", sb.toString());
 
             String[] photosArray = new String[sizeOfArray];
             sb = new StringBuilder();
@@ -269,7 +182,7 @@ public class ServingClass {
                 photosArray[i] = speedDialAdapter.photos.get(i);
                 sb.append(photosArray[i]).append(",");
             }
-            editor.putString("photosArray", sb.toString());
+            App.editor.putString("photosArray", sb.toString());
 
             int[] colorsArray = new int[sizeOfArray];
             sb = new StringBuilder();
@@ -277,9 +190,9 @@ public class ServingClass {
                 colorsArray[i] = speedDialAdapter.colors.get(i);
                 sb.append(colorsArray[i]).append(",");
             }
-            editor.putString("colorsArray", sb.toString());
+            App.editor.putString("colorsArray", sb.toString());
 
-            editor.commit();
+            App.editor.commit();
         }
 
         return resultHeight;
@@ -540,6 +453,45 @@ public class ServingClass {
 //    DIRECTORY_DCIM﹕ /storage/emulated/0/DCIM
 //    DIRECTORY_PICTURES﹕ /storage/emulated/0/Pictures
 //    DIRECTORY_DOWNLOADS﹕ /storage/emulated/0/Download
+
+
+    public enum Fil{
+        PHOTO("Photo"), VIDEO("Video"), ALL("All"), FAVORITES("Favorites");
+
+        private final String name;
+
+        private Fil(String s) {
+            name = s;
+        }
+
+//        public boolean equalsName(String otherName) {
+//            return (otherName == null) ? false : name.equals(otherName);
+//        }
+
+        public String toString() {
+            return this.name;
+        }
+
+    }
+
+    public enum Btn{
+        PLUS("plus"), SQUARE("square"), NONE("none");
+
+        private final String name;
+
+        private Btn(String s) {
+            name = s;
+        }
+
+        public boolean equalsName(String otherName) {
+            return (otherName == null) ? false : name.equals(otherName);
+        }
+
+        public String toString() {
+            return this.name;
+        }
+
+    }
 
     static class BottomOffsetDecoration extends RecyclerView.ItemDecoration {
         private int mBottomOffset;

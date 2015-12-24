@@ -1,5 +1,6 @@
 package com.sqisland.swipe;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -41,7 +42,6 @@ public class SwipeActivity extends AppCompatActivity{
     public int currentPosition;
     private Context context;
     private static boolean isEditMode = false;
-    private boolean isPlus;
     protected TextView squareCounterView;
     protected ImageButton squareBtn;
     protected ImageButton plusMinus;
@@ -54,8 +54,6 @@ public class SwipeActivity extends AppCompatActivity{
         setContentView(R.layout.activity_swipe);
 
         context = this;
-        isPlus = App.sharedPreferences.getBoolean("isPlus", true);
-
         toolbarTitle = (TextView) findViewById(R.id.info);
 
         toolbar = (LinearLayout) findViewById(R.id.double_toolbar);
@@ -227,39 +225,19 @@ public class SwipeActivity extends AppCompatActivity{
         squareBtn = (ImageButton) toolbar.findViewById(R.id.squareBtn);
         plusMinus = (ImageButton) toolbar.findViewById(R.id.plusMinus);
 
-        if (isPlus){
-            squareBtn.setImageResource(R.drawable.stop_painted);
-            plusMinus.setImageResource(R.drawable.plus_empty);
-
-            squareBtn.getLayoutParams().height = (int) getResources().getDimension(R.dimen.small_square_plus);
-            squareBtn.getLayoutParams().width = (int) getResources().getDimension(R.dimen.small_square_plus);
-            plusMinus.getLayoutParams().height = (int) getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
-            plusMinus.getLayoutParams().width = (int) getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
-
-        }else{
-            squareBtn.setImageResource(R.drawable.stop_empty);
-            plusMinus.setImageResource(R.drawable.plus_painted);
-            squareCounterView.setText(String.valueOf(ServingClass.squareCounter));
-            squareCounterView.setVisibility(View.VISIBLE);
-
-            plusMinus.getLayoutParams().height = (int) getResources().getDimension(R.dimen.small_square_plus);
-            plusMinus.getLayoutParams().width = (int) getResources().getDimension(R.dimen.small_square_plus);
-            squareBtn.getLayoutParams().height = (int) getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
-            squareBtn.getLayoutParams().width = (int) getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
-
-        }
+        render(ServingClass.Btn.NONE);
 
         squareBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isPlus = ServingClass.squareBtnAction(SwipeActivity.this, v, isPlus, App.sharedPreferences);
+                render(ServingClass.Btn.SQUARE);
             }
         });
 
         plusMinus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isPlus = ServingClass.plusMinusBtnAction(SwipeActivity.this, v, isPlus, App.sharedPreferences);
+                render(ServingClass.Btn.PLUS);
             }
         });
 
@@ -267,6 +245,67 @@ public class SwipeActivity extends AppCompatActivity{
         cancelBtn.setVisibility(View.GONE);
 
 
+    }
+
+    private void render(ServingClass.Btn btn){
+        if (btn == ServingClass.Btn.NONE){
+            if (App.isPlus){
+                squareBtn.setImageResource(R.drawable.stop_painted);
+                plusMinus.setImageResource(R.drawable.plus_empty);
+
+                squareBtn.getLayoutParams().height = (int) getResources().getDimension(R.dimen.small_square_plus);
+                squareBtn.getLayoutParams().width = (int) getResources().getDimension(R.dimen.small_square_plus);
+                plusMinus.getLayoutParams().height = (int) getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
+                plusMinus.getLayoutParams().width = (int) getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
+
+            }else{
+                squareBtn.setImageResource(R.drawable.stop_empty);
+                plusMinus.setImageResource(R.drawable.plus_painted);
+                squareCounterView.setText(String.valueOf(ServingClass.squareCounter));
+                squareCounterView.setVisibility(View.VISIBLE);
+
+                plusMinus.getLayoutParams().height = (int) getResources().getDimension(R.dimen.small_square_plus);
+                plusMinus.getLayoutParams().width = (int) getResources().getDimension(R.dimen.small_square_plus);
+                squareBtn.getLayoutParams().height = (int) getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
+                squareBtn.getLayoutParams().width = (int) getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
+
+            }
+        }else if (btn == ServingClass.Btn.SQUARE){
+            if (!App.isPlus){
+                squareBtn.setImageResource(R.drawable.stop_painted);
+                ServingClass.squareCounter = 1;
+                plusMinus.setImageResource(R.drawable.plus_empty);
+
+                squareCounterView.setVisibility(View.GONE);
+                squareBtn.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.small_square_plus);
+                squareBtn.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.small_square_plus);
+                plusMinus.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
+                plusMinus.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
+
+                App.isPlus = true;
+                App.editor.putBoolean("isPlus", App.isPlus);
+                App.editor.commit();
+            }
+        }else if (btn == ServingClass.Btn.PLUS){
+            if (App.isPlus){
+                plusMinus.setImageResource(R.drawable.plus_painted);
+                squareBtn.setImageResource(R.drawable.stop_empty);
+
+                squareCounterView.setText(String.valueOf(ServingClass.squareCounter));
+                squareCounterView.setVisibility(View.VISIBLE);
+
+                squareBtn.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
+                squareBtn.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
+                plusMinus.getLayoutParams().height = (int) context.getResources().getDimension(R.dimen.small_square_plus);
+                plusMinus.getLayoutParams().width = (int) context.getResources().getDimension(R.dimen.small_square_plus);
+
+                App.isPlus = false;
+                App.editor.putBoolean("isPlus", false);
+                App.editor.commit();
+            }else{
+                squareCounterView.setText(String.valueOf(++ServingClass.squareCounter));
+            }
+        }
     }
 
     protected static String simplifyImageName(ArrayList<String> images, int position){

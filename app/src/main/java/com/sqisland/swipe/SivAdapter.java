@@ -86,7 +86,7 @@ public class SivAdapter extends RecyclerView.Adapter<SivAdapter.MyViewHolder> {
             holder.playicon.setVisibility(View.INVISIBLE);
         }
 
-        if (((PreviewActivity)context).isPlus){
+        if (App.isPlus){
             holder.smallMagnifier.setVisibility(View.GONE);
         }else{
             holder.smallMagnifier.setVisibility(View.VISIBLE);
