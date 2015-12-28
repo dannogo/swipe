@@ -8,11 +8,22 @@
     <View
         android:id="@+id/statusBarBackground"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:elevation="5dp"
+        />
 
     <include
         android:id="@+id/double_toolbar"
         layout="@layout/double_toolbar" />
+
+    <!-- This needs to find out width of popupMenu for setting offset-->
+    <RelativeLayout
+        android:id="@+id/servingLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        />
+
 
     <android.support.v7.widget.RecyclerView
         android:layout_below="@+id/double_toolbar"

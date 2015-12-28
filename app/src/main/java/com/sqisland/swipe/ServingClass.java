@@ -37,6 +37,7 @@ public class ServingClass {
     protected static ArrayList<String> temporaryPhonesIds = new ArrayList<>();
     protected static ArrayList<String> checkedPhones = new ArrayList<>();
     protected static int temporaryPhonesCounter = 0;
+    protected static int menuWidth = 0;
 
     protected static void trashBtnAction(Context context, int position){
         RemoveConfirmationDialog dialog = new RemoveConfirmationDialog();
@@ -245,14 +246,28 @@ public class ServingClass {
         };
 
         // 1dp/ms
-        a.setDuration((int)(initialHeight / v.getContext().getResources().getDisplayMetrics().density));
+        a.setDuration((int) (initialHeight / v.getContext().getResources().getDisplayMetrics().density));
         v.startAnimation(a);
     }
 
+    // This needs to find out width of popupMenu for setting offset
+    protected static void findoutPopupWidth(Activity activity){
+            RelativeLayout item = (RelativeLayout) activity.findViewById(R.id.servingLayout);
+            View child = activity.getLayoutInflater().inflate(R.layout.popup_window, null);
+            item.addView(child);
+            child.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                @Override
+                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight,
+                                           int oldBottom) {
+                    menuWidth = right;
+                }
+            });
+    }
+
     // Show popup window
-    protected static void showStatusPopup(final Activity context, Point p) {
+    protected static void showStatusPopup(final Activity context, final Point p) {
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View layout = layoutInflater.inflate(R.layout.popup_window, null);
+        final View layout = layoutInflater.inflate(R.layout.popup_window, null);
 
         final PopupWindow popupWindow = new PopupWindow(context);
 
@@ -351,7 +366,7 @@ public class ServingClass {
                     PackageInfo info = manager.getPackageInfo(
                             context.getPackageName(), 0);
                     version = info.versionName;
-                }catch (PackageManager.NameNotFoundException e){
+                } catch (PackageManager.NameNotFoundException e) {
                     Log.e("Exception", e.getMessage());
                 }
 
@@ -365,14 +380,13 @@ public class ServingClass {
                 stringBuilder.append('\n');
                 stringBuilder.append("Device name: " + ServingClass.getDeviceName());
                 stringBuilder.append('\n');
-                stringBuilder.append("OS version: "+android.os.Build.VERSION.RELEASE);
+                stringBuilder.append("OS version: " + android.os.Build.VERSION.RELEASE);
                 stringBuilder.append('\n');
-                stringBuilder.append("Application version: "+version);
-
+                stringBuilder.append("Application version: " + version);
 
 
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                        "mailto","santa_claus@laplandia.com", null));
+                        "mailto", "santa_claus@laplandia.com", null));
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "SwipeIV Customer Feedback");
                 emailIntent.putExtra(Intent.EXTRA_TEXT, stringBuilder.toString());
                 context.startActivity(Intent.createChooser(emailIntent, "Send email..."));
@@ -393,13 +407,13 @@ public class ServingClass {
         popupWindow.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
         popupWindow.setFocusable(true);
 
-        int OFFSET_X = - 430 ;
-        int OFFSET_Y = 50;
-
         popupWindow.setBackgroundDrawable(new BitmapDrawable());
+        int btnMenu = context.getResources().getDimensionPixelOffset(R.dimen.very_small_icon_size_in_toolbar);
 
-        popupWindow.showAtLocation(layout, Gravity.NO_GRAVITY, p.x + OFFSET_X, p.y + OFFSET_Y);
+        popupWindow.showAtLocation(layout, Gravity.NO_GRAVITY, p.x - menuWidth + btnMenu/2, p.y + btnMenu/2);
     }
+
+
 
     // Returns device name
     public static String getDeviceName() {

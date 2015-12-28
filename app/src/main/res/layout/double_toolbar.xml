@@ -1,5 +1,4 @@
 
-
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -10,14 +9,16 @@
     android:paddingBottom="3dp"
     android:paddingLeft="@dimen/abc_action_bar_icon_vertical_padding_material"
     android:paddingRight="7dp"
-    android:weightSum="100">
+    android:weightSum="100"
+    android:elevation="5dp"
+    >
 
     <LinearLayout
         android:id="@+id/leftSide"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_weight="70">
+        android:layout_weight="68">
 
         <TextView
             android:id="@+id/info"
@@ -110,7 +111,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:layout_weight="30"
+        android:layout_weight="32"
         android:paddingBottom="3dp"
         >
 
@@ -135,8 +136,9 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:textColor="@color/cyan"
-                android:textStyle="bold"
                 android:visibility="gone"
+                android:textSize="11sp"
+                android:textStyle="bold"
                 android:text=""/>
         </RelativeLayout>
 
@@ -148,7 +150,9 @@
             android:scaleType="centerInside"
             android:layout_alignParentBottom="true"
             android:background="@android:color/transparent"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:layout_marginRight="10dp"
+            />
 
         <ImageButton
             android:id="@+id/popupMenu"

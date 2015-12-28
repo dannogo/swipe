@@ -84,8 +84,8 @@ public class SwipeActivity extends AppCompatActivity{
             statusBar.setBackgroundColor(ContextCompat.getColor(this, R.color.favorites_skin));
         }else{
             starInToolbar.setVisibility(View.VISIBLE);
-            toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.app_skin));
-            statusBar.setBackgroundColor(ContextCompat.getColor(this, R.color.app_skin));
+            toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.toolbar_skin));
+            statusBar.setBackgroundColor(ContextCompat.getColor(this, R.color.toolbar_skin));
         }
         starInToolbar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,8 +140,8 @@ public class SwipeActivity extends AppCompatActivity{
                     statusBar.setBackgroundColor(ContextCompat.getColor(context, R.color.favorites_skin));
                 } else {
                     starInToolbar.setVisibility(View.VISIBLE);
-                    toolbar.setBackgroundColor(ContextCompat.getColor(context, R.color.app_skin));
-                    statusBar.setBackgroundColor(ContextCompat.getColor(context, R.color.app_skin));
+                    toolbar.setBackgroundColor(ContextCompat.getColor(context, R.color.toolbar_skin));
+                    statusBar.setBackgroundColor(ContextCompat.getColor(context, R.color.toolbar_skin));
                 }
 
                 com.software.shell.fab.ActionButton fabTrash = (ActionButton) viewPager.findViewWithTag("fab_trash_" + position);
@@ -250,7 +250,8 @@ public class SwipeActivity extends AppCompatActivity{
     private void render(ServingClass.Btn btn){
         if (btn == ServingClass.Btn.NONE){
             if (App.isPlus){
-                squareBtn.setImageResource(R.drawable.stop_painted);
+                squareBtn.setVisibility(View.INVISIBLE);
+//                squareBtn.setImageResource(R.drawable.stop_painted);
                 plusMinus.setImageResource(R.drawable.plus_empty);
 
                 squareBtn.getLayoutParams().height = (int) getResources().getDimension(R.dimen.small_square_plus);
@@ -259,7 +260,8 @@ public class SwipeActivity extends AppCompatActivity{
                 plusMinus.getLayoutParams().width = (int) getResources().getDimension(R.dimen.large_icon_size_in_toolbar);
 
             }else{
-                squareBtn.setImageResource(R.drawable.stop_empty);
+                squareBtn.setVisibility(View.VISIBLE);
+//                squareBtn.setImageResource(R.drawable.stop_empty);
                 plusMinus.setImageResource(R.drawable.plus_painted);
                 squareCounterView.setText(String.valueOf(ServingClass.squareCounter));
                 squareCounterView.setVisibility(View.VISIBLE);
@@ -272,7 +274,8 @@ public class SwipeActivity extends AppCompatActivity{
             }
         }else if (btn == ServingClass.Btn.SQUARE){
             if (!App.isPlus){
-                squareBtn.setImageResource(R.drawable.stop_painted);
+                squareBtn.setVisibility(View.INVISIBLE);
+//                squareBtn.setImageResource(R.drawable.stop_painted);
                 ServingClass.squareCounter = 1;
                 plusMinus.setImageResource(R.drawable.plus_empty);
 
@@ -289,7 +292,8 @@ public class SwipeActivity extends AppCompatActivity{
         }else if (btn == ServingClass.Btn.PLUS){
             if (App.isPlus){
                 plusMinus.setImageResource(R.drawable.plus_painted);
-                squareBtn.setImageResource(R.drawable.stop_empty);
+                squareBtn.setVisibility(View.VISIBLE);
+//                squareBtn.setImageResource(R.drawable.stop_empty);
 
                 squareCounterView.setText(String.valueOf(ServingClass.squareCounter));
                 squareCounterView.setVisibility(View.VISIBLE);

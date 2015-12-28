@@ -8,8 +8,6 @@
     android:layout_below="@+id/recyclerViewPreviews"
     >
 
-        <!--android:text="Photo"-->
-        <!--android:textColor="@drawable/filter_button_reaction"-->
     <LinearLayout
         android:orientation="vertical"
         android:id="@+id/photo_filter_wrap"
@@ -40,8 +38,6 @@
             />
     </LinearLayout>
 
-        <!--android:text="Video"-->
-        <!--android:textColor="@drawable/filter_button_reaction"-->
     <LinearLayout
         android:orientation="vertical"
         android:id="@+id/video_filter_wrap"
@@ -70,8 +66,7 @@
             android:textColor="@color/text_in_filter_panel"
             />
     </LinearLayout>
-        <!--android:text="All"-->
-        <!--android:textColor="@drawable/filter_button_reaction"-->
+
     <LinearLayout
         android:orientation="vertical"
         android:id="@+id/without_filter_wrap"

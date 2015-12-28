@@ -1,6 +1,5 @@
 package com.sqisland.swipe;
 
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -234,7 +233,8 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
     private void render(ServingClass.Btn btn) {
         if (btn == ServingClass.Btn.NONE) {
             if (App.isPlus) {
-                squareBtn.setImageResource(R.drawable.stop_painted);
+//                squareBtn.setImageResource(R.drawable.stop_painted);
+                squareBtn.setVisibility(View.INVISIBLE);
                 plusMinus.setImageResource(R.drawable.plus_empty);
 
                 squareBtn.getLayoutParams().height = (int) getResources().getDimension(R.dimen.small_square_plus);
@@ -244,7 +244,8 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
 
                 squareCounterView.setVisibility(View.GONE);
             } else {
-                squareBtn.setImageResource(R.drawable.stop_empty);
+                squareBtn.setVisibility(View.VISIBLE);
+//                squareBtn.setImageResource(R.drawable.stop_empty);
                 plusMinus.setImageResource(R.drawable.plus_painted);
 
                 plusMinus.getLayoutParams().height = (int) getResources().getDimension(R.dimen.small_square_plus);
@@ -257,7 +258,8 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
             }
         }else if (btn == ServingClass.Btn.SQUARE){
             if (!App.isPlus){
-                squareBtn.setImageResource(R.drawable.stop_painted);
+//                squareBtn.setImageResource(R.drawable.stop_painted);
+                squareBtn.setVisibility(View.INVISIBLE);
                 ServingClass.squareCounter = 1;
                 plusMinus.setImageResource(R.drawable.plus_empty);
 
@@ -278,7 +280,8 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         }else if (btn == ServingClass.Btn.PLUS){
             if (App.isPlus){
                 plusMinus.setImageResource(R.drawable.plus_painted);
-                squareBtn.setImageResource(R.drawable.stop_empty);
+                squareBtn.setVisibility(View.VISIBLE);
+//                squareBtn.setImageResource(R.drawable.stop_empty);
 
                 for (int i = 0; i < recyclerView.getChildCount(); i++) {
                     recyclerView.getChildAt(i).findViewById(R.id.small_magnifier).setVisibility(View.VISIBLE);
@@ -362,7 +365,10 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preview);
 
-
+        if (ServingClass.menuWidth<1) {
+            Log.w("LOG", "menuWidth: "+ServingClass.menuWidth);
+            ServingClass.findoutPopupWidth(this);
+        }
 
         toolbar = (LinearLayout) findViewById(R.id.double_toolbar);
         toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.toolbar_skin));
@@ -381,7 +387,6 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         toolbar.setLayoutParams(params);
 
         sharedPreferences = App.sharedPreferences;
-//        isPlus = sharedPreferences.getBoolean("isPlus", true);
 
         isDeleteMode = sharedPreferences.getBoolean("isDeleteMode", false);
         // taking saved in sharedPreferences parameters and saving them in fields
@@ -607,7 +612,6 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
                 break;
         }
         this.findViewById(indicatorStickRecourse).setVisibility(View.VISIBLE);
-//        ((ImageButton)view).setImageResource(imageOn);
         ((ImageView)view.findViewById(imageRecourse)).setImageResource(imageOn);
 
         easyDissmisDeleteMode();
@@ -674,15 +678,17 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
 
     private void switchColorAndVisibility(){
 
-        if (filter.equals("Favorites")){
-            filterTab.setBackgroundColor(ContextCompat.getColor(this, R.color.favorites_skin));
+
+        // DON`T DELETE just in case
+//        if (filter.equals("Favorites")){
+//            filterTab.setBackgroundColor(ContextCompat.getColor(this, R.color.favorites_skin));
 //            toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.favorites_skin));
 //            statusBar.setBackgroundColor(ContextCompat.getColor(this, R.color.favorites_skin));
-        }else{
-            filterTab.setBackgroundColor(ContextCompat.getColor(this, R.color.app_skin));
+//        }else{
+//            filterTab.setBackgroundColor(ContextCompat.getColor(this, R.color.app_skin));
 //            toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.app_skin));
 //            statusBar.setBackgroundColor(ContextCompat.getColor(this, R.color.app_skin));
-        }
+//        }
 
         if (isDeleteMode) {
             trashBtn.setVisibility(View.VISIBLE);
