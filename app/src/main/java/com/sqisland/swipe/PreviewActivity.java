@@ -9,6 +9,7 @@ import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -373,18 +374,20 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         toolbar = (LinearLayout) findViewById(R.id.double_toolbar);
         toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.toolbar_skin));
 
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 
-        statusBar = findViewById(R.id.statusBarBackground);
-        statusBar.getLayoutParams().height = ServingClass.getStatusBarHeight(this);
-        statusBar.setBackgroundColor(ContextCompat.getColor(this, R.color.app_skin));
+            statusBar = findViewById(R.id.statusBarBackground);
+            statusBar.getLayoutParams().height = ServingClass.getStatusBarHeight(this);
+            statusBar.setBackgroundColor(ContextCompat.getColor(this, R.color.app_skin));
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) toolbar.getLayoutParams();
+            params.topMargin = ServingClass.getStatusBarHeight(this);
+            toolbar.setLayoutParams(params);
+        }
 
         filterTab = (LinearLayout) findViewById(R.id.filter_tab);
         filterTab.setBackgroundColor(ContextCompat.getColor(this, R.color.app_skin));
         squareCounterView = (TextView) findViewById(R.id.squareCounter);
 
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) toolbar.getLayoutParams();
-        params.topMargin = ServingClass.getStatusBarHeight(this);
-        toolbar.setLayoutParams(params);
 
         sharedPreferences = App.sharedPreferences;
 
@@ -695,13 +698,17 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
             cancelBtn.setVisibility(View.VISIBLE);
             starBtn.setVisibility(View.VISIBLE);
             toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.deleteModeColor));
-            statusBar.setBackgroundColor(ContextCompat.getColor(this, R.color.deleteModeColor));
+            if (statusBar != null) {
+                statusBar.setBackgroundColor(ContextCompat.getColor(this, R.color.deleteModeColor));
+            }
         }else{
             trashBtn.setVisibility(View.GONE);
             cancelBtn.setVisibility(View.GONE);
             starBtn.setVisibility(View.GONE);
             toolbar.setBackgroundColor(getResources().getColor(R.color.toolbar_skin));
-            statusBar.setBackgroundColor(getResources().getColor(R.color.toolbar_skin));
+            if (statusBar != null) {
+                statusBar.setBackgroundColor(getResources().getColor(R.color.toolbar_skin));
+            }
         }
 
     }

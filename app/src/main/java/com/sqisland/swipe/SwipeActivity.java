@@ -8,6 +8,7 @@ import android.graphics.Matrix;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
@@ -59,13 +60,15 @@ public class SwipeActivity extends AppCompatActivity{
         toolbar = (LinearLayout) findViewById(R.id.double_toolbar);
         squareCounterView = (TextView) findViewById(R.id.squareCounter);
 
-        statusBar = findViewById(R.id.statusBarBackground);
-        statusBar.getLayoutParams().height = ServingClass.getStatusBarHeight(this);
-        statusBar.setBackgroundColor(Color.parseColor("#1A237E"));
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            statusBar = findViewById(R.id.statusBarBackground);
+            statusBar.getLayoutParams().height = ServingClass.getStatusBarHeight(this);
+            statusBar.setBackgroundColor(Color.parseColor("#1A237E"));
 
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) toolbar.getLayoutParams();
-        params.topMargin = ServingClass.getStatusBarHeight(this);
-        toolbar.setLayoutParams(params);
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) toolbar.getLayoutParams();
+            params.topMargin = ServingClass.getStatusBarHeight(this);
+            toolbar.setLayoutParams(params);
+        }
 
         // Getting position of chosen image from Intent
         Bundle extras = getIntent().getExtras();
@@ -81,11 +84,15 @@ public class SwipeActivity extends AppCompatActivity{
         if (SivAdapter.favoritesUri.contains(images.get(currentPosition))) {
             starInToolbar.setVisibility(View.GONE);
             toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.favorites_skin));
-            statusBar.setBackgroundColor(ContextCompat.getColor(this, R.color.favorites_skin));
+            if (statusBar != null) {
+                statusBar.setBackgroundColor(ContextCompat.getColor(this, R.color.favorites_skin));
+            }
         }else{
             starInToolbar.setVisibility(View.VISIBLE);
             toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.toolbar_skin));
-            statusBar.setBackgroundColor(ContextCompat.getColor(this, R.color.toolbar_skin));
+            if (statusBar != null) {
+                statusBar.setBackgroundColor(ContextCompat.getColor(this, R.color.toolbar_skin));
+            }
         }
         starInToolbar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,10 +117,14 @@ public class SwipeActivity extends AppCompatActivity{
         toolbarTitle.setText(simplifyImageName(images, currentPosition));
 
         if (isEditMode) {
-            statusBar.setVisibility(View.VISIBLE);
+            if (statusBar != null) {
+                statusBar.setVisibility(View.VISIBLE);
+            }
             toolbar.setVisibility(View.VISIBLE);
         } else {
-            statusBar.setVisibility(View.INVISIBLE);
+            if (statusBar != null) {
+                statusBar.setVisibility(View.INVISIBLE);
+            }
             toolbar.setVisibility(View.INVISIBLE);
         }
 
@@ -137,11 +148,15 @@ public class SwipeActivity extends AppCompatActivity{
                 if (SivAdapter.favoritesUri.contains(images.get(position))) {
                     starInToolbar.setVisibility(View.GONE);
                     toolbar.setBackgroundColor(ContextCompat.getColor(context, R.color.favorites_skin));
-                    statusBar.setBackgroundColor(ContextCompat.getColor(context, R.color.favorites_skin));
+                    if (statusBar != null) {
+                        statusBar.setBackgroundColor(ContextCompat.getColor(context, R.color.favorites_skin));
+                    }
                 } else {
                     starInToolbar.setVisibility(View.VISIBLE);
                     toolbar.setBackgroundColor(ContextCompat.getColor(context, R.color.toolbar_skin));
-                    statusBar.setBackgroundColor(ContextCompat.getColor(context, R.color.toolbar_skin));
+                    if (statusBar != null) {
+                        statusBar.setBackgroundColor(ContextCompat.getColor(context, R.color.toolbar_skin));
+                    }
                 }
 
                 com.software.shell.fab.ActionButton fabTrash = (ActionButton) viewPager.findViewWithTag("fab_trash_" + position);
@@ -436,14 +451,18 @@ public class SwipeActivity extends AppCompatActivity{
                 public void onViewTap(View view, float v, float v1) {
                     if (!SwipeActivity.isEditMode) {
                         toolbar.setVisibility(View.VISIBLE);
-                        statusBar.setVisibility(View.VISIBLE);
+                        if (statusBar != null) {
+                            statusBar.setVisibility(View.VISIBLE);
+                        }
                         fabTrash.hide();
                         fabMagnifier.hide();
                         fabCamera.hide();
                         SwipeActivity.isEditMode = true;
                     } else {
                         toolbar.setVisibility(View.INVISIBLE);
-                        statusBar.setVisibility(View.INVISIBLE);
+                        if (statusBar != null) {
+                            statusBar.setVisibility(View.INVISIBLE);
+                        }
                         fabTrash.show();
                         fabMagnifier.show();
                         fabCamera.show();
