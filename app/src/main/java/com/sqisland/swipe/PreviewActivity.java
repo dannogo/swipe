@@ -365,7 +365,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
 
 
         toolbar = (LinearLayout) findViewById(R.id.double_toolbar);
-        toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.app_skin));
+        toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.toolbar_skin));
 
 
         statusBar = findViewById(R.id.statusBarBackground);
@@ -385,10 +385,10 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
 
         isDeleteMode = sharedPreferences.getBoolean("isDeleteMode", false);
         // taking saved in sharedPreferences parameters and saving them in fields
-        columnsInPortrait = sharedPreferences.getInt("portrait", 3);
-        columnsInLandscape = sharedPreferences.getInt("landscape", 5);
+        columnsInPortrait = sharedPreferences.getInt("portrait", 4);
+        columnsInLandscape = sharedPreferences.getInt("landscape", 6);
 
-        filter = sharedPreferences.getString("filter", "All");
+        filter = sharedPreferences.getString("filter", "Photo");
         filterButtonProperState(filter, true);
 
 
@@ -396,28 +396,28 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
 
 
         // Filter bar buttons
-        ImageButton photoFilter = (ImageButton) findViewById(R.id.photo_filter);
+        LinearLayout photoFilter = (LinearLayout) findViewById(R.id.photo_filter_wrap);
         photoFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 filterBtnAction(v, ServingClass.Fil.PHOTO);
             }
         });
-        ImageButton videoFilter = (ImageButton) findViewById(R.id.video_filter);
+        LinearLayout videoFilter = (LinearLayout) findViewById(R.id.video_filter_wrap);
         videoFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 filterBtnAction(v, ServingClass.Fil.VIDEO);
             }
         });
-        ImageButton withoutFilter = (ImageButton) findViewById(R.id.without_filter);
+        LinearLayout withoutFilter = (LinearLayout) findViewById(R.id.without_filter_wrap);
         withoutFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 filterBtnAction(v, ServingClass.Fil.ALL);
             }
         });
-        final ImageButton favoritesFilter = (ImageButton) findViewById(R.id.favorites_filter);
+        final LinearLayout favoritesFilter = (LinearLayout) findViewById(R.id.favorites_filter_wrap);
         favoritesFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -576,26 +576,39 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         App.editor.commit();
 
         int imageOn;
+        int indicatorStickRecourse;
+        int imageRecourse;
 
         switch (filter){
             case "Photo":
                 imageOn = R.drawable.photo_on;
+                indicatorStickRecourse = R.id.photo_indicator_stick;
+                imageRecourse = R.id.photo_filter;
                 break;
             case "Video":
                 imageOn = R.drawable.video_on;
+                indicatorStickRecourse = R.id.video_indicator_stick;
+                imageRecourse = R.id.video_filter;
                 break;
             case "All":
                 imageOn = R.drawable.all_on;
+                indicatorStickRecourse = R.id.all_indicator_stick;
+                imageRecourse = R.id.without_filter;
                 break;
             case "Favorites":
                 imageOn = R.drawable.favorites_on;
+                indicatorStickRecourse = R.id.favorites_indicator_stick;
+                imageRecourse = R.id.favorites_filter;
                 break;
             default:
                 imageOn = R.drawable.all_on;
+                indicatorStickRecourse = R.id.all_indicator_stick;
+                imageRecourse = R.id.without_filter;
                 break;
         }
-
-        ((ImageButton)view).setImageResource(imageOn);
+        this.findViewById(indicatorStickRecourse).setVisibility(View.VISIBLE);
+//        ((ImageButton)view).setImageResource(imageOn);
+        ((ImageView)view.findViewById(imageRecourse)).setImageResource(imageOn);
 
         easyDissmisDeleteMode();
         reloadRecyclerView(columnsInPortrait, columnsInLandscape);
@@ -603,40 +616,47 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
 
 // check or uncheck filter tab buttons
     private void filterButtonProperState(String filter, boolean check){
-        ImageButton btn;
+        ImageView btn;
+        View indicatorStick;
         int imageOn;
         int imageOff;
 //        boolean isFavorites = false;
         switch (filter){
             case "Photo":
-                btn = (ImageButton) this.findViewById(R.id.photo_filter);
+                btn = (ImageView) this.findViewById(R.id.photo_filter);
+                indicatorStick = this.findViewById(R.id.photo_indicator_stick);
                 imageOn = R.drawable.photo_on;
                 imageOff = R.drawable.photo_off;
                 break;
             case "Video":
-                btn = (ImageButton) this.findViewById(R.id.video_filter);
+                indicatorStick = this.findViewById(R.id.video_indicator_stick);
+                btn = (ImageView) this.findViewById(R.id.video_filter);
                 imageOn = R.drawable.video_on;
                 imageOff = R.drawable.video_off;
                 break;
             case "All":
-                btn = (ImageButton) this.findViewById(R.id.without_filter);
+                indicatorStick = this.findViewById(R.id.all_indicator_stick);
+                btn = (ImageView) this.findViewById(R.id.without_filter);
                 imageOn = R.drawable.all_on;
                 imageOff = R.drawable.all_off;
                 break;
             case "Favorites":
-                btn = (ImageButton) this.findViewById(R.id.favorites_filter);
+                indicatorStick = this.findViewById(R.id.favorites_indicator_stick);
+                btn = (ImageView) this.findViewById(R.id.favorites_filter);
                 imageOn = R.drawable.favorites_on;
                 imageOff = R.drawable.favorites_off;
 //                isFavorites = true;
                 break;
             default:
-                btn = (ImageButton) this.findViewById(R.id.without_filter);
+                indicatorStick = this.findViewById(R.id.all_indicator_stick);
+                btn = (ImageView) this.findViewById(R.id.without_filter);
                 imageOn = R.drawable.all_on;
                 imageOff = R.drawable.all_off;
                 break;
         }
         if (check){
             btn.setImageResource(imageOn);
+            indicatorStick.setVisibility(View.VISIBLE);
 //            if(isFavorites){
 //                toolbar.setBackgroundColor(getResources().getColor(R.color.favorites_skin));
 //                statusBar.setBackgroundColor(getResources().getColor(R.color.favorites_skin));
@@ -647,6 +667,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
 //            }
         }else{
             btn.setImageResource(imageOff);
+            indicatorStick.setVisibility(View.INVISIBLE);
         }
 
     }
@@ -655,12 +676,12 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
 
         if (filter.equals("Favorites")){
             filterTab.setBackgroundColor(ContextCompat.getColor(this, R.color.favorites_skin));
-            toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.favorites_skin));
-            statusBar.setBackgroundColor(ContextCompat.getColor(this, R.color.favorites_skin));
+//            toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.favorites_skin));
+//            statusBar.setBackgroundColor(ContextCompat.getColor(this, R.color.favorites_skin));
         }else{
             filterTab.setBackgroundColor(ContextCompat.getColor(this, R.color.app_skin));
-            toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.app_skin));
-            statusBar.setBackgroundColor(ContextCompat.getColor(this, R.color.app_skin));
+//            toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.app_skin));
+//            statusBar.setBackgroundColor(ContextCompat.getColor(this, R.color.app_skin));
         }
 
         if (isDeleteMode) {
@@ -673,8 +694,8 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
             trashBtn.setVisibility(View.GONE);
             cancelBtn.setVisibility(View.GONE);
             starBtn.setVisibility(View.GONE);
-//            toolbar.setBackgroundColor(getResources().getColor(R.color.app_skin));
-//            statusBar.setBackgroundColor(getResources().getColor(R.color.app_skin));
+            toolbar.setBackgroundColor(getResources().getColor(R.color.toolbar_skin));
+            statusBar.setBackgroundColor(getResources().getColor(R.color.toolbar_skin));
         }
 
     }

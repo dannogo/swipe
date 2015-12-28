@@ -11,7 +11,6 @@
     android:paddingLeft="@dimen/abc_action_bar_icon_vertical_padding_material"
     android:paddingRight="7dp"
     android:weightSum="100">
-    <!--android:id="@+id/toolbarImitation"-->
 
     <LinearLayout
         android:id="@+id/leftSide"
@@ -25,18 +24,18 @@
             android:text="Gallery"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.37"
+            android:layout_weight="0.30"
             android:textColor="#FFF"
             android:textStyle="bold"
             android:gravity="top"
-            android:textSize="15dp"
+            android:textSize="12dp"
             />
 
         <LinearLayout
             android:id="@+id/leftButtonPanel"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.63"
+            android:layout_weight="0.70"
             android:orientation="horizontal"
             android:layout_gravity="bottom"
             android:paddingTop="5dp"
@@ -128,7 +127,6 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:src="@drawable/stop_empty" />
-                <!--android:background="@drawable/toolbar_button_selector"-->
 
             <TextView
                 android:id="@+id/squareCounter"
@@ -142,10 +140,6 @@
                 android:text=""/>
         </RelativeLayout>
 
-    <!--<RelativeLayout-->
-        <!--android:layout_width="@dimen/large_icon_size_in_toolbar"-->
-        <!--android:layout_height="@dimen/large_icon_size_in_toolbar">-->
-
         <ImageButton
             android:id="@+id/plusMinus"
             android:src="@drawable/plus_alone"
@@ -155,8 +149,6 @@
             android:layout_alignParentBottom="true"
             android:background="@android:color/transparent"
             android:layout_centerHorizontal="true" />
-            <!--android:background="@drawable/toolbar_button_selector"-->
-        <!--</RelativeLayout>-->
 
         <ImageButton
             android:id="@+id/popupMenu"

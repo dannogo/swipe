@@ -11,84 +11,124 @@
         <!--android:text="Photo"-->
         <!--android:textColor="@drawable/filter_button_reaction"-->
     <LinearLayout
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:id="@+id/photo_filter_wrap"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
+        android:paddingTop="@dimen/padding_top_in_filter_tab"
+        android:paddingBottom="@dimen/padding_bottom_in_filter_tab"
+        android:clickable="true"
         >
-        <ImageButton
+        <ImageView
             android:src="@drawable/photo_off"
             android:id="@+id/photo_filter"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="@dimen/icon_size_in_filter_tab"
+            android:layout_height="@dimen/icon_size_in_filter_tab"
+            android:layout_gravity="center_horizontal"
             android:scaleType="centerInside"
             android:background="@android:color/transparent"
+            />
+
+        <TextView
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Photo"
+            android:textSize="@dimen/text_size_in_filter_tab"
+            android:textColor="@color/text_in_filter_panel"
             />
     </LinearLayout>
 
         <!--android:text="Video"-->
         <!--android:textColor="@drawable/filter_button_reaction"-->
     <LinearLayout
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:id="@+id/video_filter_wrap"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
+        android:paddingTop="@dimen/padding_top_in_filter_tab"
+        android:paddingBottom="@dimen/padding_bottom_in_filter_tab"
+        android:clickable="true"
         >
-        <ImageButton
+        <ImageView
             android:src="@drawable/video_off"
             android:id="@+id/video_filter"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="@dimen/icon_size_in_filter_tab"
+            android:layout_height="@dimen/icon_size_in_filter_tab"
+            android:layout_gravity="center_horizontal"
             android:scaleType="centerInside"
             android:background="@android:color/transparent"
+            />
+        <TextView
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Video"
+            android:textSize="@dimen/text_size_in_filter_tab"
+            android:textColor="@color/text_in_filter_panel"
             />
     </LinearLayout>
         <!--android:text="All"-->
         <!--android:textColor="@drawable/filter_button_reaction"-->
     <LinearLayout
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:id="@+id/without_filter_wrap"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
+        android:paddingTop="@dimen/padding_top_in_filter_tab"
+        android:paddingBottom="@dimen/padding_bottom_in_filter_tab"
         android:background="@android:color/transparent"
+        android:clickable="true"
         >
-        <ImageButton
+        <ImageView
             android:src="@drawable/all_off"
             android:id="@+id/without_filter"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="@dimen/icon_size_in_filter_tab"
+            android:layout_height="@dimen/icon_size_in_filter_tab"
+            android:layout_gravity="center_horizontal"
             android:scaleType="centerInside"
             android:background="@android:color/transparent"
             />
+        <TextView
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="All"
+            android:textSize="@dimen/text_size_in_filter_tab"
+            android:textColor="@color/text_in_filter_panel"
+            />
 
     </LinearLayout>
-        <!--android:text="Favorites"-->
-        <!--android:textColor="@drawable/filter_button_reaction"-->
+
     <LinearLayout
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:id="@+id/favorites_filter_wrap"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
+        android:paddingTop="@dimen/padding_top_in_filter_tab"
+        android:paddingBottom="@dimen/padding_bottom_in_filter_tab"
+        android:clickable="true"
         >
-        <ImageButton
+        <ImageView
             android:src="@drawable/favorites_off"
             android:id="@+id/favorites_filter"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="@dimen/icon_size_in_filter_tab"
+            android:layout_height="@dimen/icon_size_in_filter_tab"
+            android:layout_gravity="center_horizontal"
             android:scaleType="centerInside"
             android:background="@android:color/transparent"
+            />
+        <TextView
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Favorites"
+            android:textSize="@dimen/text_size_in_filter_tab"
+            android:textColor="@color/text_in_filter_panel"
             />
     </LinearLayout>
 </LinearLayout>

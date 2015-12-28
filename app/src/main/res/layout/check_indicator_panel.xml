@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="5dp"
+    android:orientation="horizontal"
+    android:background="@android:color/transparent"
+    >
+
+    <View
+        android:id="@+id/photo_indicator_stick"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.25"
+        android:background="@color/text_in_filter_panel"
+        android:visibility="invisible"
+        />
+    <View
+        android:id="@+id/video_indicator_stick"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.25"
+        android:background="@color/text_in_filter_panel"
+        android:visibility="invisible"
+        />
+    <View
+        android:id="@+id/all_indicator_stick"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.25"
+        android:background="@color/text_in_filter_panel"
+        android:visibility="invisible"
+        />
+    <View
+        android:id="@+id/favorites_indicator_stick"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.25"
+        android:background="@color/text_in_filter_panel"
+        android:visibility="invisible"
+        />
+
+</LinearLayout>

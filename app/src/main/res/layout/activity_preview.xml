@@ -34,6 +34,15 @@
         android:layout_height="48dp"
         />
 
+    <include
+        android:id="@+id/indicator_sticks_panel"
+        layout="@layout/check_indicator_panel"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_marginBottom="46dp"
+        />
+
 
 
 </RelativeLayout>

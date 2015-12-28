@@ -6,7 +6,7 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="small_icon_size_in_toolbar">33dp</dimen>
-    <dimen name="very_small_icon_size_in_toolbar">27dp</dimen>
+    <dimen name="very_small_icon_size_in_toolbar">31dp</dimen>
     <!--<dimen name="small_square_plus">40dp</dimen>-->
     <dimen name="small_square_plus">27dp</dimen>
     <!--<dimen name="large_icon_size_in_toolbar">50dp</dimen>-->
@@ -17,5 +17,12 @@
     <dimen name="bottom_offset_dp">120dp</dimen>
     <dimen name="height_of_item_in_speeddial">80dp</dimen>
     <dimen name="max_speeddial_height">240dp</dimen>
+
+    <!--filter tab-->
+    <dimen name="icon_size_in_filter_tab">30dp</dimen>
+    <dimen name="text_size_in_filter_tab">11sp</dimen>
+    <dimen name="padding_top_in_filter_tab">1dp</dimen>
+    <dimen name="padding_bottom_in_filter_tab">1dp</dimen>
+
 
 </resources>

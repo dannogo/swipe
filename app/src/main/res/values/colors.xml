@@ -7,8 +7,12 @@
     <color name="cyan">#3949AB</color>
     <color name="pressedButtonInFilterTab">#555</color>
     <color name="pressedMenuItem">#DDD</color>
-    <color name="app_skin">#3367d6</color>
-    <color name="favorites_skin">#607d8b</color>
+    <!--<color name="app_skin">#3367d6</color>-->
+    <color name="toolbar_skin">#3367d6</color>
+    <color name="app_skin">#fff</color>
+    <color name="text_in_filter_panel">#1565c0</color>
+    <!--<color name="favorites_skin">#607d8b</color>-->
+    <color name="favorites_skin">#fff</color>
     <color name="red">#F00</color>
     <color name="typeNumber">#e74c3c</color>
     <!--<color name="edit_text_green_underline"></color>-->
