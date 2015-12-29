@@ -29,12 +29,13 @@
             />
 
         <TextView
+            android:id="@+id/filter_label_photo"
             android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="Photo"
             android:textSize="@dimen/text_size_in_filter_tab"
-            android:textColor="@color/text_in_filter_panel"
+            android:textColor="@color/inactive_text_in_filter_panel"
             />
     </LinearLayout>
 
@@ -58,12 +59,13 @@
             android:background="@android:color/transparent"
             />
         <TextView
+            android:id="@+id/filter_label_video"
             android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="Video"
             android:textSize="@dimen/text_size_in_filter_tab"
-            android:textColor="@color/text_in_filter_panel"
+            android:textColor="@color/inactive_text_in_filter_panel"
             />
     </LinearLayout>
 
@@ -88,12 +90,13 @@
             android:background="@android:color/transparent"
             />
         <TextView
+            android:id="@+id/filter_label_all"
             android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="All"
             android:textSize="@dimen/text_size_in_filter_tab"
-            android:textColor="@color/text_in_filter_panel"
+            android:textColor="@color/inactive_text_in_filter_panel"
             />
 
     </LinearLayout>
@@ -118,12 +121,13 @@
             android:background="@android:color/transparent"
             />
         <TextView
+            android:id="@+id/filter_label_favorites"
             android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="Favorites"
             android:textSize="@dimen/text_size_in_filter_tab"
-            android:textColor="@color/text_in_filter_panel"
+            android:textColor="@color/inactive_text_in_filter_panel"
             />
     </LinearLayout>
 </LinearLayout>

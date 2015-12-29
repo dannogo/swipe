@@ -8,7 +8,7 @@
     android:paddingTop="3dp"
     android:paddingBottom="3dp"
     android:paddingLeft="@dimen/abc_action_bar_icon_vertical_padding_material"
-    android:paddingRight="7dp"
+    android:paddingRight="5dp"
     android:weightSum="100"
     android:elevation="5dp"
     >
@@ -18,7 +18,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_weight="68">
+        android:layout_weight="65">
 
         <TextView
             android:id="@+id/info"
@@ -106,67 +106,187 @@
 
     </LinearLayout>
 
-    <RelativeLayout
+
+    <LinearLayout
         android:id="@+id/rightSide"
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_weight="35"
         android:orientation="horizontal"
-        android:layout_weight="32"
-        android:paddingBottom="3dp"
         >
 
         <RelativeLayout
-            android:layout_width="@dimen/large_icon_size_in_toolbar"
-            android:layout_height="@dimen/large_icon_size_in_toolbar">
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="50"
+            android:orientation="vertical"
+            android:gravity="right"
+            >
+            <!--android:background="#A0F"-->
+            <RelativeLayout
+                android:layout_width="@dimen/large_icon_size_in_toolbar"
+                android:layout_height="@dimen/large_icon_size_in_toolbar"
+                android:layout_alignParentRight="true"
+                >
+
+                <ImageButton
+                    android:id="@+id/squareBtn"
+                    android:layout_width="@dimen/large_icon_size_in_toolbar"
+                    android:layout_height="@dimen/large_icon_size_in_toolbar"
+                    android:scaleType="centerInside"
+                    android:background="@android:color/transparent"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/stop_empty" />
+
+                <TextView
+                    android:id="@+id/squareCounter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/cyan"
+                    android:visibility="gone"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:text=""/>
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/plusLeftDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Plus"
+                android:textSize="10dp"
+                android:textColor="@color/fab_material_white"
+                android:gravity="right"
+                android:layout_alignParentBottom="true"
+                />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="50"
+            android:orientation="vertical"
+            android:gravity="left"
+            >
+            <!--android:background="#0AF"-->
+
+            <TextView
+                android:id="@+id/squareDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Square"
+                android:textSize="10dp"
+                android:textColor="@color/fab_material_white"
+                />
 
             <ImageButton
-                android:id="@+id/squareBtn"
+                android:id="@+id/plusMinus"
+                android:src="@drawable/plus_alone"
                 android:layout_width="@dimen/large_icon_size_in_toolbar"
                 android:layout_height="@dimen/large_icon_size_in_toolbar"
                 android:scaleType="centerInside"
                 android:background="@android:color/transparent"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/stop_empty" />
+                android:layout_marginRight="10dp"
+                android:layout_above="@+id/plusBottomDescription"
+                />
 
             <TextView
-                android:id="@+id/squareCounter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:textColor="@color/cyan"
-                android:visibility="gone"
-                android:textSize="11sp"
-                android:textStyle="bold"
-                android:text=""/>
+                android:id="@+id/plusBottomDescription"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_height_plus_bottom_desc"
+                android:textSize="10dp"
+                android:textColor="@color/fab_material_white"
+                android:text="Plus"
+                android:layout_alignParentBottom="true"
+                />
         </RelativeLayout>
 
-        <ImageButton
-            android:id="@+id/plusMinus"
-            android:src="@drawable/plus_alone"
-            android:layout_width="@dimen/large_icon_size_in_toolbar"
-            android:layout_height="@dimen/large_icon_size_in_toolbar"
-            android:scaleType="centerInside"
-            android:layout_alignParentBottom="true"
-            android:background="@android:color/transparent"
-            android:layout_centerHorizontal="true"
-            android:layout_marginRight="10dp"
-            />
-
-        <ImageButton
-            android:id="@+id/popupMenu"
-            android:src="@drawable/menu"
-            android:background="@drawable/toolbar_button_selector"
+        <LinearLayout
             android:layout_width="@dimen/very_small_icon_size_in_toolbar"
-            android:layout_height="@dimen/very_small_icon_size_in_toolbar"
-            android:scaleType="centerInside"
-            android:layout_gravity="right"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_height="match_parent"
+            android:layout_weight="0"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            >
 
-    </RelativeLayout>
+            <ImageButton
+                android:id="@+id/popupMenu"
+                android:src="@drawable/menu"
+                android:background="@drawable/toolbar_button_selector"
+                android:layout_width="@dimen/very_small_icon_size_in_toolbar"
+                android:layout_height="@dimen/very_small_icon_size_in_toolbar"
+                android:scaleType="centerInside"
+                android:layout_gravity="center_vertical"
+                />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <!--<RelativeLayout-->
+        <!--android:id="@+id/rightSide"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:layout_weight="32"-->
+        <!--android:paddingBottom="3dp"-->
+        <!-->-->
+
+        <!--<RelativeLayout-->
+            <!--android:layout_width="@dimen/large_icon_size_in_toolbar"-->
+            <!--android:layout_height="@dimen/large_icon_size_in_toolbar">-->
+
+            <!--<ImageButton-->
+                <!--android:id="@+id/squareBtn"-->
+                <!--android:layout_width="@dimen/large_icon_size_in_toolbar"-->
+                <!--android:layout_height="@dimen/large_icon_size_in_toolbar"-->
+                <!--android:scaleType="centerInside"-->
+                <!--android:background="@android:color/transparent"-->
+                <!--android:layout_centerHorizontal="true"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:src="@drawable/stop_empty" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/squareCounter"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_centerHorizontal="true"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:textColor="@color/cyan"-->
+                <!--android:visibility="gone"-->
+                <!--android:textSize="11sp"-->
+                <!--android:textStyle="bold"-->
+                <!--android:text=""/>-->
+        <!--</RelativeLayout>-->
+
+        <!--<ImageButton-->
+            <!--android:id="@+id/plusMinus"-->
+            <!--android:src="@drawable/plus_alone"-->
+            <!--android:layout_width="@dimen/large_icon_size_in_toolbar"-->
+            <!--android:layout_height="@dimen/large_icon_size_in_toolbar"-->
+            <!--android:scaleType="centerInside"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:background="@android:color/transparent"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:layout_marginRight="10dp"-->
+            <!--/>-->
+
+        <!--<ImageButton-->
+            <!--android:id="@+id/popupMenu"-->
+            <!--android:src="@drawable/menu"-->
+            <!--android:background="@drawable/toolbar_button_selector"-->
+            <!--android:layout_width="@dimen/very_small_icon_size_in_toolbar"-->
+            <!--android:layout_height="@dimen/very_small_icon_size_in_toolbar"-->
+            <!--android:scaleType="centerInside"-->
+            <!--android:layout_gravity="right"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_alignParentEnd="true" />-->
+
+    <!--</RelativeLayout>-->
 
 </LinearLayout>
 

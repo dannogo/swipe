@@ -11,6 +11,7 @@
     <color name="toolbar_skin">#3367d6</color>
     <color name="app_skin">#fff</color>
     <color name="text_in_filter_panel">#1565c0</color>
+    <color name="inactive_text_in_filter_panel">#757575</color>
     <color name="favorites_skin">#607d8b</color>
     <!--<color name="favorites_skin">#fff</color>-->
     <color name="red">#F00</color>

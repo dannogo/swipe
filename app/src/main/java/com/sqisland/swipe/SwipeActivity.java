@@ -46,7 +46,7 @@ public class SwipeActivity extends AppCompatActivity{
     protected TextView squareCounterView;
     protected ImageButton squareBtn;
     protected ImageButton plusMinus;
-
+    protected TextView squareDescription, plusLeftDescription, plusBottomDescription;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -239,6 +239,9 @@ public class SwipeActivity extends AppCompatActivity{
 
         squareBtn = (ImageButton) toolbar.findViewById(R.id.squareBtn);
         plusMinus = (ImageButton) toolbar.findViewById(R.id.plusMinus);
+        squareDescription = (TextView) toolbar.findViewById(R.id.squareDescription);
+        plusLeftDescription = (TextView) toolbar.findViewById(R.id.plusLeftDescription);
+        plusBottomDescription = (TextView) toolbar.findViewById(R.id.plusBottomDescription);
 
         render(ServingClass.Btn.NONE);
 
@@ -266,6 +269,10 @@ public class SwipeActivity extends AppCompatActivity{
         if (btn == ServingClass.Btn.NONE){
             if (App.isPlus){
                 squareBtn.setVisibility(View.INVISIBLE);
+                squareDescription.setVisibility(View.INVISIBLE);
+                plusLeftDescription.setVisibility(View.INVISIBLE);
+                plusBottomDescription.setVisibility(View.VISIBLE);
+                plusBottomDescription.getLayoutParams().height = (int) getResources().getDimension(R.dimen.text_height_plus_bottom_desc);
 //                squareBtn.setImageResource(R.drawable.stop_painted);
                 plusMinus.setImageResource(R.drawable.plus_empty);
 
@@ -276,6 +283,10 @@ public class SwipeActivity extends AppCompatActivity{
 
             }else{
                 squareBtn.setVisibility(View.VISIBLE);
+                squareDescription.setVisibility(View.VISIBLE);
+                plusLeftDescription.setVisibility(View.VISIBLE);
+                plusBottomDescription.setVisibility(View.INVISIBLE);
+                plusBottomDescription.getLayoutParams().height = (int) getResources().getDimension(R.dimen.zero_text_height_plus_bottom_desc);
 //                squareBtn.setImageResource(R.drawable.stop_empty);
                 plusMinus.setImageResource(R.drawable.plus_painted);
                 squareCounterView.setText(String.valueOf(ServingClass.squareCounter));
@@ -290,6 +301,10 @@ public class SwipeActivity extends AppCompatActivity{
         }else if (btn == ServingClass.Btn.SQUARE){
             if (!App.isPlus){
                 squareBtn.setVisibility(View.INVISIBLE);
+                squareDescription.setVisibility(View.INVISIBLE);
+                plusLeftDescription.setVisibility(View.INVISIBLE);
+                plusBottomDescription.setVisibility(View.VISIBLE);
+                plusBottomDescription.getLayoutParams().height = (int) getResources().getDimension(R.dimen.text_height_plus_bottom_desc);
 //                squareBtn.setImageResource(R.drawable.stop_painted);
                 ServingClass.squareCounter = 1;
                 plusMinus.setImageResource(R.drawable.plus_empty);
@@ -308,6 +323,10 @@ public class SwipeActivity extends AppCompatActivity{
             if (App.isPlus){
                 plusMinus.setImageResource(R.drawable.plus_painted);
                 squareBtn.setVisibility(View.VISIBLE);
+                squareDescription.setVisibility(View.VISIBLE);
+                plusLeftDescription.setVisibility(View.VISIBLE);
+                plusBottomDescription.setVisibility(View.INVISIBLE);
+                plusBottomDescription.getLayoutParams().height = (int) getResources().getDimension(R.dimen.zero_text_height_plus_bottom_desc);
 //                squareBtn.setImageResource(R.drawable.stop_empty);
 
                 squareCounterView.setText(String.valueOf(ServingClass.squareCounter));

@@ -62,6 +62,8 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
     protected static ImageButton starBtn;
     private LinearLayout filterTab;
     protected TextView squareCounterView;
+    protected TextView squareDescription, plusLeftDescription, plusBottomDescription;
+    protected TextView filterLabelPhoto, filterLabelVideo, filterLabelAll, filterLabelFavorites;
 
 
     // Completely deletes photo from Gallery folder
@@ -236,6 +238,11 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
             if (App.isPlus) {
 //                squareBtn.setImageResource(R.drawable.stop_painted);
                 squareBtn.setVisibility(View.INVISIBLE);
+                squareDescription.setVisibility(View.INVISIBLE);
+                plusLeftDescription.setVisibility(View.INVISIBLE);
+                plusBottomDescription.setVisibility(View.VISIBLE);
+                plusBottomDescription.getLayoutParams().height = (int) getResources().getDimension(R.dimen.text_height_plus_bottom_desc);
+
                 plusMinus.setImageResource(R.drawable.plus_empty);
 
                 squareBtn.getLayoutParams().height = (int) getResources().getDimension(R.dimen.small_square_plus);
@@ -246,6 +253,10 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
                 squareCounterView.setVisibility(View.GONE);
             } else {
                 squareBtn.setVisibility(View.VISIBLE);
+                squareDescription.setVisibility(View.VISIBLE);
+                plusLeftDescription.setVisibility(View.VISIBLE);
+                plusBottomDescription.setVisibility(View.INVISIBLE);
+                plusBottomDescription.getLayoutParams().height = (int) getResources().getDimension(R.dimen.zero_text_height_plus_bottom_desc);
 //                squareBtn.setImageResource(R.drawable.stop_empty);
                 plusMinus.setImageResource(R.drawable.plus_painted);
 
@@ -261,6 +272,10 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
             if (!App.isPlus){
 //                squareBtn.setImageResource(R.drawable.stop_painted);
                 squareBtn.setVisibility(View.INVISIBLE);
+                squareDescription.setVisibility(View.INVISIBLE);
+                plusLeftDescription.setVisibility(View.INVISIBLE);
+                plusBottomDescription.setVisibility(View.VISIBLE);
+                plusBottomDescription.getLayoutParams().height = (int) getResources().getDimension(R.dimen.text_height_plus_bottom_desc);
                 ServingClass.squareCounter = 1;
                 plusMinus.setImageResource(R.drawable.plus_empty);
 
@@ -282,7 +297,11 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
             if (App.isPlus){
                 plusMinus.setImageResource(R.drawable.plus_painted);
                 squareBtn.setVisibility(View.VISIBLE);
-//                squareBtn.setImageResource(R.drawable.stop_empty);
+                squareDescription.setVisibility(View.VISIBLE);
+                plusLeftDescription.setVisibility(View.VISIBLE);
+                plusBottomDescription.setVisibility(View.INVISIBLE);
+                plusBottomDescription.getLayoutParams().height = (int) getResources().getDimension(R.dimen.zero_text_height_plus_bottom_desc);
+//                f.setImageResource(R.drawable.stop_empty);
 
                 for (int i = 0; i < recyclerView.getChildCount(); i++) {
                     recyclerView.getChildAt(i).findViewById(R.id.small_magnifier).setVisibility(View.VISIBLE);
@@ -366,8 +385,14 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preview);
 
+        filterTab = (LinearLayout) findViewById(R.id.filter_tab);
+        filterTab.setBackgroundColor(ContextCompat.getColor(this, R.color.app_skin));
+        filterLabelPhoto = (TextView) filterTab.findViewById(R.id.filter_label_photo);
+        filterLabelVideo = (TextView) filterTab.findViewById(R.id.filter_label_video);
+        filterLabelAll = (TextView) filterTab.findViewById(R.id.filter_label_all);
+        filterLabelFavorites = (TextView) filterTab.findViewById(R.id.filter_label_favorites);
+
         if (ServingClass.menuWidth<1) {
-            Log.w("LOG", "menuWidth: "+ServingClass.menuWidth);
             ServingClass.findoutPopupWidth(this);
         }
 
@@ -384,8 +409,6 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
             toolbar.setLayoutParams(params);
         }
 
-        filterTab = (LinearLayout) findViewById(R.id.filter_tab);
-        filterTab.setBackgroundColor(ContextCompat.getColor(this, R.color.app_skin));
         squareCounterView = (TextView) findViewById(R.id.squareCounter);
 
 
@@ -526,6 +549,9 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         squareBtn.setOnClickListener(this);
         plusMinus = (ImageButton) toolbar.findViewById(R.id.plusMinus);
         plusMinus.setOnClickListener(this);
+        squareDescription = (TextView) toolbar.findViewById(R.id.squareDescription);
+        plusLeftDescription = (TextView) toolbar.findViewById(R.id.plusLeftDescription);
+        plusBottomDescription = (TextView) toolbar.findViewById(R.id.plusBottomDescription);
 
         render(ServingClass.Btn.NONE);
 
@@ -586,34 +612,41 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         int imageOn;
         int indicatorStickRecourse;
         int imageRecourse;
+        TextView textView;
 
         switch (filter){
             case "Photo":
                 imageOn = R.drawable.photo_on;
                 indicatorStickRecourse = R.id.photo_indicator_stick;
                 imageRecourse = R.id.photo_filter;
+                textView = filterLabelPhoto;
                 break;
             case "Video":
                 imageOn = R.drawable.video_on;
                 indicatorStickRecourse = R.id.video_indicator_stick;
                 imageRecourse = R.id.video_filter;
+                textView = filterLabelVideo;
                 break;
             case "All":
                 imageOn = R.drawable.all_on;
                 indicatorStickRecourse = R.id.all_indicator_stick;
                 imageRecourse = R.id.without_filter;
+                textView = filterLabelAll;
                 break;
             case "Favorites":
                 imageOn = R.drawable.favorites_on;
                 indicatorStickRecourse = R.id.favorites_indicator_stick;
                 imageRecourse = R.id.favorites_filter;
+                textView = filterLabelFavorites;
                 break;
             default:
                 imageOn = R.drawable.all_on;
                 indicatorStickRecourse = R.id.all_indicator_stick;
                 imageRecourse = R.id.without_filter;
+                textView = filterLabelAll;
                 break;
         }
+        textView.setTextColor(ContextCompat.getColor(this, R.color.text_in_filter_panel));
         this.findViewById(indicatorStickRecourse).setVisibility(View.VISIBLE);
         ((ImageView)view.findViewById(imageRecourse)).setImageResource(imageOn);
 
@@ -627,6 +660,8 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         View indicatorStick;
         int imageOn;
         int imageOff;
+        TextView textView;
+
 //        boolean isFavorites = false;
         switch (filter){
             case "Photo":
@@ -634,24 +669,28 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
                 indicatorStick = this.findViewById(R.id.photo_indicator_stick);
                 imageOn = R.drawable.photo_on;
                 imageOff = R.drawable.photo_off;
+                textView = filterLabelPhoto;
                 break;
             case "Video":
                 indicatorStick = this.findViewById(R.id.video_indicator_stick);
                 btn = (ImageView) this.findViewById(R.id.video_filter);
                 imageOn = R.drawable.video_on;
                 imageOff = R.drawable.video_off;
+                textView = filterLabelVideo;
                 break;
             case "All":
                 indicatorStick = this.findViewById(R.id.all_indicator_stick);
                 btn = (ImageView) this.findViewById(R.id.without_filter);
                 imageOn = R.drawable.all_on;
                 imageOff = R.drawable.all_off;
+                textView = filterLabelAll;
                 break;
             case "Favorites":
                 indicatorStick = this.findViewById(R.id.favorites_indicator_stick);
                 btn = (ImageView) this.findViewById(R.id.favorites_filter);
                 imageOn = R.drawable.favorites_on;
                 imageOff = R.drawable.favorites_off;
+                textView = filterLabelFavorites;
 //                isFavorites = true;
                 break;
             default:
@@ -659,11 +698,15 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
                 btn = (ImageView) this.findViewById(R.id.without_filter);
                 imageOn = R.drawable.all_on;
                 imageOff = R.drawable.all_off;
+                textView = filterLabelAll;
                 break;
         }
         if (check){
             btn.setImageResource(imageOn);
             indicatorStick.setVisibility(View.VISIBLE);
+            textView.setTextColor(ContextCompat.getColor(this, R.color.text_in_filter_panel));
+
+            // Do not delete just in case
 //            if(isFavorites){
 //                toolbar.setBackgroundColor(getResources().getColor(R.color.favorites_skin));
 //                statusBar.setBackgroundColor(getResources().getColor(R.color.favorites_skin));
@@ -675,6 +718,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         }else{
             btn.setImageResource(imageOff);
             indicatorStick.setVisibility(View.INVISIBLE);
+            textView.setTextColor(ContextCompat.getColor(this, R.color.inactive_text_in_filter_panel));
         }
 
     }
