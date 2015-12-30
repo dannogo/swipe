@@ -159,18 +159,19 @@ public class SwipeActivity extends AppCompatActivity{
                     }
                 }
 
-                com.software.shell.fab.ActionButton fabTrash = (ActionButton) viewPager.findViewWithTag("fab_trash_" + position);
-                com.software.shell.fab.ActionButton fabCamera = (ActionButton) viewPager.findViewWithTag("fab_camera_" + position);
-                com.software.shell.fab.ActionButton fabMagnifier = (ActionButton) viewPager.findViewWithTag("fab_magnifier_" + position);
+                ImageButton fabTrash = (ImageButton) viewPager.findViewWithTag("fab_trash_" + position);
+                ImageButton fabCamera = (ImageButton) viewPager.findViewWithTag("fab_camera_" + position);
+                ImageButton fabMagnifier = (ImageButton) viewPager.findViewWithTag("fab_magnifier_" + position);
+
                 if (fabTrash != null) {
                     if (isEditMode) {
-                        fabTrash.hide();
-                        fabMagnifier.hide();
-                        fabCamera.hide();
+                        fabTrash.setVisibility(View.INVISIBLE);
+                        fabMagnifier.setVisibility(View.INVISIBLE);
+                        fabCamera.setVisibility(View.INVISIBLE);
                     } else {
-                        fabTrash.show();
-                        fabMagnifier.show();
-                        fabCamera.show();
+                        fabTrash.setVisibility(View.VISIBLE);
+                        fabMagnifier.setVisibility(View.VISIBLE);
+                        fabCamera.setVisibility(View.VISIBLE);
                     }
                 }
 
@@ -429,7 +430,7 @@ public class SwipeActivity extends AppCompatActivity{
             Glide.with(container.getContext()).load(uri).thumbnail(0.1f).into(draweeView);
 
             draweeView.setTag("image_" + position);
-            final com.software.shell.fab.ActionButton fabTrash = (ActionButton) rlImage.findViewById(R.id.trash_float);
+            final ImageButton fabTrash = (ImageButton) rlImage.findViewById(R.id.trash_float);
             fabTrash.setTag("fab_trash_" + position);
 
             fabTrash.setOnClickListener(new View.OnClickListener() {
@@ -439,7 +440,7 @@ public class SwipeActivity extends AppCompatActivity{
                 }
             });
 
-            final com.software.shell.fab.ActionButton fabCamera = (ActionButton) rlImage.findViewById(R.id.camera_float);
+            final ImageButton fabCamera = (ImageButton) rlImage.findViewById(R.id.camera_float);
             fabCamera.setTag("fab_camera_" + position);
             fabCamera.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -448,7 +449,7 @@ public class SwipeActivity extends AppCompatActivity{
                 }
             });
 
-            final com.software.shell.fab.ActionButton fabMagnifier = (ActionButton) rlImage.findViewById(R.id.magnifier_float);
+            final ImageButton fabMagnifier = (ImageButton) rlImage.findViewById(R.id.magnifier_float);
             fabMagnifier.setTag("fab_magnifier_" + position);
             fabMagnifier.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -473,18 +474,21 @@ public class SwipeActivity extends AppCompatActivity{
                         if (statusBar != null) {
                             statusBar.setVisibility(View.VISIBLE);
                         }
-                        fabTrash.hide();
-                        fabMagnifier.hide();
-                        fabCamera.hide();
+
+                        fabTrash.setVisibility(View.INVISIBLE);
+                        fabMagnifier.setVisibility(View.INVISIBLE);
+                        fabCamera.setVisibility(View.INVISIBLE);
                         SwipeActivity.isEditMode = true;
                     } else {
                         toolbar.setVisibility(View.INVISIBLE);
                         if (statusBar != null) {
                             statusBar.setVisibility(View.INVISIBLE);
                         }
-                        fabTrash.show();
-                        fabMagnifier.show();
-                        fabCamera.show();
+
+                        fabTrash.setVisibility(View.VISIBLE);
+                        fabMagnifier.setVisibility(View.VISIBLE);
+                        fabCamera.setVisibility(View.VISIBLE);
+
                         SwipeActivity.isEditMode = false;
                     }
                 }
@@ -495,8 +499,6 @@ public class SwipeActivity extends AppCompatActivity{
             return rlImage;
 
         }
-
-
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
